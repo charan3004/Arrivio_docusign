@@ -32,7 +32,6 @@ function App() {
             <Route path="/signup" element={<Signup />} />
             <Route path="/business" element={<Employers />} />
             <Route path="/employers" element={<Employers />} />
-            
             <Route path="/cities" element={<CityGridPage />} />
             <Route path="/privacy" element={<Privacy />} />
             <Route path="/terms" element={<Terms />} />
