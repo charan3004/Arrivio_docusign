@@ -56,9 +56,9 @@ const VisionSection = () => {
              whileInView={{ opacity: 1, y: 0 }}
              viewport={{ once: true }}
              transition={{ duration: 0.8, delay: 0.2 }}
-             className="font-serif text-4xl md:text-5xl lg:text-6xl text-[#1A1A1A] leading-tight"
+             className="font-serif text-3xl md:text-4xl lg:text-5xl text-[#1A1A1A] leading-tight"
            >
-              Living, <span className="italic text-[#2C3E30]">Simplified.</span>
+              Carefully Crafted for <span className="italic text-[#2C3E30]">Belonging.</span>
            </motion.h2>
            
            <motion.p 
@@ -68,8 +68,7 @@ const VisionSection = () => {
              transition={{ duration: 0.8, delay: 0.4 }}
              className="mt-6 font-sans text-[#5C5C50] text-lg max-w-2xl mx-auto leading-relaxed"
            >
-              We stripped away the complexity of renting in Germany to leave only what matters: <br className="hidden md:block"/> 
-              A home where you belong.
+              To build thriving communities that bring together people starting new chapters, creating stability, growth, and a deep sense of belonging.<br className="hidden md:block"/> 
            </motion.p>
         </div>
 
