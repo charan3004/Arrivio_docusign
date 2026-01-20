@@ -28,7 +28,7 @@ const VisionSection = () => {
 
   return (
     // Background matches Hero exactly (#EAE8E4) for seamless flow
-    <section className="relative w-full bg-[#EAE8E4] py-24 px-6 md:px-12">
+    <section id="vision" className="relative w-full bg-[#EAE8E4] py-24 px-6 md:px-12">
       
       {/* Subtle Background Gradient to separate it slightly from Hero */}
       <div className="absolute inset-0 bg-gradient-to-b from-[#EAE8E4] via-[#EAE8E4] to-[#EAE8E4]/50 pointer-events-none" />

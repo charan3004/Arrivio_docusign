@@ -10,7 +10,12 @@ import PropertyDetails from './pages/PropertyDetails';
 import Login from './pages/Login';
 import Signup from './pages/Signup';
 import Employers from './pages/Employers';
-import RoomDetails from './pages/RoomDetails';
+
+import Privacy from './pages/Privacy';
+import Terms from './pages/Terms';
+import Imprint from './pages/Imprint';
+import Contact from './pages/Contact';
+import Careers from './pages/Careers';
 
 function App() {
   return (
@@ -27,8 +32,13 @@ function App() {
             <Route path="/signup" element={<Signup />} />
             <Route path="/business" element={<Employers />} />
             <Route path="/employers" element={<Employers />} />
-            <Route path="/room/:id" element={<RoomDetails />} />
+            
             <Route path="/cities" element={<CityGridPage />} />
+            <Route path="/privacy" element={<Privacy />} />
+            <Route path="/terms" element={<Terms />} />
+            <Route path="/imprint" element={<Imprint />} />
+            <Route path="/contact" element={<Contact />} />
+            <Route path="/careers" element={<Careers />} />
             
           </Routes>
         </main>

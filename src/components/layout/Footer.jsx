@@ -8,16 +8,16 @@ const Footer = () => {
 
   const footerLinks = {
     Company: [
-      { name: 'Our Vision', path: '/vision' },
-      { name: 'Community', path: '/community' },
+      { name: 'Our Vision', path: '/#vision' },
+      { name: 'Community', path: '/#community' },
       { name: 'Careers', path: '/careers' },
       { name: 'Contact', path: '/contact' },
     ],
     Locations: [
-      { name: 'Berlin', path: '/search' },
-      { name: 'Munich', path: '/search' },
-      { name: 'Frankfurt', path: '/search' },
-      { name: 'Cologne', path: '/search' },
+      { name: 'Berlin', path: '/search', state: { location: 'Berlin' } },
+      { name: 'Munich', path: '/search', state: { location: 'Munich' } },
+      { name: 'Frankfurt', path: '/search', state: { location: 'Frankfurt' } },
+      { name: 'Cologne', path: '/search', state: { location: 'Cologne' } },
     ],
     Legal: [
       { name: 'Privacy Policy', path: '/privacy' },
@@ -78,7 +78,8 @@ const Footer = () => {
                       {links.map((link) => (
                          <li key={link.name}>
                             <Link 
-                              to={link.path} 
+                              to={link.path}
+                              state={link.state}
                               className="text-sm font-sans text-[#EAE8E4]/60 hover:text-[#EAE8E4] transition-colors flex items-center gap-1 group"
                             >
                                {link.name}
