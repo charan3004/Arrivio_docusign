@@ -10,7 +10,6 @@ import PropertyDetails from './pages/PropertyDetails';
 import Login from './pages/Login';
 import Signup from './pages/Signup';
 import Employers from './pages/Employers';
-
 import Privacy from './pages/Privacy';
 import Terms from './pages/Terms';
 import Imprint from './pages/Imprint';
