@@ -1,212 +1,183 @@
-import React, { useState } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
-import { motion } from 'framer-motion';
+import React, { useEffect, useState } from 'react';
+import { useParams, useNavigate, Link } from 'react-router-dom';
 import { 
-  ArrowLeft, MapPin, Wifi, Layout, Wind, Coffee, 
-  CheckCircle, Star, ShieldCheck, Calendar 
+  ArrowLeft, MapPin, Building2, CheckCircle, 
+  Clock, Ban, Cigarette, HelpCircle, Star,
+  Baby, Dog, FileText, 
+  // NEW ICONS FOR AMENITIES
+  Wifi, Monitor, Armchair, Tv, Waves, Sofa, 
+  ArrowUpFromLine, Lock, Bike, Mail, Sparkles
 } from 'lucide-react';
 
-// --- MOCK DATA (Ideally this comes from an API or Context based on ID) ---
-const property = {
-  id: 1,
-  title: "Minimalist Loft in Kreuzberg",
-  address: "Oranienstraße 24, 10999 Berlin",
-  price: 1450,
-  rating: 4.9,
-  reviews: 24,
-  specs: {
-    sqm: 85,
-    rooms: 2,
-    bath: 1
-  },
-  description: "Experience the authentic Berlin vibe in this carefully curated industrial loft. High ceilings, exposed concrete, and floor-to-ceiling windows create an atmosphere of creative freedom. Located in the heart of Kreuzberg, you are steps away from the city's best coffee roasters and art galleries.",
-  amenities: [
-    { icon: Wifi, label: "High-Speed WiFi" },
-    { icon: Layout, label: "Dedicated Workspace" },
-    { icon: Wind, label: "Air Conditioning" },
-    { icon: Coffee, label: "Premium Coffee Machine" },
-    { icon: ShieldCheck, label: "24/7 Security" },
-  ],
-  images: [
-    "https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?q=80&w=1000&auto=format&fit=crop", // Main
-    "https://images.unsplash.com/photo-1505691938895-1758d7feb511?q=80&w=500&auto=format&fit=crop", // Side 1
-    "https://images.unsplash.com/photo-1484101403633-562f891dc89a?q=80&w=500&auto=format&fit=crop"  // Side 2
-  ]
-};
+// --- IMPORTS ---
+import { allProperties } from '../data/mockProperties'; 
+import PropertyGallery from '../components/property/PropertyGallery';
+import BookingWidget from '../components/property/BookingWidget';
+import PropertyStats from '../components/property/PropertyStats';
+import Neighborhood from '../components/property/Neighborhood';
 
 const PropertyDetails = () => {
   const { id } = useParams();
   const navigate = useNavigate();
-  const [isFavorite, setIsFavorite] = useState(false);
+  const [isExpanded, setIsExpanded] = useState(false);
+  
+  useEffect(() => { window.scrollTo(0, 0); }, [id]);
+
+  const property = allProperties.find(p => p.id === parseInt(id));
+
+  if (!property) return null;
+
+  // --- SMART ICON MAPPING HELPER ---
+  const getAmenityIcon = (name) => {
+    const n = name.toLowerCase();
+    if (n.includes('internet') || n.includes('wifi')) return <Wifi size={18} />;
+    if (n.includes('monitor')) return <Monitor size={18} />;
+    if (n.includes('chair') || n.includes('desk')) return <Armchair size={18} />;
+    if (n.includes('tv')) return <Tv size={18} />;
+    if (n.includes('cleaning')) return <Sparkles size={18} />;
+    if (n.includes('washer') || n.includes('laundry')) return <Waves size={18} />;
+    if (n.includes('furnished')) return <Sofa size={18} />;
+    if (n.includes('elevator')) return <ArrowUpFromLine size={18} />;
+    if (n.includes('secure')) return <Lock size={18} />;
+    if (n.includes('bike')) return <Bike size={18} />;
+    if (n.includes('mail')) return <Mail size={18} />;
+    return <CheckCircle size={18} />; // Fallback
+  };
+
+  const amenityCategories = [
+    { title: "Productivity", items: ["Fiber Internet", "Dedicated Desk", "Ergonomic Chair", "Monitor"] },
+    { title: "Living", items: ["Weekly Cleaning", "Smart TV", "Washer/Dryer", "Fully Furnished"] },
+    { title: "Building", items: ["Elevator", "Secure Entry", "Bike Storage", "Mail Service"] }
+  ];
+
+  const faqs = [
+    { q: "Is Anmeldung possible?", a: "Yes, we provide the Wohnungsgeberbestätigung immediately upon move-in." },
+    { q: "Cancellation policy?", a: "Flexible cancellation up to 7 days before move-in." },
+  ];
 
   return (
-    <div className="min-h-screen bg-[#EAE8E4] pt-24 pb-12 px-4 md:px-8">
-      
-      <div className="max-w-7xl mx-auto">
+    <div className="min-h-screen bg-[#FAFAFA] pt-20 pb-20 px-6 md:px-12">
+      <div className="max-w-6xl mx-auto">
         
-        {/* --- NAVIGATION --- */}
-        <button 
-          onClick={() => navigate(-1)} 
-          className="group flex items-center gap-2 text-[#2C3E30]/60 hover:text-[#2C3E30] transition-colors mb-8 font-medium"
-        >
-          <div className="p-2 rounded-full bg-white/50 group-hover:bg-white transition-all">
-            <ArrowLeft size={18} />
-          </div>
-          <span className="text-sm uppercase tracking-widest font-bold">Back to Search</span>
-        </button>
+        {/* NAV */}
+        <div className="flex items-center gap-4 mb-4">
+           <button onClick={() => navigate(-1)} className="p-2 bg-white border border-gray-100 rounded-full hover:shadow-md transition-all">
+                <ArrowLeft size={16} className="text-[#1A1A1A]" />
+           </button>
+           <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-widest text-[#5C5C50]">
+                <Link to="/" className="hover:text-black">Home</Link> / <span className="text-black">{property.city}</span>
+           </div>
+        </div>
 
-        {/* --- IMAGE GALLERY (BENTO GRID) --- */}
-        <motion.div 
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6 }}
-          className="grid grid-cols-1 md:grid-cols-4 gap-4 h-[500px] mb-12 rounded-[2rem] overflow-hidden shadow-2xl border border-white/40"
-        >
-          {/* Main Image (Left, Spans 3 cols) */}
-          <div className="md:col-span-3 h-full relative group">
-             <img src={property.images[0]} alt="Main" className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
-             <div className="absolute inset-0 bg-black/10 group-hover:bg-transparent transition-colors"></div>
-          </div>
+        {/* GALLERY */}
+        <PropertyGallery images={property.gallery} />
+
+        {/* MAIN LAYOUT */}
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 relative">
           
-          {/* Side Images (Right, Stacked) */}
-          <div className="hidden md:flex flex-col gap-4 h-full">
-            <div className="h-1/2 relative group overflow-hidden">
-               <img src={property.images[1]} alt="Side 1" className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
-            </div>
-            <div className="h-1/2 relative group overflow-hidden">
-               <img src={property.images[2]} alt="Side 2" className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
-               
-               {/* "View All" Overlay */}
-               <button className="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                  <span className="text-white font-serif italic text-lg border-b border-white pb-1">View All Photos</span>
-               </button>
-            </div>
-          </div>
-        </motion.div>
-
-
-        {/* --- MAIN CONTENT LAYOUT --- */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-12">
-          
-          {/* LEFT COLUMN: DETAILS */}
-          <div className="lg:col-span-2 space-y-10">
+          {/* LEFT COLUMN */}
+          <div className="lg:col-span-8 space-y-10">
             
-            {/* Title Block */}
+            {/* Header & Stats */}
             <div>
-               <div className="flex items-start justify-between">
-                  <div>
-                    <h1 className="text-3xl md:text-4xl font-serif text-[#1A1A1A] mb-2">{property.title}</h1>
-                    <div className="flex items-center gap-2 text-[#5C5C50]">
-                        <MapPin size={16} />
-                        <span className="font-sans text-sm md:text-base">{property.address}</span>
-                    </div>
-                  </div>
-               </div>
-               
-               {/* Specs Bar */}
-               <div className="flex items-center gap-6 mt-6 py-4 border-y border-[#2C3E30]/10">
-                  <div className="text-center">
-                    <span className="block text-xl font-bold text-[#2C3E30]">{property.specs.sqm}</span>
-                    <span className="text-[10px] uppercase tracking-widest text-[#5C5C50]">m²</span>
-                  </div>
-                  <div className="w-[1px] h-8 bg-[#2C3E30]/10"></div>
-                  <div className="text-center">
-                    <span className="block text-xl font-bold text-[#2C3E30]">{property.specs.rooms}</span>
-                    <span className="text-[10px] uppercase tracking-widest text-[#5C5C50]">Rooms</span>
-                  </div>
-                  <div className="w-[1px] h-8 bg-[#2C3E30]/10"></div>
-                  <div className="text-center">
-                    <span className="block text-xl font-bold text-[#2C3E30]">{property.specs.bath}</span>
-                    <span className="text-[10px] uppercase tracking-widest text-[#5C5C50]">Bath</span>
-                  </div>
-               </div>
+                <h1 className="text-3xl font-serif text-[#1A1A1A] mb-2">{property.title}</h1>
+                <div className="flex flex-wrap items-center gap-4 text-[#5C5C50] text-xs font-medium mb-6">
+                   <span className="flex items-center gap-1.5"><MapPin size={14}/> {property.city} Center</span>
+                   <span className="flex items-center gap-1.5"><Building2 size={14}/> Managed by Arrivio</span>
+                   <span className="flex items-center gap-1.5"><Star size={14} className="fill-[#2C3E30] text-[#2C3E30]"/> {property.rating} (Verified)</span>
+                </div>
+                
+                <PropertyStats details={property.details} />
             </div>
 
             {/* Description */}
             <div>
-               <h3 className="font-serif text-xl text-[#1A1A1A] mb-4">About this home</h3>
-               <p className="font-sans text-[#5C5C50] leading-relaxed text-lg">
-                 {property.description}
-               </p>
+                <h3 className="font-bold text-lg text-[#1A1A1A] mb-3">About this home</h3>
+                <div className={`relative overflow-hidden transition-all duration-500 ${isExpanded ? 'max-h-full' : 'max-h-24'}`}>
+                    <p className="text-[#5C5C50] text-sm leading-7">
+                        Relocate without the stress. This Arrivio apartment is fully furnished, managed, and equipped for immediate move-in. 
+                        We handle the paperwork, utilities, and internet setup so you can focus on your new job from day one.
+                        <br/><br/>
+                        <b>Anmeldung is guaranteed</b> with this rental contract, allowing you to register with the city immediately.
+                    </p>
+                    {!isExpanded && <div className="absolute bottom-0 left-0 w-full h-16 bg-gradient-to-t from-[#FAFAFA] to-transparent"></div>}
+                </div>
+                <button onClick={() => setIsExpanded(!isExpanded)} className="mt-2 text-[#2C3E30] font-bold text-xs uppercase tracking-widest border-b border-[#2C3E30]">
+                    {isExpanded ? "Show Less" : "Read More"}
+                </button>
             </div>
 
-            {/* Amenities */}
-            <div>
-               <h3 className="font-serif text-xl text-[#1A1A1A] mb-6">Premium Amenities</h3>
-               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  {property.amenities.map((item, idx) => (
-                    <div key={idx} className="flex items-center gap-3 p-4 bg-white/40 rounded-xl border border-white/60">
-                       <item.icon size={20} className="text-[#2C3E30]" />
-                       <span className="text-[#1A1A1A] font-medium text-sm">{item.label}</span>
-                    </div>
-                  ))}
-               </div>
+            {/* --- UPDATED AMENITIES SECTION --- */}
+            <div className="border-t border-gray-100 pt-8">
+                <h3 className="font-bold text-lg text-[#1A1A1A] mb-6">Amenities</h3>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    {amenityCategories.map((cat, i) => (
+                        <div key={i}>
+                            <h4 className="text-xs font-bold uppercase tracking-widest text-[#5C5C50] mb-3">{cat.title}</h4>
+                            <ul className="space-y-3">
+                                {cat.items.map((item, j) => (
+                                    <li key={j} className="flex items-center gap-3 text-[#1A1A1A] text-sm group">
+                                        {/* Dynamic Icon Call */}
+                                        <div className="text-[#2C3E30] opacity-80 group-hover:opacity-100 transition-opacity">
+                                            {getAmenityIcon(item)}
+                                        </div>
+                                        <span>{item}</span>
+                                    </li>
+                                ))}
+                            </ul>
+                        </div>
+                    ))}
+                </div>
+            </div>
+
+            {/* Things to Know */}
+            <div className="border-t border-gray-100 pt-8">
+                <h3 className="font-bold text-lg text-[#1A1A1A] mb-6">Things to know</h3>
+                
+                <h4 className="text-sm font-bold text-[#1A1A1A] mb-4 uppercase tracking-wide opacity-60">House rules</h4>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-y-4 gap-x-12 mb-8">
+                    <div className="flex items-center gap-3"><Baby size={20} className="text-[#1A1A1A]"/> <span className="text-sm text-[#1A1A1A] font-medium">Suitable for children</span></div>
+                    <div className="flex items-center gap-3"><Dog size={20} className="text-[#1A1A1A]"/> <span className="text-sm text-[#1A1A1A] font-medium">Pets allowed</span></div>
+                    <div className="flex items-center gap-3"><Ban size={20} className="text-[#1A1A1A]"/> <span className="text-sm text-[#1A1A1A] font-medium">No parties or events</span></div>
+                    <div className="flex items-center gap-3"><Cigarette size={20} className="text-[#1A1A1A]"/> <span className="text-sm text-[#1A1A1A] font-medium">No smoking allowed</span></div>
+                </div>
+
+                <h4 className="text-sm font-bold text-[#1A1A1A] mb-4 uppercase tracking-wide opacity-60">Cancellation</h4>
+                <div className="flex items-start gap-4 p-5 bg-white border border-gray-100 rounded-xl shadow-sm">
+                    <FileText size={20} className="text-[#1A1A1A] shrink-0 mt-0.5"/>
+                    <p className="text-[#5C5C50] text-xs leading-relaxed">
+                        In any case, we will refund 100% of the payment (excl. card processing fees) if you cancel the booking 30+ days before moving in.
+                    </p>
+                </div>
+            </div>
+
+            {/* Neighborhood & FAQ */}
+            <div className="border-t border-gray-100 pt-8">
+                <Neighborhood city={property.city} />
+            </div>
+
+            <div className="border-t border-gray-100 pt-8">
+                <h3 className="font-bold text-lg text-[#1A1A1A] mb-4">FAQ</h3>
+                <div className="space-y-3">
+                    {faqs.map((faq, i) => (
+                        <div key={i} className="group">
+                            <h4 className="text-sm font-bold text-[#1A1A1A] mb-1 flex items-center gap-2">
+                                <HelpCircle size={14} className="text-[#5C5C50]"/> {faq.q}
+                            </h4>
+                            <p className="text-xs text-[#5C5C50] pl-6">{faq.a}</p>
+                        </div>
+                    ))}
+                </div>
             </div>
 
           </div>
 
-
-          {/* RIGHT COLUMN: STICKY BOOKING CARD */}
-          <div className="lg:col-span-1">
-             <div className="sticky top-28">
-                <div className="bg-white p-8 rounded-[2rem] shadow-xl border border-[#2C3E30]/5">
-                   
-                   <div className="flex justify-between items-end mb-6">
-                      <div>
-                         <span className="text-3xl font-serif font-bold text-[#2C3E30]">€{property.price}</span>
-                         <span className="text-[#5C5C50] text-sm ml-1">/ month</span>
-                      </div>
-                      <div className="flex items-center gap-1 text-sm font-bold text-[#1A1A1A]">
-                         <Star size={14} className="fill-[#C2B280] text-[#C2B280]" />
-                         {property.rating}
-                         <span className="text-[#5C5C50] font-normal underline cursor-pointer">({property.reviews} reviews)</span>
-                      </div>
-                   </div>
-
-                   {/* Date Picker Dummy */}
-                   <div className="border border-[#EAE8E4] rounded-xl p-4 mb-6 cursor-pointer hover:border-[#2C3E30]/30 transition-colors">
-                      <div className="flex items-center gap-3 text-[#5C5C50]">
-                         <Calendar size={18} />
-                         <span className="text-sm font-medium">Select Move-in Date</span>
-                      </div>
-                   </div>
-
-                   {/* Costs Breakdown */}
-                   <div className="space-y-3 mb-8">
-                      <div className="flex justify-between text-sm text-[#5C5C50]">
-                         <span>Monthly Rent</span>
-                         <span>€{property.price}</span>
-                      </div>
-                      <div className="flex justify-between text-sm text-[#5C5C50]">
-                         <span>Service Fee</span>
-                         <span>€0</span>
-                      </div>
-                      <div className="flex justify-between text-sm text-[#5C5C50]">
-                         <span>Deposit</span>
-                         <span>€{property.price * 2}</span>
-                      </div>
-                      <div className="h-[1px] bg-[#EAE8E4] my-2"></div>
-                      <div className="flex justify-between text-base font-bold text-[#1A1A1A]">
-                         <span>Total First Month</span>
-                         <span>€{property.price * 3}</span>
-                      </div>
-                   </div>
-
-                   {/* Action Button */}
-                   <button className="w-full py-4 bg-[#2C3E30] text-[#EAE8E4] rounded-xl font-bold uppercase tracking-widest text-xs hover:bg-[#1A1A1A] hover:scale-[1.02] transition-all shadow-lg">
-                      Request to Book
-                   </button>
-                   
-                   <p className="text-center text-[10px] text-[#5C5C50] mt-4">
-                      You won't be charged yet.
-                   </p>
-
-                </div>
-             </div>
+          {/* RIGHT SIDE */}
+          <div className="lg:col-span-4">
+             <BookingWidget price={property.price} />
           </div>
 
         </div>
-
       </div>
     </div>
   );
