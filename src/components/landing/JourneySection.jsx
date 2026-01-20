@@ -4,7 +4,7 @@ import { Search, FileCheck, Home, Heart, ArrowRight } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
 // --- YOUR IMAGE IMPORTS ---
-import journeyImg1 from '../../assets/journeyImg1.jpeg';
+import journeyImg1 from '../../assets/journeyImg1.png';
 import journeyImg2 from '../../assets/journeyImg2.png';
 
 const JourneySection = () => {
