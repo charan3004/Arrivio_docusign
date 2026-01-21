@@ -1,6 +1,36 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { CheckCircle, Briefcase, GraduationCap, Sparkles } from 'lucide-react';
+import {
+  CheckCircle,
+  Briefcase,
+  GraduationCap,
+  Sparkles,
+  MapPin,
+  Sofa,
+  Wallet,
+  Monitor,
+  BadgePercent,
+  Users,
+  Building2,
+} from 'lucide-react';
+
+const featureIcons = {
+  // Skilled Professionals
+  "Prime locations": MapPin,
+  "Near business districts": Building2,
+  "Fully furnished": Sofa,
+
+  // Students
+  "Near universities": GraduationCap,
+  "Student-friendly pricing": Wallet,
+  "Study spaces": Monitor,
+
+  // Azubis
+  "Close to training": MapPin,
+  "Affordable options": BadgePercent,
+  "Community support": Users,
+};
+
 
 const WhoWeServeSection = () => {
   const personas = [
@@ -124,7 +154,16 @@ const WhoWeServeSection = () => {
                    <ul className="space-y-4 mt-auto">
                       {persona.features.map((feature, featureIndex) => (
                          <li key={featureIndex} className="flex items-start gap-3 group/item">
-                            <CheckCircle className="text-[#2C3E30]/40 flex-shrink-0 mt-0.5 group-hover:text-[#2C3E30] transition-colors" size={18} />
+                            {(() => {
+  const Icon = featureIcons[feature] || CheckCircle;
+  return (
+    <Icon
+      size={18}
+      className="text-[#2C3E30]/40 flex-shrink-0 mt-0.5 group-hover:text-[#2C3E30] transition-colors"
+    />
+  );
+})()}
+
                             <span className="font-sans text-sm text-[#1A1A1A]/70 group-hover:text-[#1A1A1A] transition-colors font-medium">
                                {feature}
                             </span>
