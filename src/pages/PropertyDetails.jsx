@@ -56,7 +56,7 @@ const PropertyDetails = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-[#EAE8E4] pt-28 pb-20 px-4 md:px-12">
+    <div className="min-h-screen bg-[#EAE8E4] pt-20 pb-20 px-4 md:px-12">
       <div className="max-w-7xl mx-auto">
         
         {/* NAV */}
@@ -70,7 +70,7 @@ const PropertyDetails = () => {
         </div>
 
         {/* GALLERY */}
-        <div className="mb-10">
+        <div className="mb-5">
             <PropertyGallery images={property.gallery || [property.image]} />
         </div>
 
@@ -78,7 +78,7 @@ const PropertyDetails = () => {
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 relative">
           
           {/* LEFT COLUMN */}
-          <div className="lg:col-span-8 space-y-12">
+          <div className="lg:col-span-7 space-y-12">
             
             {/* Header & Stats */}
             <div>
@@ -88,10 +88,10 @@ const PropertyDetails = () => {
                    <span className="flex items-center gap-1.5 px-3 py-1.5 bg-white/50 border border-white/50 rounded-full">
                         <MapPin size={12}/> {property.city} Center
                    </span>
-                   <span className="flex items-center gap-1.5 px-3 py-1.5 bg-white/50 border border-white/50 rounded-full">
+                   <span className="flex items-center gap-1.5 px-3 py-1.5 bg-white/40 border border-white/50 rounded-full">
                         <Star size={12} className="fill-[#C2B280] text-[#C2B280]"/> {property.rating} (Exquisite)
                    </span>
-                   <span className="flex items-center gap-1.5 px-3 py-1.5 bg-white/50 border border-white/50 rounded-full">
+                   <span className="flex items-center gap-1.5 px-3 py-1.5 bg-white/40 border border-white/50 rounded-full">
                         <Building2 size={12}/> Managed by Arrivio
                    </span>
                 </div>
@@ -99,7 +99,7 @@ const PropertyDetails = () => {
                 <PropertyStats details={property.details} />
             </div>
 
-            {/* Description (REMOVED BORDER) */}
+            {/* Description */}
             <div className="pt-4"> 
                 <h3 className="font-serif text-2xl text-[#2C3E30] mb-4">About this home</h3>
                 <div className={`relative overflow-hidden transition-all duration-500 ${isExpanded ? 'max-h-full' : 'max-h-28'}`}>
@@ -116,7 +116,7 @@ const PropertyDetails = () => {
                 </button>
             </div>
 
-            {/* Amenities (REMOVED BORDER) */}
+            {/* Amenities */}
             <div className="pt-8">
                 <h3 className="font-serif text-2xl text-[#2C3E30] mb-8">Amenities</h3>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-8">
@@ -138,10 +138,9 @@ const PropertyDetails = () => {
                 </div>
             </div>
 
-            {/* Things to Know (REMOVED BORDER) */}
+            {/* Things to Know */}
             <div className="pt-8">
                 <h3 className="font-serif text-2xl text-[#2C3E30] mb-8">Things to know</h3>
-                
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-y-4 gap-x-12 mb-8">
                     <div className="flex items-center gap-3"><Baby size={18} className="text-[#2C3E30]/60"/> <span className="text-sm text-[#2C3E30]/80 font-medium">Suitable for children</span></div>
                     <div className="flex items-center gap-3"><Dog size={18} className="text-[#2C3E30]/60"/> <span className="text-sm text-[#2C3E30]/80 font-medium">Pets allowed</span></div>
@@ -157,16 +156,17 @@ const PropertyDetails = () => {
                 </div>
             </div>
 
-            {/* Neighborhood (REMOVED BORDER) */}
+            {/* Neighborhood */}
             <div className="pt-8">
                 <Neighborhood city={property.city} />
             </div>
 
           </div>
 
-          {/* RIGHT COLUMN */}
-          <div className="lg:col-span-4 relative">
-             <div className="sticky top-28 h-fit">
+          {/* RIGHT COLUMN (Sticky Widget) */}
+          <div className="lg:col-span-5 relative">
+             {/* Changed top-24 to top-4 (Moves widget up by 80px) */}
+             <div className="sticky top-4 h-fit">
                 <BookingWidget price={property.price} />
              </div>
           </div>
