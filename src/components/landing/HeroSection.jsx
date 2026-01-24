@@ -151,7 +151,7 @@ const HeroSection = () => {
           <div className="flex items-center gap-3">
               <div className="p-2 bg-white rounded-full text-[#2C3E30] shadow-sm"><MapPin size={14} /></div>
               <div>
-                  <span className="block text-[14px] font-serif font-bold text-[#1A1A1A]">7 Major</span>
+                  <span className="block text-[14px] font-serif font-bold text-[#1A1A1A]">8 Major</span>
                   <span className="text-[10px] uppercase tracking-widest text-[#1A1A1A]/60">German Cities</span>
               </div>
           </div>
