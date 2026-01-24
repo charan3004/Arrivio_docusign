@@ -22,8 +22,8 @@ const AppNavbar = () => {
   }, [isMobileMenuOpen]);
 
   const links = [
-    { name: 'Locations', path: '/cities', icon: <MapPin size={14}/> },
-    { name: 'Apartments', path: '/search', icon: <Grid size={14}/> },
+    { name: 'Cities', path: '/cities', icon: <MapPin size={14}/> },
+    { name: 'Stays', path: '/search', icon: <Grid size={14}/> },
   ];
 
   return (
