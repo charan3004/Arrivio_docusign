@@ -41,3 +41,95 @@
   background-size: 200% 200%;
   animation: gradient-x 3s ease infinite;
 }
+
+
+
+/* --- INVISIBLE SCROLLBAR UTILITY --- */
+.custom-scrollbar {
+  -ms-overflow-style: none;  /* Internet Explorer 10+ */
+  scrollbar-width: none;  /* Firefox */
+}
+
+.custom-scrollbar::-webkit-scrollbar { 
+  display: none;  /* Safari and Chrome */
+}
+
+
+
+.price-pin {
+  background: transparent;
+  border: none;
+}
+
+/* 1. UNSELECTED: Pure White (Visible on Dark Map) */
+.pin-bubble {
+  background-color: #FFFFFF; 
+  color: #2C3E30; /* Dark Green Text */
+  padding: 6px 10px;
+  border-radius: 8px;
+  font-family: sans-serif;
+  font-weight: 700;
+  font-size: 12px;
+  
+  /* Strong shadow to lift off the 3D map */
+  box-shadow: 0 4px 10px rgba(0,0,0,0.5);
+  
+  white-space: nowrap;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+  transition: all 0.2s ease-out; 
+}
+
+/* Arrow (White) */
+.pin-bubble::after {
+  content: '';
+  position: absolute;
+  bottom: -5px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 0; 
+  height: 0; 
+  border-left: 5px solid transparent;
+  border-right: 5px solid transparent;
+  border-top: 5px solid #FFFFFF; 
+}
+
+/* 2. SELECTED: Dark Green (Brand Active State) */
+.pin-bubble.selected {
+  background-color: #2C3E30; /* Dark Green */
+  color: #FFFFFF; /* White Text */
+  transform: scale(1.2) translateY(-4px); 
+  z-index: 9999 !important; 
+  
+  /* White Border to separate from dark trees */
+  border: 2px solid #FFFFFF; 
+  box-shadow: 0 10px 25px rgba(0,0,0,0.7);
+}
+
+/* Arrow turns Dark Green */
+.pin-bubble.selected::after {
+  border-top-color: #2C3E30; 
+}
+
+/* 3. COPYRIGHT CLEANUP */
+.leaflet-control-attribution {
+  background: rgba(255, 255, 255, 0.8) !important;
+  border-radius: 4px;
+  padding: 0 6px !important;
+  font-size: 9px !important;
+  color: #666 !important;
+  margin-right: 10px !important;
+  margin-bottom: 6px !important;
+  text-decoration: none !important;
+}
+
+.leaflet-control-attribution {
+  margin-right: 20px !important;
+  margin-bottom: 10px !important;
+  background: rgba(255, 255, 255, 0.8) !important;
+  border-radius: 4px;
+  padding: 0 4px;
+  font-size: 8px !important;
+}

@@ -1,51 +1,88 @@
-import React from 'react';
-import { motion } from 'framer-motion';
-import { Link } from 'react-router-dom';
-import { CheckCircle, ArrowRight } from 'lucide-react';
+import React from "react";
+import { motion } from "framer-motion";
+import { Link } from "react-router-dom";
+import {
+  Bed,
+  Wifi,
+  Users,
+  Sparkles,
+  Bath,
+  CheckCircle,
+  Utensils,
+  Monitor,
+  Wrench,
+  Building2,
+  Camera,
+  ArrowRight,
+  Columns,
+  Waves,
+  UserCheck,
+} from "lucide-react";
 
 // YOUR IMAGES
-import room850 from '../../assets/room850.png';
-import room950 from '../../assets/room950.png';
-import room1200 from '../../assets/room1200.png';
+import room850 from "../../assets/room850.png";
+import room950 from "../../assets/room950.png";
+import room1200 from "../../assets/room1200.png";
+
+const featureIcons = {
+  "Private Furnished Bedroom": Bed,
+  "High-Speed WiFi Included": Wifi,
+  "Community Events Access": Users,
+  "Bi-Weekly Cleaning": Sparkles,
+  "Private Ensuite Bathroom": Bath,
+  "King-Size Bed": Bed,
+  "Shared Designer Kitchen": Utensils,
+  "Private Kitchenette": Utensils,
+  "Dedicated Workspace": Monitor,
+  "Priority Maintenance": Wrench,
+  "City View or Balcony": Building2,
+  "Smart Home Integration": Camera,
+  "Floor-to-Ceiling Windows": Columns,
+  "In-Unit Washer/Dryer": Waves,
+  "Concierge Service": UserCheck,
+};
 
 const PricingTiersSection = () => {
   const pricingTiers = [
     {
       id: 1,
       name: "The Essential",
-      price: 850,
+      minPrice: 350,
+      maxPrice: 500,
       features: [
-        'Private Furnished Bedroom',
-        'Shared Designer Kitchen',
-        'Bi-Weekly Cleaning',
-        'High-Speed WiFi Included',
-        'Community Events Access'
+        "Private Furnished Bedroom",
+        "Shared Designer Kitchen",
+        "Bi-Weekly Cleaning",
+        "High-Speed WiFi Included",
+        "Community Events Access",
       ],
       image: room850,
     },
     {
       id: 2,
       name: "The Comfort",
-      price: 950,
+      minPrice: 600,
+      maxPrice: 750,
       features: [
-        'Private Ensuite Bathroom',
-        'City View or Balcony',
-        'Smart Home Integration',
-        'Dedicated Workspace',
-        'Priority Maintenance'
+        "Private Ensuite Bathroom",
+        "City View or Balcony",
+        "Smart Home Integration",
+        "Dedicated Workspace",
+        "Priority Maintenance",
       ],
       image: room950,
     },
     {
       id: 3,
       name: "The Studio",
-      price: 1200,
+      minPrice: 850,
+      maxPrice: 1200,
       features: [
-        'Private Kitchenette',
-        'King-Size Bed',
-        'Floor-to-Ceiling Windows',
-        'In-Unit Washer/Dryer',
-        'Concierge Service'
+        "Private Kitchenette",
+        "King-Size Bed",
+        "Floor-to-Ceiling Windows",
+        "In-Unit Washer/Dryer",
+        "Concierge Service",
       ],
       image: room1200,
     },
@@ -66,49 +103,49 @@ const PricingTiersSection = () => {
     visible: {
       opacity: 1,
       y: 0,
-      transition: { duration: 0.6, ease: 'easeOut' },
+      transition: { duration: 0.6, ease: "easeOut" },
     },
   };
 
   return (
-    <section id="living-spaces" className="bg-[#EAE8E4] py-24 px-4 sm:px-6 lg:px-8">
-      
+    <section
+      id="living-spaces"
+      className="bg-[#EAE8E4] py-24 px-4 sm:px-6 lg:px-8"
+    >
       <div className="max-w-7xl mx-auto">
-        
         {/* --- HEADER --- */}
         <div className="text-center mb-16 md:mb-24">
-           <motion.div 
-             initial={{ opacity: 0, y: 20 }}
-             whileInView={{ opacity: 1, y: 0 }}
-             viewport={{ once: true }}
-             transition={{ duration: 0.8 }}
-             className="inline-flex items-center gap-3 mb-6 opacity-60"
-           >
-              <div className="w-8 h-[1px] bg-[#2C3E30]"></div>
-              <span className="text-xs font-bold uppercase tracking-[0.2em] text-[#2C3E30] font-sans">
-                 The Collection
-              </span>
-              <div className="w-8 h-[1px] bg-[#2C3E30]"></div>
-           </motion.div>
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.8 }}
+            className="inline-flex items-center gap-3 mb-6 opacity-60"
+          >
+            <div className="w-8 h-[1px] bg-[#2C3E30]"></div>
+            <span className="text-xs font-bold uppercase tracking-[0.2em] text-[#2C3E30] font-sans">
+              The Collection
+            </span>
+            <div className="w-8 h-[1px] bg-[#2C3E30]"></div>
+          </motion.div>
 
-           <motion.h2 
-             initial={{ opacity: 0, y: 20 }}
-             whileInView={{ opacity: 1, y: 0 }}
-             viewport={{ once: true }}
-             transition={{ duration: 0.8, delay: 0.2 }}
-             className="font-serif text-4xl md:text-5xl lg:text-6xl text-[#1A1A1A] leading-tight"
-           >
-              Spaces for <br/>
-              <span className="italic text-[#2C3E30]">Living Well.</span>
-           </motion.h2>
+          <motion.h2
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.8, delay: 0.2 }}
+            className="font-serif text-4xl md:text-5xl lg:text-6xl text-[#1A1A1A] leading-tight"
+          >
+            Spaces for <br />
+            <span className="italic text-[#2C3E30]">Living Well.</span>
+          </motion.h2>
         </div>
-
 
         {/* --- THE PRICING GRID --- */}
         <motion.div
           initial="hidden"
           whileInView="visible"
-          viewport={{ once: true, margin: '-50px' }}
+          viewport={{ once: true, margin: "-50px" }}
           variants={containerVariants}
           className="grid grid-cols-1 md:grid-cols-3 gap-8"
         >
@@ -118,70 +155,75 @@ const PricingTiersSection = () => {
               variants={cardVariants}
               className="group relative flex flex-col rounded-[2.5rem] transition-all duration-500 hover:-translate-y-2"
             >
-              
               {/* GLASS BACKGROUND */}
               <div className="absolute inset-0 bg-[#F5F5F0]/40 backdrop-blur-md border border-white/60 rounded-[2.5rem] shadow-sm transition-all duration-500 group-hover:bg-[#F5F5F0] group-hover:shadow-2xl group-hover:border-[#2C3E30]/10"></div>
 
               {/* CONTENT WRAPPER */}
               <div className="relative z-10 flex flex-col h-full p-4">
-                
                 {/* --- IMAGE TOP --- */}
                 <div className="h-64 relative overflow-hidden rounded-[2rem] shadow-sm mb-6">
-                  <img 
-                    src={tier.image} 
-                    alt={tier.name} 
-                    className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" 
+                  <img
+                    src={tier.image}
+                    alt={tier.name}
+                    className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
                   />
                   {/* Tint */}
                   <div className="absolute inset-0 bg-[#2C3E30] mix-blend-multiply opacity-10 transition-opacity group-hover:opacity-0"></div>
-                  
+
                   {/* Name Badge */}
                   <div className="absolute top-4 right-4 bg-[#F5F5F0]/90 backdrop-blur-md px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest text-[#2C3E30] shadow-sm">
-                     {tier.name}
+                    {tier.name}
                   </div>
                 </div>
 
                 {/* --- PRICE & FEATURES --- */}
                 <div className="px-4 pb-4 flex flex-col flex-grow text-center">
-                   
-                   {/* Price */}
-                   <div className="mb-6">
-                      <div className="flex items-baseline justify-center gap-1 text-[#2C3E30]">
-                         <span className="font-serif text-5xl">€{tier.price}</span>
-                         <span className="font-sans text-sm text-[#5C5C50] font-medium">/ month</span>
-                      </div>
-                      <div className="w-12 h-[1px] bg-[#2C3E30]/10 mx-auto mt-4 group-hover:w-24 transition-all duration-500"></div>
-                   </div>
+                  {/* Price */}
+                  <div className="mb-6">
+                    <div className="flex items-baseline justify-center gap-1 text-[#2C3E30]">
+                      <span className="font-serif text-5xl">
+                        €{tier.minPrice}–{tier.maxPrice}
+                      </span>
+                      <span className="font-sans text-sm text-[#5C5C50] font-medium">
+                        / month
+                      </span>
+                    </div>
+                    <div className="w-12 h-[1px] bg-[#2C3E30]/10 mx-auto mt-4 group-hover:w-24 transition-all duration-500"></div>
+                  </div>
 
-                   {/* Features List */}
-                   <ul className="space-y-3 mb-8 text-left mx-auto w-full max-w-[90%]">
-                      {tier.features.map((feature, index) => (
-                         <li key={index} className="flex items-start gap-3">
-                            <CheckCircle className="text-[#2C3E30]/40 flex-shrink-0 mt-0.5 group-hover:text-[#2C3E30] transition-colors" size={16} />
-                            <span className="font-sans text-sm text-[#5C5C50] group-hover:text-[#1A1A1A] transition-colors">
-                               {feature}
-                            </span>
-                         </li>
-                      ))}
-                   </ul>
+                  {/* Features List */}
+                  <ul className="space-y-3 mb-8 text-left mx-auto w-full max-w-[90%]">
+                    {tier.features.map((feature, index) => {
+                      const Icon = featureIcons[feature] || CheckCircle;
 
-                   {/* CTA Button */}
-                   <div className="mt-auto">
-                     <Link to={`/property/${tier.id}`} className="block">
-                        <button className="w-full h-14 bg-[#EAE8E4] border border-[#2C3E30]/10 rounded-full font-sans font-bold text-xs uppercase tracking-[0.2em] text-[#2C3E30] flex items-center justify-center gap-2 hover:bg-[#2C3E30] hover:text-[#EAE8E4] transition-all duration-300 shadow-sm group-hover:shadow-md">
-                           View Details
-                           <ArrowRight size={14} />
-                        </button>
-                     </Link>
-                   </div>
+                      return (
+                        <li key={index} className="flex items-start gap-3">
+                          <Icon
+                            size={16}
+                            className="text-[#2C3E30]/40 flex-shrink-0 mt-0.5 group-hover:text-[#2C3E30] transition-colors"
+                          />
+                          <span className="font-sans text-sm text-[#5C5C50] group-hover:text-[#1A1A1A] transition-colors">
+                            {feature}
+                          </span>
+                        </li>
+                      );
+                    })}
+                  </ul>
 
+                  {/* CTA Button */}
+                  <div className="mt-auto">
+                    <Link to={`/property/${tier.id}`} className="block">
+                      <button className="w-full h-14 bg-[#EAE8E4] border border-[#2C3E30]/10 rounded-full font-sans font-bold text-xs uppercase tracking-[0.2em] text-[#2C3E30] flex items-center justify-center gap-2 hover:bg-[#2C3E30] hover:text-[#EAE8E4] transition-all duration-300 shadow-sm group-hover:shadow-md">
+                        View Details
+                        <ArrowRight size={14} />
+                      </button>
+                    </Link>
+                  </div>
                 </div>
-
               </div>
             </motion.div>
           ))}
         </motion.div>
-        
       </div>
     </section>
   );

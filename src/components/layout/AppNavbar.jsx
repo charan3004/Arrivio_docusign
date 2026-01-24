@@ -4,12 +4,14 @@ import { Menu, Globe, MapPin, Grid, X } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
 const AppNavbar = () => {
-  const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [isScrolled, setIsScrolled] = useState(false);
   const location = useLocation();
 
   useEffect(() => {
-    const handleScroll = () => { setIsScrolled(window.scrollY > 10); };
+    const handleScroll = () => {
+      setIsScrolled(window.scrollY > 10);
+    };
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
@@ -20,49 +22,61 @@ const AppNavbar = () => {
   }, [isMobileMenuOpen]);
 
   const links = [
-    { name: 'Locations', path: '/cities', icon: <MapPin size={18}/> },
-    { name: 'Apartments', path: '/search', icon: <Grid size={18}/> },
+    { name: 'Cities', path: '/cities', icon: <MapPin size={14}/> },
+    { name: 'Stays', path: '/search', icon: <Grid size={14}/> },
   ];
 
   return (
     <>
       <nav 
-        className={`fixed top-0 left-0 w-full z-[100] transition-all duration-500 ease-[cubic-bezier(0.4,0,0.2,1)]
-          h-20 px-6 bg-[#EAE8E4]/90 backdrop-blur-xl border-b border-[#2C3E30]/10
-          ${isScrolled 
-            ? 'md:h-20 md:bg-[#EAE8E4]/90 md:backdrop-blur-xl md:border-[#2C3E30]/10 md:px-12' 
-            : 'md:h-[112px] md:bg-[#EAE8E4] md:border-transparent md:px-12'
-          }
-        `}
+        className={`fixed top-0 left-0 w-full z-[100] h-20 px-6 md:px-12 bg-[#EAE8E4]/90 backdrop-blur-xl transition-shadow duration-300 ${
+          isScrolled ? 'shadow-sm' : 'shadow-none'
+        }`}
       >
         <div className="max-w-7xl mx-auto h-full">
           <div className="flex items-center justify-between h-full">
               
+              {/* LOGO */}
               <Link to="/" className="relative z-10 shrink-0" onClick={() => setIsMobileMenuOpen(false)}>
                   <span className="font-serif text-2xl md:text-3xl tracking-tighter text-[#2C3E30]">
                   Arrivio.
                   </span>
               </Link>
 
-              <div className="hidden md:flex items-center gap-1 bg-white/40 border border-white/60 rounded-full p-1 shadow-sm absolute left-1/2 -translate-x-1/2">
+              {/* CENTER: ROLLING CURSOR NAV */}
+              <div className="hidden md:flex items-center p-1 bg-white/40 border border-white/60 rounded-full shadow-sm absolute left-1/2 -translate-x-1/2">
                   {links.map((link) => {
-                      const isActive = location.pathname === link.path;
+                      // Check if this link is active
+                      const isActive = location.pathname.startsWith(link.path);
+                      
                       return (
                           <Link 
                               key={link.name}
                               to={link.path} 
-                              className={`px-6 py-2 rounded-full flex items-center gap-2 text-[10px] font-bold uppercase tracking-widest transition-all duration-300 ${
-                                  isActive 
-                                  ? 'bg-[#2C3E30] text-[#EAE8E4] shadow-md' 
-                                  : 'text-[#2C3E30]/60 hover:text-[#2C3E30] hover:bg-white/50'
-                              }`}
+                              className="relative px-6 py-2 rounded-full flex items-center justify-center min-w-[140px]"
                           >
-                              {link.name}
+                              {/* THE ROLLING CURSOR (Background) */}
+                              {isActive && (
+                                  <motion.div 
+                                      layoutId="rolling-cursor"
+                                      className="absolute inset-0 bg-[#2C3E30] rounded-full shadow-md"
+                                      transition={{ type: "spring", bounce: 0.15, duration: 0.5 }}
+                                  />
+                              )}
+
+                              {/* CONTENT (Sits on top of cursor) */}
+                              <span className={`relative z-10 flex items-center gap-2 text-[10px] font-bold uppercase tracking-widest transition-colors duration-200 ${
+                                  isActive ? 'text-[#EAE8E4]' : 'text-[#2C3E30]/60 hover:text-[#2C3E30]'
+                              }`}>
+                                  {link.icon}
+                                  {link.name}
+                              </span>
                           </Link>
                       );
                   })}
               </div>
 
+              {/* RIGHT ACTIONS */}
               <div className="flex items-center gap-3 md:gap-8 shrink-0">
                   <div className="flex items-center gap-2 text-[#2C3E30]/60 hover:text-[#2C3E30] transition-colors cursor-pointer">
                       <Globe size={20} className="md:w-[14px] md:h-[14px]" /> 
@@ -98,8 +112,6 @@ const AppNavbar = () => {
             className="fixed inset-0 z-[90] bg-[#EAE8E4] pt-32 px-6 flex flex-col md:hidden h-screen"
           >
             <div className="flex flex-col h-full overflow-y-auto">
-                
-                {/* Links - REMOVED CIRCLE & ICON for Clean Text Look */}
                 <div className="flex flex-col gap-2">
                     {links.map((link) => (
                         <Link 
@@ -112,8 +124,6 @@ const AppNavbar = () => {
                         </Link>
                     ))}
                 </div>
-
-                {/* Mobile Actions - BUTTON MADE SMALLER */}
                 <div className="mt-8">
                     <Link to="/login" onClick={() => setIsMobileMenuOpen(false)}>
                         <button className="w-fit px-10 py-3 rounded-full font-sans text-xs font-bold uppercase tracking-widest bg-[#2C3E30] text-[#EAE8E4] shadow-lg active:scale-95 transition-transform">
@@ -121,11 +131,9 @@ const AppNavbar = () => {
                         </button>
                     </Link>
                 </div>
-                
                 <div className="mt-8 pb-8">
                     <span className="text-[10px] uppercase tracking-widest text-[#2C3E30]/40">© 2024 Arrivio</span>
                 </div>
-
             </div>
           </motion.div>
         )}

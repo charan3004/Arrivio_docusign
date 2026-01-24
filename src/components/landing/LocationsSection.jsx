@@ -11,15 +11,21 @@ import cologneImg from '../../assets/cities/cologne.jpeg';
 import dusseldorfImg from '../../assets/cities/dusseldorf.jpeg';
 import bonnImg from '../../assets/cities/bonn.jpeg';
 import aachenImg from '../../assets/cities/aachen.jpeg';
+// 1. IMPORT HAMBURG IMAGE (Make sure you have this file in your assets folder!)
+import hamburgImg from '../../assets/cities/hamburg.jpeg'; 
 
 const locations = [
-  { id: 1, name: "Berlin", top: "28%", left: "72%", count: 12, price: "750", label: "The Capital", description: "Vibrant culture & tech hub.", image: berlinImg },
-  { id: 2, name: "Munich", top: "80%", left: "60%", count: 8, price: "950", label: "Bavarian Heart", description: "Business & tradition.", image: munichImg },
-  { id: 3, name: "Frankfurt", top: "55%", left: "35%", count: 6, price: "850", label: "Finance Hub", description: "Skyscrapers & connectivity.", image: frankfurtImg },
+  { id: 1, name: "Aachen", top: "52%", left: "10%", count: 3, price: "580", label: "Tech & Uni", description: "Innovation meets history.", image: aachenImg },
+  { id: 2, name: "Berlin", top: "28%", left: "72%", count: 12, price: "750", label: "The Capital", description: "Vibrant culture & tech hub.", image: berlinImg },
+  { id: 3, name: "Bonn", top: "55%", left: "19%", count: 4, price: "650", label: "Historic", description: "Former capital charm.", image: bonnImg },
   { id: 4, name: "Cologne", top: "48%", left: "18%", count: 9, price: "720", label: "Media City", description: "Cathedral city on the Rhine.", image: cologneImg },
   { id: 5, name: "Dusseldorf", top: "42%", left: "15%", count: 7, price: "780", label: "Fashion & Art", description: "Luxury & lifestyle.", image: dusseldorfImg },
-  { id: 6, name: "Bonn", top: "53%", left: "16%", count: 4, price: "650", label: "Historic", description: "Former capital charm.", image: bonnImg },
-  { id: 7, name: "Aachen", top: "49%", left: "5%", count: 3, price: "580", label: "Tech & Uni", description: "Innovation meets history.", image: aachenImg }
+  { id: 6, name: "Frankfurt", top: "60%", left: "35%", count: 6, price: "850", label: "Finance Hub", description: "Skyscrapers & connectivity.", image: frankfurtImg },
+  { id: 7, name: "Hamburg", top: "18%", left: "40%", count: 10, price: "820", label: "Gateway to World", description: "Maritime charm & media hub.", image: hamburgImg },
+  { id: 8, name: "Munich", top: "80%", left: "60%", count: 8, price: "950", label: "Bavarian Heart", description: "Business & tradition.", image: munichImg },
+  
+  
+  
 ];
 
 const LocationsSection = () => {

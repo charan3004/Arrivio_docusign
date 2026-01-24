@@ -2,11 +2,11 @@ import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import { 
   ArrowLeft, MapPin, Building2, CheckCircle, 
-  Clock, Ban, Cigarette, HelpCircle, Star,
-  Baby, Dog, FileText, 
-  Wifi, Monitor, Armchair, Tv, Waves, Sofa, 
-  ArrowUpFromLine, Lock, Bike, Mail, Sparkles
+  Monitor, Armchair, Tv, Waves, Sofa, 
+  ArrowUpFromLine, Lock, Bike, Mail, Sparkles,
+  Star, Baby, Dog, Ban, Cigarette, FileText, Wifi
 } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
 
 // --- IMPORTS ---
 import { allProperties } from '../data/properties'; 
@@ -56,10 +56,11 @@ const PropertyDetails = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-[#EAE8E4] pt-20 pb-20 px-4 md:px-12">
-      <div className="max-w-7xl mx-auto">
+    <div className="min-h-screen bg-[#EAE8E4] pb-20">
+      
+      <div className="pt-24 px-4 md:px-12 max-w-7xl mx-auto">
         
-        {/* NAV */}
+        {/* NAV / BREADCRUMBS */}
         <div className="flex items-center gap-4 mb-6">
            <button onClick={() => navigate(-1)} className="p-2 bg-white/50 backdrop-blur border border-white/50 rounded-full hover:bg-white hover:shadow-sm transition-all group">
                 <ArrowLeft size={16} className="text-[#2C3E30] group-hover:-translate-x-0.5 transition-transform" />
@@ -100,25 +101,47 @@ const PropertyDetails = () => {
             </div>
 
             {/* Description */}
-            <div className="pt-4"> 
-                <h3 className="font-serif text-2xl text-[#2C3E30] mb-4">About this home</h3>
-                <div className={`relative overflow-hidden transition-all duration-500 ${isExpanded ? 'max-h-full' : 'max-h-28'}`}>
+            <div className="pt-4 border-t border-[#2C3E30]/10"> 
+                <h3 className="font-serif text-2xl text-[#2C3E30] mb-4 pt-8">About this home</h3>
+                
+                <motion.div 
+                    initial={false}
+                    animate={{ height: isExpanded ? "auto" : 100 }}
+                    transition={{ duration: 0.4, ease: [0.04, 0.62, 0.23, 0.98] }}
+                    className="relative overflow-hidden"
+                >
                     <p className="text-[#2C3E30]/80 text-sm leading-7 font-medium font-sans">
                         Relocate without the stress. This Arrivio apartment is fully furnished, managed, and equipped for immediate move-in. 
                         We handle the paperwork, utilities, and internet setup so you can focus on your new job from day one.
                         <br/><br/>
                         <span className="text-[#2C3E30] font-bold bg-white/50 px-1 rounded">Anmeldung is guaranteed</span> with this rental contract, allowing you to register with the city immediately.
+                        <br/><br/>
+                        The living area features a custom-designed sofa, 55" Smart TV, and a dining area that doubles as a workspace. The kitchen is fully stocked with premium appliances, Nespresso machine, and cooking essentials.
                     </p>
-                    {!isExpanded && <div className="absolute bottom-0 left-0 w-full h-16 bg-gradient-to-t from-[#EAE8E4] to-transparent"></div>}
-                </div>
-                <button onClick={() => setIsExpanded(!isExpanded)} className="mt-4 text-[#2C3E30] font-bold text-[10px] uppercase tracking-widest border-b border-[#2C3E30] hover:opacity-70 transition-opacity">
+                    
+                    <AnimatePresence>
+                        {!isExpanded && (
+                            <motion.div 
+                                initial={{ opacity: 0 }}
+                                animate={{ opacity: 1 }}
+                                exit={{ opacity: 0 }}
+                                className="absolute bottom-0 left-0 w-full h-16 bg-gradient-to-t from-[#EAE8E4] to-transparent"
+                            />
+                        )}
+                    </AnimatePresence>
+                </motion.div>
+
+                <button 
+                    onClick={() => setIsExpanded(!isExpanded)} 
+                    className="mt-4 text-[#2C3E30] font-bold text-[10px] uppercase tracking-widest border-b border-[#2C3E30] hover:opacity-70 transition-opacity"
+                >
                     {isExpanded ? "Show Less" : "Read More"}
                 </button>
             </div>
 
             {/* Amenities */}
-            <div className="pt-8">
-                <h3 className="font-serif text-2xl text-[#2C3E30] mb-8">Amenities</h3>
+            <div className="pt-8 border-t border-[#2C3E30]/10">
+                <h3 className="font-serif text-2xl text-[#2C3E30] mb-8 pt-4">Amenities</h3>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-8">
                     {amenityCategories.map((cat, i) => (
                         <div key={i}>
@@ -139,8 +162,8 @@ const PropertyDetails = () => {
             </div>
 
             {/* Things to Know */}
-            <div className="pt-8">
-                <h3 className="font-serif text-2xl text-[#2C3E30] mb-8">Things to know</h3>
+            <div className="pt-8 border-t border-[#2C3E30]/10">
+                <h3 className="font-serif text-2xl text-[#2C3E30] mb-8 pt-4">Things to know</h3>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-y-4 gap-x-12 mb-8">
                     <div className="flex items-center gap-3"><Baby size={18} className="text-[#2C3E30]/60"/> <span className="text-sm text-[#2C3E30]/80 font-medium">Suitable for children</span></div>
                     <div className="flex items-center gap-3"><Dog size={18} className="text-[#2C3E30]/60"/> <span className="text-sm text-[#2C3E30]/80 font-medium">Pets allowed</span></div>
@@ -157,16 +180,16 @@ const PropertyDetails = () => {
             </div>
 
             {/* Neighborhood */}
-            <div className="pt-8">
-                <Neighborhood city={property.city} />
+            <div className="pt-8 border-t border-[#2C3E30]/10">
+                {/* --- FIX IS HERE: Passing 'property' instead of 'city' --- */}
+                <Neighborhood property={property} />
             </div>
 
           </div>
 
           {/* RIGHT COLUMN (Sticky Widget) */}
           <div className="lg:col-span-5 relative">
-             {/* Changed top-24 to top-4 (Moves widget up by 80px) */}
-             <div className="sticky top-4 h-fit">
+             <div className="sticky top-24 h-fit">
                 <BookingWidget price={property.price} />
              </div>
           </div>
