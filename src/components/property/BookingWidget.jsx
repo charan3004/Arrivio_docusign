@@ -1,11 +1,20 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { ShieldCheck, X, Calendar, Info, Check, Eye, FileCheck, RefreshCcw } from 'lucide-react';
 
 const BookingWidget = ({ price }) => {
+  const navigate = useNavigate();
   const [showCalendar, setShowCalendar] = useState(false);
-  const [datesSelected, setDatesSelected] = useState(false);
+  
+  // --- STATE ---
+  const [checkIn, setCheckIn] = useState('');
+  const [checkOut, setCheckOut] = useState('');
+  const [nights, setNights] = useState(0);
+  
+  // Only show details after "Apply" is clicked
+  const [areDatesApplied, setAreDatesApplied] = useState(false);
 
-  // --- DATA ---
+  // --- DERIVED DATA ---
   const baseRent = price;
   const utilities = 400; 
   const monthlyTotal = baseRent + utilities;
@@ -13,19 +22,60 @@ const BookingWidget = ({ price }) => {
   const cleaningFee = 240; 
   const oneTimeTotal = bookingFee + cleaningFee; 
   const deposit = 1660;
+  
+  const hasDates = checkIn !== '' && checkOut !== '';
   const isAvailable = true; 
 
-  // Handlers
-  const toggleCalendar = () => setShowCalendar(!showCalendar);
-  const handleDateSelect = () => {
-    setDatesSelected(true);
-    setShowCalendar(false);
+  // --- HANDLERS ---
+  const toggleCalendar = () => {
+      setShowCalendar(!showCalendar);
+      if (!showCalendar) setAreDatesApplied(false);
   };
+  
   const handleClear = (e) => {
-    e.stopPropagation();
-    setDatesSelected(false);
-    setShowCalendar(false);
+    if(e) e.stopPropagation();
+    setCheckIn('');
+    setCheckOut('');
+    setAreDatesApplied(false);
   };
+
+  const handleApply = () => {
+    if (checkIn && checkOut) {
+        setAreDatesApplied(true);
+        setShowCalendar(false);
+    }
+  };
+
+  // *** THIS WAS THE ISSUE - FIXED NOW ***
+  const handleBooking = () => {
+    navigate('/signin', { 
+        state: { 
+            price: price, 
+            total: oneTimeTotal + (monthlyTotal * (nights / 30)), 
+            nights, 
+            checkIn, 
+            checkOut,
+            guests: 1,
+            // Pass these details so the Application Wizard can display them later
+            monthlyTotal,
+            oneTimeTotal,
+            deposit
+        } 
+    });
+  };
+
+  // --- MATH ---
+  useEffect(() => {
+    if (checkIn && checkOut) {
+        const start = new Date(checkIn);
+        const end = new Date(checkOut);
+        const diffTime = Math.abs(end - start);
+        const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)); 
+        setNights(diffDays > 0 ? diffDays : 0);
+    } else {
+        setNights(0);
+    }
+  }, [checkIn, checkOut]);
 
   return (
     <div className="relative">
@@ -44,7 +94,7 @@ const BookingWidget = ({ price }) => {
                     </div>
                     
                     {/* STATUS INDICATOR */}
-                    {datesSelected ? (
+                    {areDatesApplied ? (
                         <div className="mt-1 flex items-center gap-2">
                             {isAvailable ? (
                                 <>
@@ -52,7 +102,7 @@ const BookingWidget = ({ price }) => {
                                       <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
                                       <span className="relative inline-flex rounded-full h-2 w-2 bg-green-600"></span>
                                     </span>
-                                    <span className="text-[10px] font-bold text-green-700 uppercase tracking-wide">Available</span>
+                                    <span className="text-[10px] font-bold text-green-700 uppercase tracking-wide">Available ({nights} Nights)</span>
                                 </>
                             ) : (
                                 <span className="text-[10px] font-bold text-red-600 uppercase tracking-wide">Not available</span>
@@ -60,12 +110,11 @@ const BookingWidget = ({ price }) => {
                         </div>
                     ) : (
                         <div className="text-[11px] text-[#2C3E30]/60 mt-1 flex items-center gap-1.5 font-medium">
-                            <Info size={12} className="text-[#2C3E30]/40"/> Min. stay: 3 months
+                            <Info size={12} className="text-[#2C3E30]/40"/> Min. stay: 1 month
                         </div>
                     )}
                 </div>
                 
-                {/* ANMELDUNG BADGE */}
                 <div className="flex items-center gap-1.5 bg-[#2C3E30] text-[#EAE8E4] px-3 py-1.5 rounded-full shadow-sm cursor-default">
                     <FileCheck size={12} className="text-[#EAE8E4]" />
                     <span className="text-[9px] font-bold uppercase tracking-widest text-[#EAE8E4]">Anmeldung</span>
@@ -80,29 +129,27 @@ const BookingWidget = ({ price }) => {
                 <div className="flex h-12">
                     <div className="w-1/2 border-r border-white/50 px-4 flex flex-col justify-center">
                         <span className="block text-[9px] font-bold uppercase tracking-wider text-[#2C3E30]/50 mb-0.5">Move In</span>
-                        <span className={`block text-xs font-bold ${datesSelected ? 'text-[#2C3E30]' : 'text-[#2C3E30]/40'}`}>
-                            {datesSelected ? '23 Jan 2026' : 'Select Date'}
+                        <span className={`block text-xs font-bold ${hasDates ? 'text-[#2C3E30]' : 'text-[#2C3E30]/40'}`}>
+                            {checkIn ? checkIn : 'Select Date'}
                         </span>
                     </div>
                     <div className="w-1/2 px-4 flex flex-col justify-center">
                         <span className="block text-[9px] font-bold uppercase tracking-wider text-[#2C3E30]/50 mb-0.5">Move Out</span>
-                        <span className={`block text-xs font-bold ${datesSelected ? 'text-[#2C3E30]' : 'text-[#2C3E30]/40'}`}>
-                            {datesSelected ? '15 May 2026' : 'Select Date'}
+                        <span className={`block text-xs font-bold ${hasDates ? 'text-[#2C3E30]' : 'text-[#2C3E30]/40'}`}>
+                            {checkOut ? checkOut : 'Select Date'}
                         </span>
                     </div>
                 </div>
-                {datesSelected && (
-                    <button onClick={handleClear} className="absolute top-1/2 -translate-y-1/2 right-3 p-1 hover:bg-[#2C3E30]/10 rounded-full text-[#2C3E30]/40">
+                {hasDates && !showCalendar && (
+                    <button onClick={(e) => { e.stopPropagation(); handleClear(); }} className="absolute top-1/2 -translate-y-1/2 right-3 p-1 hover:bg-[#2C3E30]/10 rounded-full text-[#2C3E30]/40">
                         <X size={14} />
                     </button>
                 )}
             </div>
 
             {/* 3. COST BREAKDOWN */}
-            {datesSelected && isAvailable ? (
+            {areDatesApplied && isAvailable ? (
                 <div className="mb-5 animation-fade-in text-[#2C3E30]/80 space-y-3">
-                    
-                    {/* ZONE A: MONTHLY COSTS (Boxed) */}
                     <div className="bg-[#2C3E30]/5 rounded-xl p-3 border border-[#2C3E30]/5">
                         <div className="flex justify-between items-center mb-2">
                              <h4 className="text-[10px] font-bold uppercase tracking-widest text-[#2C3E30]/50">Monthly Costs</h4>
@@ -122,7 +169,6 @@ const BookingWidget = ({ price }) => {
                         </div>
                     </div>
 
-                    {/* ZONE B: ONE-TIME COSTS (Clean) */}
                     <div className="px-1">
                         <div className="flex justify-between items-center mb-2">
                              <h4 className="text-[10px] font-bold uppercase tracking-widest text-[#2C3E30]/50">One-Time Costs</h4>
@@ -142,7 +188,6 @@ const BookingWidget = ({ price }) => {
                         </div>
                     </div>
 
-                    {/* ZONE C: DEPOSIT */}
                     <div className="bg-green-50/50 rounded-xl p-3 border border-green-100 flex justify-between items-center">
                         <div className="flex flex-col">
                             <span className="text-xs font-bold text-[#2C3E30]">Security Deposit</span>
@@ -156,7 +201,6 @@ const BookingWidget = ({ price }) => {
 
                 </div>
             ) : (
-                // EMPTY STATE PLACEHOLDER
                 <div className="bg-white/30 rounded-xl p-4 mb-5 text-center border border-white/40">
                     <p className="text-xs text-[#2C3E30]/60 leading-relaxed font-medium">
                         Select your move-in dates to see the complete cost breakdown.
@@ -166,14 +210,14 @@ const BookingWidget = ({ price }) => {
 
             {/* 4. MAIN ACTION BUTTON */}
             <button 
-                onClick={!datesSelected ? toggleCalendar : undefined}
-                disabled={datesSelected && !isAvailable}
+                onClick={!areDatesApplied ? toggleCalendar : handleBooking}
+                disabled={areDatesApplied && !isAvailable}
                 className={`w-full py-4 rounded-xl font-bold uppercase tracking-widest text-xs transition-all shadow-lg active:scale-[0.98] 
-                ${datesSelected && !isAvailable 
+                ${areDatesApplied && !isAvailable 
                     ? 'bg-gray-200 text-gray-400 cursor-not-allowed shadow-none' 
                     : 'bg-[#2C3E30] text-[#EAE8E4] hover:bg-[#1A1A1A] hover:shadow-xl'}`}
             >
-                {datesSelected ? (isAvailable ? 'Reserve Now' : 'Not Available') : 'Check Availability'}
+                {areDatesApplied ? (isAvailable ? 'Reserve Now' : 'Not Available') : 'Check Availability'}
             </button>
          </div>
 
@@ -190,7 +234,7 @@ const BookingWidget = ({ price }) => {
          </div>
       </div>
 
-      {/* --- SECONDARY CARD: SCHEDULE VIEWING --- */}
+      {/* --- SECONDARY CARD --- */}
       <div className="mt-2 flex items-center justify-center gap-3 p-4 rounded-2xl bg-white/40 backdrop-blur-xl border border-white/60 shadow-sm cursor-pointer hover:bg-white/60 hover:border-[#2C3E30]/20 transition-all group">
          <div className="p-2 bg-white/50 rounded-full group-hover:bg-[#2C3E30] transition-colors border border-white/50">
             <Eye size={16} className="text-[#2C3E30] group-hover:text-white transition-colors"/>
@@ -203,17 +247,37 @@ const BookingWidget = ({ price }) => {
 
       {/* POPUP CALENDAR */}
       {showCalendar && (
-          <div className="absolute top-20 right-0 left-0 bg-white/90 backdrop-blur-xl rounded-2xl shadow-2xl border border-white/60 z-50 p-5 animate-in fade-in zoom-in-95 duration-200">
+          <div className="absolute top-20 right-0 left-0 bg-white/95 backdrop-blur-xl rounded-2xl shadow-2xl border border-white/60 z-50 p-5 animate-in fade-in zoom-in-95 duration-200">
               <div className="flex justify-between items-center mb-4">
                   <h4 className="font-bold text-sm text-[#2C3E30]">Select dates</h4>
                   <button onClick={() => setShowCalendar(false)}><X size={18} className="text-[#2C3E30]/40 hover:text-[#2C3E30]"/></button>
               </div>
-              <div className="bg-white/50 h-56 rounded-xl flex flex-col items-center justify-center text-[#2C3E30]/40 border border-white/60 mb-4">
-                  <Calendar size={32} className="mb-3 opacity-50"/>
-                  <span className="text-sm font-medium">Interactive Calendar</span>
+              
+              <div className="bg-white/50 rounded-xl p-4 border border-white/60 mb-4 space-y-4">
+                  <div>
+                      <label className="block text-[10px] font-bold uppercase tracking-wider text-[#2C3E30]/50 mb-1">Move In Date</label>
+                      <input 
+                        type="date" 
+                        value={checkIn}
+                        onChange={(e) => setCheckIn(e.target.value)}
+                        className="w-full bg-[#F4F3F0] rounded-lg px-3 py-2 text-sm font-bold text-[#2C3E30] focus:ring-1 focus:ring-[#2C3E30] outline-none"
+                      />
+                  </div>
+                  <div>
+                      <label className="block text-[10px] font-bold uppercase tracking-wider text-[#2C3E30]/50 mb-1">Move Out Date</label>
+                      <input 
+                        type="date" 
+                        value={checkOut}
+                        min={checkIn}
+                        onChange={(e) => setCheckOut(e.target.value)}
+                        className="w-full bg-[#F4F3F0] rounded-lg px-3 py-2 text-sm font-bold text-[#2C3E30] focus:ring-1 focus:ring-[#2C3E30] outline-none"
+                      />
+                  </div>
               </div>
-              <div className="flex justify-end">
-                  <button onClick={handleDateSelect} className="px-6 py-2.5 bg-[#2C3E30] text-[#EAE8E4] text-xs font-bold rounded-lg hover:bg-[#1A1A1A] transition-colors shadow-lg">Apply Dates</button>
+
+              <div className="flex justify-between items-center">
+                  <button onClick={handleClear} className="text-xs font-bold text-[#2C3E30]/60 hover:text-[#2C3E30] underline decoration-dotted">Clear dates</button>
+                  <button onClick={handleApply} className="px-6 py-2.5 bg-[#2C3E30] text-[#EAE8E4] text-xs font-bold rounded-lg hover:bg-[#1A1A1A] transition-colors shadow-lg">Apply Dates</button>
               </div>
           </div>
       )}
