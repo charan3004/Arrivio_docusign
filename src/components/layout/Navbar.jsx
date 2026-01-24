@@ -7,76 +7,74 @@ const Navbar = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isVisible, setIsVisible] = useState(true);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
   
   const lastScrollY = useRef(0);
 
+  // 1. DETECT MOBILE
+  useEffect(() => {
+    const checkMobile = () => setIsMobile(window.innerWidth < 768);
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
+
+  // 2. SCROLL BEHAVIOR
   useEffect(() => {
     const handleScroll = () => {
       const currentScrollY = window.scrollY;
+      if (currentScrollY > 50) setIsScrolled(true);
+      else setIsScrolled(false);
 
-      // 1. Handle Background Change (Transparency to Frosted)
-      // We keep this at 50px so the "glass" look kicks in early
-      if (currentScrollY > 50) {
-        setIsScrolled(true);
-      } else {
-        setIsScrolled(false);
-      }
-
-      // 2. Handle Hide/Show on Direction Change
-      // --- LOGIC UPDATED: Stay visible for the first 400px (approx 3 scrolls) ---
-      if (currentScrollY < 400) {
-        setIsVisible(true);
-      } 
-      // After 400px, if scrolling down, hide it
-      else if (currentScrollY > lastScrollY.current) {
-        setIsVisible(false);
-      } 
-      // If scrolling up, show it immediately
-      else {
-        setIsVisible(true);
-      }
+      if (currentScrollY < 400) setIsVisible(true);
+      else if (currentScrollY > lastScrollY.current) setIsVisible(false);
+      else setIsVisible(true);
 
       lastScrollY.current = currentScrollY;
     };
-
     window.addEventListener('scroll', handleScroll, { passive: true });
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
+  // 3. LOCK BODY SCROLL
+  useEffect(() => {
+    if (isMobileMenuOpen) document.body.style.overflow = 'hidden';
+    else document.body.style.overflow = 'unset';
+  }, [isMobileMenuOpen]);
+
   const navLinks = [
     { name: 'Vision', path: '/#vision' },
-    { name: 'Locations', path: '/#locations' },
     { name: 'Community', path: '/#community' },
     { name: 'Pricing', path: '/#living-spaces' },
+    { name: 'Locations', path: '/#locations' },
   ];
 
   return (
     <>
+      {/* NAVBAR CONTAINER */}
       <motion.nav
-        // Framer Motion handles the slide up/down perfectly
         initial={{ y: 0 }}
-        animate={{ y: isVisible ? 0 : -120 }}
+        animate={{ y: isMobile ? 0 : (isVisible ? 0 : -120) }}
         transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
-        className={`fixed top-0 left-0 w-full z-[100] px-6 md:px-12 py-4 transition-all duration-500 ${
-          isScrolled ? 'mt-4' : 'mt-0'
-        }`}
+        className={`fixed top-0 left-0 w-full z-[100] transition-all duration-500
+          h-20 px-6 bg-[#EAE8E4]/90 backdrop-blur-xl border-b border-[#2C3E30]/10 flex items-center justify-center
+          md:h-auto md:bg-transparent md:backdrop-blur-none md:border-none md:block md:px-12 md:py-4
+          ${isScrolled ? 'md:mt-4' : 'md:mt-0'}
+        `}
       >
-        <div className={`max-w-7xl mx-auto transition-all duration-700 ${
+        <div className={`w-full mx-auto transition-all duration-700 ${
           isScrolled 
-            // Using the ultra-transparent glass style we discussed
-            ? 'bg-[#F5F5F0]/90 backdrop-blur-3xl border border-white/20 shadow-[0_10px_40px_-15px_rgba(0,0,0,0.05)] py-3 px-8 rounded-full' 
-            : 'bg-transparent py-5 px-0'
+            ? 'md:bg-[#F5F5F0]/90 md:backdrop-blur-3xl md:shadow-sm md:py-3 md:px-8 md:rounded-full md:border md:border-white/20 md:max-w-7xl' 
+            : 'md:bg-transparent md:py-5 md:px-0 md:max-w-7xl'
         }`}>
-          <div className="flex items-center justify-between">
+          <div className="flex items-center justify-between w-full">
             
-            {/* LOGO */}
-            <Link to="/" className="relative z-10">
-              <span className="font-serif text-2xl md:text-3xl tracking-tighter text-[#1A1A1A]">
+            <Link to="/" className="relative z-10 shrink-0" onClick={() => setIsMobileMenuOpen(false)}>
+              <span className="font-serif text-2xl md:text-3xl tracking-tighter text-[#2C3E30]">
                 Arrivio.
               </span>
             </Link>
 
-            {/* DESKTOP NAVIGATION */}
             <div className="hidden md:flex items-center gap-10">
               {navLinks.map((link) => (
                 <Link
@@ -90,11 +88,10 @@ const Navbar = () => {
               ))}
             </div>
 
-            {/* RIGHT SIDE ACTIONS */}
-            <div className="flex items-center gap-4 md:gap-8">
-              <div className="hidden lg:flex items-center gap-2 text-[#2C3E30]/40 hover:text-[#2C3E30] transition-colors cursor-pointer">
-                <Globe size={14} />
-                <span className="font-sans text-[10px] font-bold uppercase tracking-widest">EN</span>
+            <div className="flex items-center gap-3 md:gap-8 shrink-0">
+              <div className="flex items-center gap-2 text-[#2C3E30]/60 hover:text-[#2C3E30] transition-colors cursor-pointer">
+                  <Globe size={20} className="md:w-[14px] md:h-[14px]" />
+                  <span className="hidden md:block font-sans text-[10px] font-bold uppercase tracking-widest">EN</span>
               </div>
               
               <Link to="/login">
@@ -107,7 +104,6 @@ const Navbar = () => {
                 </button>
               </Link>
 
-              {/* MOBILE TOGGLE */}
               <button 
                 className="md:hidden p-2 text-[#2C3E30]"
                 onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
@@ -119,37 +115,45 @@ const Navbar = () => {
         </div>
       </motion.nav>
 
-      {/* MOBILE MENU OVERLAY */}
+      {/* MOBILE MENU */}
       <AnimatePresence>
         {isMobileMenuOpen && (
           <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className="fixed inset-0 z-[90] bg-[#EAE8E4]/95 backdrop-blur-3xl flex flex-col justify-center items-center p-12 md:hidden"
+            initial={{ opacity: 0, y: -20 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -20 }}
+            transition={{ duration: 0.3, ease: "easeInOut" }}
+            className="fixed inset-0 z-[90] bg-[#EAE8E4] pt-32 px-6 flex flex-col md:hidden h-screen"
           >
-            <div className="flex flex-col gap-8 text-center">
-              {navLinks.map((link, i) => (
-                <motion.div
-                  key={link.name}
-                  initial={{ opacity: 0, y: 10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: i * 0.1 }}
-                  onClick={() => setIsMobileMenuOpen(false)}
-                  className="font-serif text-4xl text-[#1A1A1A]"
-                >
-                  <Link to={link.path} className="block">
-                    {link.name}
-                  </Link>
-                </motion.div>
-              ))}
-              <div className="mt-8">
-                <Link to="/login" onClick={() => setIsMobileMenuOpen(false)}>
-                  <button className="bg-[#2C3E30] text-[#EAE8E4] px-12 py-4 rounded-full font-sans font-bold uppercase tracking-widest text-xs">
-                    Sign In
-                  </button>
-                </Link>
-              </div>
+            <div className="flex flex-col h-full overflow-y-auto">
+                
+                {/* Links - REMOVED CIRCLE & DOT */}
+                <div className="flex flex-col gap-2">
+                    {navLinks.map((link) => (
+                        <Link 
+                            key={link.name}
+                            to={link.path} 
+                            onClick={() => setIsMobileMenuOpen(false)}
+                            className="flex items-center gap-4 py-4 border-b border-[#2C3E30]/10 group active:opacity-60 transition-opacity"
+                        >
+                            {/* Just Text. Clean. */}
+                            <span className="font-serif text-3xl text-[#2C3E30]">{link.name}</span>
+                        </Link>
+                    ))}
+                </div>
+
+                {/* Mobile Actions - BUTTON MADE SMALLER */}
+                <div className="mt-8">
+                    <Link to="/login" onClick={() => setIsMobileMenuOpen(false)}>
+                        <button className="w-fit px-10 py-3 rounded-full font-sans text-xs font-bold uppercase tracking-widest bg-[#2C3E30] text-[#EAE8E4] shadow-lg active:scale-95 transition-transform">
+                            Sign In
+                        </button>
+                    </Link>
+                </div>
+
+                <div className="mt-8 pb-8">
+                    <span className="text-[10px] uppercase tracking-widest text-[#2C3E30]/40">© 2024 Arrivio</span>
+                </div>
             </div>
           </motion.div>
         )}

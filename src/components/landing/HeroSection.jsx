@@ -61,13 +61,13 @@ const HeroSection = () => {
         </div>
 
         <h1 className="text-[#1A1A1A] leading-tight">
-            <span className="block font-serif text-5xl md:text-7xl lg:text-8xl tracking-tight">
-                Relocation, <span className="italic text-[#2C3E30]">Refined.</span>
+            <span className="block font-serif text-4xl md:text-6xl lg:text-7xl tracking-tight">
+                Arrival to <span className="italic text-[#2C3E30]">Belonging.</span>
             </span>
         </h1>
-        <p className="font-sans text-sm md:text-base text-[#1A1A1A]/60 mt-4 max-w-lg mx-auto font-medium">
-            We acquire, furnish, and manage homes so you don't have to. <br className="hidden md:block" />
-            The modern standard for international living.
+        <p className="font-sans text-sm md:text-base text-[#1A1A1A]/60 mt-4 max-w-2xl mx-auto font-medium">
+            Discover thoughtfully designed community living for immigrants in Germany. <br className="hidden md:block" />
+            No SCHUFA. No complexity. Just home.
         </p>
       </div>
 
