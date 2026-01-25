@@ -1,17 +1,82 @@
 import React, { useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ShieldCheck, Upload, FileText, CheckCircle, CreditCard, ChevronRight, ArrowLeft, PenTool } from 'lucide-react';
+import { ShieldCheck, Upload, FileText, CheckCircle, ChevronRight, ArrowLeft, PenTool, ChevronDown, RefreshCcw, Calendar } from 'lucide-react';
 
 // --- IMPORT TRACKER ---
 import GameLevelTracker from '../components/shared/GameLevelTracker';
 
-// --- STEP COMPONENTS ---
+// --- SHARED COMPONENT: PRICE BREAKDOWN ---
+const DetailedPriceBreakdown = ({ state, theme = "dark" }) => {
+    const textColor = theme === "dark" ? "text-[#EAE8E4]" : "text-[#2C3E30]";
+    const subtleColor = theme === "dark" ? "text-[#EAE8E4]/60" : "text-[#2C3E30]/60";
+    const borderColor = theme === "dark" ? "border-white/10" : "border-[#2C3E30]/10";
+    
+    // Hardcoded fees for demo logic
+    const bookingFee = 423;
+    const cleaningFee = 240;
+    
+    const payNow = state.monthlyTotal + bookingFee; 
+    const payLater = state.deposit + cleaningFee;    
+
+    return (
+        <div className="space-y-3 text-xs w-full">
+            <div>
+                <div className={`flex justify-between font-bold mb-0.5 ${textColor}`}>
+                    <span>First Month Rent</span>
+                    <span>€{state.monthlyTotal?.toLocaleString()}</span>
+                </div>
+                <div className={`flex justify-between ${subtleColor} text-[10px]`}>
+                    <span>Utilities included</span>
+                    <span>Yes</span>
+                </div>
+            </div>
+
+            <div className={`border-t ${borderColor}`}></div>
+
+            <div>
+                 <div className={`flex justify-between font-bold mb-0.5 ${textColor}`}>
+                    <span>One-Time Fees</span>
+                    <span>€{state.oneTimeTotal}</span>
+                </div>
+                <div className={`flex justify-between ${subtleColor} text-[10px]`}>
+                    <span>Booking Fee (Due Now)</span>
+                    <span>€{bookingFee}</span>
+                </div>
+                <div className={`flex justify-between ${subtleColor} text-[10px]`}>
+                    <span>Final Cleaning (Pay later)</span>
+                    <span>€{cleaningFee}</span>
+                </div>
+            </div>
+
+            <div className={`border-t ${borderColor}`}></div>
+
+            <div className={`flex justify-between items-center ${subtleColor} px-2 py-1.5 border border-dashed ${borderColor} rounded opacity-80`}>
+                <span className="flex items-center gap-1.5 font-bold text-[10px] uppercase tracking-wide">
+                    <RefreshCcw size={10}/> Security Deposit
+                </span>
+                <span className="font-medium">Pay Later (€{state.deposit?.toLocaleString()})</span>
+            </div>
+
+            <div className={`pt-3 mt-1`}>
+                <div className={`flex justify-between items-center mt-1`}>
+                    <span className={`text-xs font-bold uppercase tracking-widest text-green-400`}>Due Today to Reserve</span>
+                    <span className={`text-xl font-serif font-bold ${textColor}`}>€{payNow.toLocaleString()}</span>
+                </div>
+                <p className={`text-[9px] text-right mt-1 ${subtleColor}`}>
+                    Remaining €{payLater.toLocaleString()} due at move-in.
+                </p>
+            </div>
+        </div>
+    );
+};
+
+// --- INTERNAL STEPS ---
 const StepIdentity = () => (
   <div className="space-y-6">
     <h2 className="text-xl font-serif text-[#2C3E30]">Verify your Identity</h2>
     <p className="text-xs text-[#2C3E30]/60">We need to verify your ID to generate a legal German rental contract.</p>
-    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+    <div className="grid grid-cols-1 gap-4">
         <div className="border border-dashed border-[#2C3E30]/20 rounded-xl p-6 flex flex-col items-center justify-center text-center bg-[#F4F3F0] hover:bg-white transition-colors cursor-pointer group">
             <div className="w-10 h-10 bg-white rounded-full flex items-center justify-center mb-3 shadow-sm group-hover:scale-110 transition-transform"><Upload size={16} className="text-[#2C3E30]"/></div>
             <span className="text-xs font-bold text-[#2C3E30] uppercase tracking-wider mb-1">Upload Passport</span>
@@ -58,34 +123,37 @@ const StepContract = () => (
   </div>
 );
 
-const StepPayment = ({ state }) => (
-  <div className="space-y-6">
-    <h2 className="text-xl font-serif text-[#2C3E30]">Secure Payment</h2>
-    <p className="text-xs text-[#2C3E30]/60">You will only be charged after the landlord accepts your application.</p>
-    <div className="bg-white/60 p-5 rounded-xl border border-[#2C3E30]/10">
-        <div className="flex justify-between mb-2"><span className="text-xs text-[#2C3E30]/70">First Month Rent</span><span className="text-xs font-bold text-[#2C3E30]">€{state.monthlyTotal?.toLocaleString()}</span></div>
-        <div className="flex justify-between mb-4 pb-4 border-b border-[#2C3E30]/10"><span className="text-xs text-[#2C3E30]/70">One-Time Fees</span><span className="text-xs font-bold text-[#2C3E30]">€{state.oneTimeTotal}</span></div>
-        <div className="flex justify-between items-center"><span className="text-sm font-serif text-[#2C3E30]">Total due now</span><span className="text-xl font-serif font-bold text-[#2C3E30]">€{(state.monthlyTotal + state.oneTimeTotal).toLocaleString()}</span></div>
-    </div>
-    <div className="space-y-3">
-        <div className="relative"><CreditCard className="absolute left-4 top-1/2 -translate-y-1/2 text-[#2C3E30]/40" size={16}/><input type="text" placeholder="Card Number" className="w-full pl-12 pr-4 py-3 rounded-xl bg-[#F4F3F0] text-xs font-bold text-[#2C3E30] outline-none"/></div>
-        <div className="grid grid-cols-2 gap-3"><input type="text" placeholder="MM / YY" className="w-full px-4 py-3 rounded-xl bg-[#F4F3F0] text-xs font-bold text-[#2C3E30] outline-none"/><input type="text" placeholder="CVC" className="w-full px-4 py-3 rounded-xl bg-[#F4F3F0] text-xs font-bold text-[#2C3E30] outline-none"/></div>
-    </div>
-  </div>
-);
-
 // --- MAIN PAGE ---
 const ApplicationWizard = () => {
   const { state } = useLocation();
   const navigate = useNavigate();
   const [step, setStep] = useState(1);
-  const totalSteps = 4;
+  const [showMobileSummary, setShowMobileSummary] = useState(false);
+  const totalSteps = 3;
 
-  if (!state) { setTimeout(() => navigate('/'), 0); return null; }
+  // --- DEV MODE: FALLBACK DATA ---
+  // This ensures the page works even if you refresh or access it directly
+  const bookingData = state || {
+     title: "Debug Apartment (Dev Mode)",
+     image: "https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?auto=format&fit=crop&w=800&q=80",
+     monthlyTotal: 1200,
+     oneTimeTotal: 500,
+     deposit: 2000,
+     checkIn: "2024-01-01",
+     checkOut: "2024-02-01",
+     nights: 30
+  };
+
+  const payNow = bookingData.monthlyTotal + 423;
 
   const handleNext = () => {
-    if (step < totalSteps) setStep(step + 1);
-    else navigate('/booking-success', { state });
+    if (step < totalSteps) {
+        setStep(step + 1);
+    } else {
+        // --- GO TO PAYMENT PAGE ---
+        // Pass the booking data along
+        navigate('/payment', { state: bookingData });
+    }
   };
 
   const handleBack = () => {
@@ -94,70 +162,154 @@ const ApplicationWizard = () => {
   };
 
   return (
-    <div className="min-h-screen bg-[#EAE8E4] flex flex-col md:flex-row">
+    <div className="h-screen w-full bg-[#EAE8E4] flex flex-col md:flex-row overflow-hidden">
       
-      {/* LEFT COLUMN: THE WIZARD */}
-      <div className="w-full md:w-1/2 lg:w-[45%] p-8 md:p-16 flex flex-col justify-center min-h-screen relative">
-        
-        {/* --- TRACKER (LEVEL 3) --- */}
-        <div className="absolute top-0 left-0 w-full px-8 pt-6">
-             <GameLevelTracker currentLevel={3} />
-        </div>
-
-        {/* Back Button */}
-        <button onClick={handleBack} className="absolute top-32 left-8 flex items-center gap-2 text-[10px] font-bold uppercase tracking-widest text-[#2C3E30]/60 hover:text-[#2C3E30] transition-colors">
-            <ArrowLeft size={14}/> Back
-        </button>
-
-        {/* Progress Text */}
-        <div className="mb-10 mt-20">
-            <div className="flex gap-2 mb-2">
-                {[1, 2, 3, 4].map(i => (
-                    <div key={i} className={`h-1 flex-1 rounded-full transition-all duration-500 ${i <= step ? 'bg-[#2C3E30]' : 'bg-[#2C3E30]/10'}`} />
-                ))}
+      {/* 1. MOBILE HEADER */}
+      <div className="md:hidden flex-shrink-0 z-50 bg-white/90 backdrop-blur-xl border-b border-[#2C3E30]/10 px-4 py-3 flex items-center justify-between shadow-sm">
+        <div className="flex items-center gap-3" onClick={() => setShowMobileSummary(!showMobileSummary)}>
+            <div className="w-10 h-10 rounded-lg overflow-hidden flex-shrink-0 bg-gray-200">
+                {bookingData.image && <img src={bookingData.image} alt="" className="w-full h-full object-cover" />}
             </div>
-            <span className="text-[10px] font-bold uppercase tracking-widest text-[#2C3E30]/40">Internal Step {step} of {totalSteps}</span>
+            <div>
+                <p className="text-[9px] font-bold uppercase tracking-widest text-[#2C3E30]/50">Due Today</p>
+                <p className="text-sm font-serif font-bold text-[#2C3E30]">€{payNow.toLocaleString()}</p>
+            </div>
         </div>
-
-        {/* Content */}
-        <div className="flex-1 flex flex-col justify-center mb-10">
-            <AnimatePresence mode="wait">
-                <motion.div
-                    key={step}
-                    initial={{ opacity: 0, x: 20 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    exit={{ opacity: 0, x: -20 }}
-                    transition={{ duration: 0.3 }}
-                >
-                    {step === 1 && <StepIdentity />}
-                    {step === 2 && <StepSolvency />}
-                    {step === 3 && <StepContract />}
-                    {step === 4 && <StepPayment state={state} />}
-                </motion.div>
-            </AnimatePresence>
-        </div>
-
-        <button onClick={handleNext} className="w-full py-4 bg-[#2C3E30] text-[#EAE8E4] rounded-xl text-xs font-bold uppercase tracking-widest hover:bg-[#1A1A1A] transition-all flex items-center justify-center gap-2">
-            {step === totalSteps ? "Complete Application" : "Continue"} <ChevronRight size={14}/>
+        <button onClick={() => setShowMobileSummary(!showMobileSummary)}>
+            <ChevronDown size={16} className={`text-[#2C3E30] transition-transform duration-300 ${showMobileSummary ? 'rotate-180' : ''}`}/>
         </button>
+        
+        <AnimatePresence>
+            {showMobileSummary && (
+                <motion.div 
+                    initial={{ height: 0, opacity: 0 }}
+                    animate={{ height: "auto", opacity: 1 }}
+                    exit={{ height: 0, opacity: 0 }}
+                    className="absolute top-full left-0 right-0 bg-white border-b border-[#2C3E30]/10 shadow-xl overflow-y-auto max-h-[80vh]"
+                >
+                    <div className="p-4">
+                         <div className="p-4 bg-[#F4F3F0] rounded-xl">
+                            <DetailedPriceBreakdown state={bookingData} theme="light" />
+                         </div>
+                    </div>
+                </motion.div>
+            )}
+        </AnimatePresence>
       </div>
 
-      {/* RIGHT COLUMN: SUMMARY */}
-      <div className="hidden md:block w-1/2 lg:w-[55%] bg-[#2C3E30] relative overflow-hidden p-16 text-[#EAE8E4]">
-         <div className="absolute inset-0 opacity-10 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')]"></div>
-         <div className="relative z-10 h-full flex flex-col justify-between">
-            <div>
-                <h3 className="text-3xl font-serif mb-6">Your Stay</h3>
-                <div className="space-y-6 text-sm">
-                    <div className="flex justify-between border-b border-white/10 pb-4"><span className="opacity-60">Move-in</span><span className="font-bold">{state.checkIn}</span></div>
-                    <div className="flex justify-between border-b border-white/10 pb-4"><span className="opacity-60">Move-out</span><span className="font-bold">{state.checkOut}</span></div>
-                    <div className="flex justify-between border-b border-white/10 pb-4"><span className="opacity-60">Duration</span><span className="font-bold">{state.nights} Nights</span></div>
+      {/* 2. LEFT COLUMN: FORM */}
+      <div className="w-full md:w-1/2 lg:w-[45%] flex flex-col h-full relative z-0">
+        
+        {/* TOP: Fixed Tracker & Back */}
+        <div className="flex-shrink-0 px-6 pt-6 pb-2 md:px-12 md:pt-12 bg-[#EAE8E4]">
+             <div className="w-full mb-6">
+                 {/* FIXED LEVEL 2: APPLICATION */}
+                 <GameLevelTracker currentLevel={2} />
+             </div>
+
+             <div className="flex justify-between items-end mt-4 mb-2">
+                 <button onClick={handleBack} className="flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-widest text-[#2C3E30]/60 hover:text-[#2C3E30] transition-colors py-2">
+                    <ArrowLeft size={14}/> Back
+                 </button>
+                 
+                 <div className="flex flex-col items-end gap-1">
+                    <div className="flex gap-1.5">
+                        {[1, 2, 3].map(i => (
+                            <div key={i} className={`h-1.5 w-6 rounded-full transition-all duration-500 ${i <= step ? 'bg-[#2C3E30]' : 'bg-[#2C3E30]/10'}`} />
+                        ))}
+                    </div>
+                    <span className="text-[9px] font-bold uppercase tracking-widest text-[#2C3E30]/40">
+                        Step {step} / {totalSteps}
+                    </span>
+                 </div>
+             </div>
+        </div>
+
+        {/* MIDDLE: Scrollable Form */}
+        <div className="flex-1 overflow-y-auto px-6 md:px-12 pb-4 custom-scrollbar">
+            <div className="py-2">
+                <AnimatePresence mode="wait">
+                    <motion.div
+                        key={step}
+                        initial={{ opacity: 0, x: 20 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        exit={{ opacity: 0, x: -20 }}
+                        transition={{ duration: 0.3 }}
+                        className="h-full"
+                    >
+                        {step === 1 && <StepIdentity />}
+                        {step === 2 && <StepSolvency />}
+                        {step === 3 && <StepContract />}
+                    </motion.div>
+                </AnimatePresence>
+            </div>
+        </div>
+
+        {/* BOTTOM: Action Button */}
+        <div className="flex-shrink-0 p-6 md:p-12 pt-0 bg-[#EAE8E4]">
+             <button onClick={handleNext} className="w-full py-4 bg-[#2C3E30] text-[#EAE8E4] rounded-xl text-xs font-bold uppercase tracking-widest hover:bg-[#1A1A1A] transition-all flex items-center justify-center gap-2 shadow-lg">
+                {step === totalSteps ? "Go to Secure Payment" : "Continue"} <ChevronRight size={14}/>
+            </button>
+        </div>
+      </div>
+
+      {/* 3. RIGHT COLUMN: SUMMARY */}
+      <div className="hidden md:flex w-1/2 lg:w-[55%] bg-[#2C3E30] relative flex-col h-full overflow-y-auto custom-scrollbar">
+         
+         <div className="absolute inset-0 opacity-10 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] pointer-events-none fixed"></div>
+         
+         <div className="relative z-10 w-full max-w-[400px] mx-auto my-auto p-8">
+            
+            <h3 className="text-xl font-serif mb-5 text-[#EAE8E4] opacity-90">Booking Summary</h3>
+            
+            <div className="rounded-xl overflow-hidden border border-white/10 shadow-2xl bg-[#212E24] mb-5">
+                {bookingData.image && (
+                    <div className="h-32 w-full relative">
+                        <img src={bookingData.image} alt={bookingData.title} className="w-full h-full object-cover opacity-90" />
+                        <div className="absolute bottom-0 left-0 right-0 p-3 bg-gradient-to-t from-[#212E24] to-transparent">
+                            <h3 className="text-sm font-serif font-bold text-white leading-tight">{bookingData.title}</h3>
+                        </div>
+                    </div>
+                )}
+                
+                <div className="bg-white/5 backdrop-blur-sm px-4 py-2.5 border-b border-white/5 flex justify-between text-xs">
+                        <div className="flex items-center gap-2">
+                            <Calendar size={12} className="text-[#C2B280]"/>
+                            <span className="font-bold text-white">{bookingData.checkIn}</span>
+                        </div>
+                        <div className="text-white/40">→</div>
+                        <div className="flex items-center gap-2">
+                            <span className="font-bold text-white">{bookingData.checkOut}</span>
+                            <span className="text-[9px] text-white/50 bg-white/10 px-2 py-0.5 rounded-full">{bookingData.nights} Nights</span>
+                        </div>
+                </div>
+
+                <div className="p-5">
+                    <DetailedPriceBreakdown state={bookingData} theme="dark" />
                 </div>
             </div>
-            <div className="bg-white/10 backdrop-blur-md rounded-2xl p-6 border border-white/10">
-                <div className="flex items-center gap-3 mb-4"><ShieldCheck className="text-[#C2B280]" size={20}/><div><h4 className="text-xs font-bold uppercase tracking-wider">Scam Protection</h4><p className="text-[10px] opacity-70">Money held in escrow.</p></div></div>
-                <div className="flex items-center gap-3"><CheckCircle className="text-[#C2B280]" size={20}/><div><h4 className="text-xs font-bold uppercase tracking-wider">Housing Contract</h4><p className="text-[10px] opacity-70">Valid for Anmeldung.</p></div></div>
+
+            <div className="grid grid-cols-2 gap-3">
+                <div className="bg-white/5 backdrop-blur-md rounded-lg p-3 border border-white/10 text-[#EAE8E4] flex items-center gap-2.5">
+                    <div className="w-7 h-7 rounded-full bg-[#C2B280]/20 flex items-center justify-center flex-shrink-0">
+                        <ShieldCheck className="text-[#C2B280]" size={14}/>
+                    </div>
+                    <div>
+                        <h4 className="text-[9px] font-bold uppercase tracking-wider">Scam Protection</h4>
+                        <p className="text-[8px] opacity-70">Escrow payments.</p>
+                    </div>
+                </div>
+                <div className="bg-white/5 backdrop-blur-md rounded-lg p-3 border border-white/10 text-[#EAE8E4] flex items-center gap-2.5">
+                    <div className="w-7 h-7 rounded-full bg-[#C2B280]/20 flex items-center justify-center flex-shrink-0">
+                        <CheckCircle className="text-[#C2B280]" size={14}/>
+                    </div>
+                    <div>
+                        <h4 className="text-[9px] font-bold uppercase tracking-wider">Legal Contract</h4>
+                        <p className="text-[8px] opacity-70">Anmeldung ready.</p>
+                    </div>
+                </div>
             </div>
+
          </div>
       </div>
     </div>

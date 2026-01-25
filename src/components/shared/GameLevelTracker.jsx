@@ -1,74 +1,62 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { Check, Home, User, FileText, Key } from 'lucide-react';
+import { Check } from 'lucide-react';
 
 const GameLevelTracker = ({ currentLevel }) => {
-  
-  const levels = [
-    { id: 1, label: "Select Home", icon: Home },
-    { id: 2, label: "Create Profile", icon: User },
-    { id: 3, label: "Application", icon: FileText },
-    { id: 4, label: "Get Keys", icon: Key },
+  // 3-STEP FLOW
+  const steps = [
+    { level: 1, label: "Login / Sign Up" },
+    { level: 2, label: "Application" },
+    { level: 3, label: "Secure Payment" }
   ];
 
-  // Calculate progress width (e.g., Level 2 = 33%, Level 3 = 66%)
-  const progressPercentage = ((currentLevel - 1) / (levels.length - 1)) * 100;
+  const progressWidth = ((currentLevel - 1) / (steps.length - 1)) * 100;
 
   return (
-    <div className="w-full max-w-xl mx-auto py-6 px-4">
+    <div className="w-full max-w-md mx-auto mb-8">
       <div className="relative">
-        
-        {/* 1. BACKGROUND LINE (Grey) */}
-        <div className="absolute top-1/2 left-0 w-full h-1 bg-[#2C3E30]/10 -translate-y-1/2 rounded-full" />
-
-        {/* 2. ACTIVE PROGRESS LINE (Green - Animates) */}
+        <div className="absolute top-1/2 left-0 w-full h-1 bg-gray-300 -translate-y-1/2 rounded-full z-0" />
         <motion.div 
-            className="absolute top-1/2 left-0 h-1 bg-[#2C3E30] -translate-y-1/2 rounded-full origin-left"
-            initial={{ width: 0 }}
-            animate={{ width: `${progressPercentage}%` }}
-            transition={{ duration: 0.8, ease: "easeInOut" }}
+          className="absolute top-1/2 left-0 h-1 bg-[#2C3E30] -translate-y-1/2 rounded-full z-0 origin-left"
+          initial={{ width: 0 }}
+          animate={{ width: `${progressWidth}%` }}
+          transition={{ duration: 0.8, ease: "easeInOut" }}
         />
 
-        {/* 3. LEVEL NODES */}
-        <div className="relative flex justify-between">
-            {levels.map((level) => {
-                const isCompleted = currentLevel > level.id;
-                const isActive = currentLevel === level.id;
-
-                return (
-                    <div key={level.id} className="flex flex-col items-center group relative">
-                        
-                        {/* THE CIRCLE */}
-                        <motion.div 
-                            initial={false}
-                            animate={{
-                                scale: isActive ? 1.2 : 1,
-                                backgroundColor: isCompleted || isActive ? '#2C3E30' : '#EAE8E4',
-                                borderColor: isCompleted || isActive ? '#2C3E30' : 'rgba(44, 62, 48, 0.2)'
-                            }}
-                            className={`w-8 h-8 rounded-full border-2 flex items-center justify-center z-10 transition-colors duration-500
-                                ${!isCompleted && !isActive ? 'bg-[#EAE8E4]' : ''}
-                            `}
-                        >
-                            {isCompleted ? (
-                                <Check size={14} className="text-[#EAE8E4]" strokeWidth={3} />
-                            ) : (
-                                <level.icon size={14} className={isActive ? "text-[#EAE8E4]" : "text-[#2C3E30]/40"} />
-                            )}
-                        </motion.div>
-
-                        {/* THE LABEL */}
-                        <motion.span 
-                            animate={{ opacity: isActive || isCompleted ? 1 : 0.5, y: isActive ? 0 : 0 }}
-                            className={`absolute top-10 text-[9px] font-bold uppercase tracking-widest whitespace-nowrap
-                                ${isActive ? 'text-[#2C3E30]' : 'text-[#2C3E30]/40'}
-                            `}
-                        >
-                            {level.label}
-                        </motion.span>
-                    </div>
-                );
-            })}
+        <div className="relative z-10 flex justify-between w-full">
+          {steps.map((step) => {
+            const isCompleted = step.level < currentLevel;
+            const isCurrent = step.level === currentLevel;
+            const isActiveOrDone = isCompleted || isCurrent;
+            
+            return (
+              <div key={step.level} className="flex flex-col items-center">
+                <motion.div 
+                  initial={false}
+                  animate={{
+                    backgroundColor: isActiveOrDone ? '#2C3E30' : '#EAE8E4',
+                    scale: isCurrent ? 1.15 : 1
+                  }}
+                  className={`
+                    w-8 h-8 rounded-full border-2 flex items-center justify-center
+                    transition-colors duration-300
+                    ${isActiveOrDone ? 'border-[#2C3E30]' : 'border-gray-300'}
+                  `}
+                >
+                  {isCompleted ? (
+                    <Check size={14} className="text-[#EAE8E4] stroke-[3]" />
+                  ) : (
+                    <span className={`text-[10px] font-bold ${isActiveOrDone ? 'text-[#EAE8E4]' : 'text-gray-400'}`}>
+                        {step.level}
+                    </span>
+                  )}
+                </motion.div>
+                <span className={`absolute top-10 text-[9px] font-bold uppercase tracking-wider text-center w-24 transition-colors duration-300 ${isActiveOrDone ? 'text-[#2C3E30] opacity-100' : 'text-gray-400 opacity-60'}`}>
+                  {step.label}
+                </span>
+              </div>
+            );
+          })}
         </div>
       </div>
     </div>

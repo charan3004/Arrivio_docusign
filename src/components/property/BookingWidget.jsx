@@ -2,16 +2,16 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ShieldCheck, X, Calendar, Info, Check, Eye, FileCheck, RefreshCcw } from 'lucide-react';
 
-const BookingWidget = ({ price }) => {
+// 1. ACCEPT NEW PROPS: title, image
+const BookingWidget = ({ price, title, image }) => {
   const navigate = useNavigate();
+  // ... (Keep existing state: showCalendar, checkIn, checkOut, nights, areDatesApplied) ...
+  // ... (Keep existing derived data: baseRent, utilities, monthlyTotal, etc.) ...
+
   const [showCalendar, setShowCalendar] = useState(false);
-  
-  // --- STATE ---
   const [checkIn, setCheckIn] = useState('');
   const [checkOut, setCheckOut] = useState('');
   const [nights, setNights] = useState(0);
-  
-  // Only show details after "Apply" is clicked
   const [areDatesApplied, setAreDatesApplied] = useState(false);
 
   // --- DERIVED DATA ---
@@ -46,17 +46,18 @@ const BookingWidget = ({ price }) => {
     }
   };
 
-  // *** THIS WAS THE ISSUE - FIXED NOW ***
   const handleBooking = () => {
     navigate('/signin', { 
         state: { 
+            // 2. PASS IMAGE & TITLE HERE
+            title: title || "Luxury Apartment", 
+            image: image || "", 
             price: price, 
             total: oneTimeTotal + (monthlyTotal * (nights / 30)), 
             nights, 
             checkIn, 
             checkOut,
             guests: 1,
-            // Pass these details so the Application Wizard can display them later
             monthlyTotal,
             oneTimeTotal,
             deposit
@@ -78,22 +79,20 @@ const BookingWidget = ({ price }) => {
   }, [checkIn, checkOut]);
 
   return (
+    // ... (Keep your exact existing JSX for the widget UI) ...
+    // Note: I am not pasting the whole UI again to save space, 
+    // just ensure the handleBooking function is updated as above.
     <div className="relative">
-      
-      {/* --- GLASS CARD --- */}
-      <div className="bg-white/40 backdrop-blur-xl rounded-[2rem] border border-white/60 shadow-[0_8px_30px_rgba(0,0,0,0.04)] relative z-20">
-         
+       {/* ... Your existing Glass Card UI ... */}
+       {/* ... Use the updated handleBooking attached to the button ... */}
+       <div className="bg-white/40 backdrop-blur-xl rounded-[2rem] border border-white/60 shadow-[0_8px_30px_rgba(0,0,0,0.04)] relative z-20">
          <div className="p-5">
-            
-            {/* 1. HEADER & PRICE */}
             <div className="flex justify-between items-start mb-5">
                 <div>
                     <div className="flex items-baseline gap-1">
                         <span className="text-3xl font-serif font-bold text-[#2C3E30]">€{monthlyTotal.toLocaleString()}</span>
                         <span className="text-sm text-[#2C3E30]/60">/ mo</span>
                     </div>
-                    
-                    {/* STATUS INDICATOR */}
                     {areDatesApplied ? (
                         <div className="mt-1 flex items-center gap-2">
                             {isAvailable ? (
@@ -114,14 +113,12 @@ const BookingWidget = ({ price }) => {
                         </div>
                     )}
                 </div>
-                
                 <div className="flex items-center gap-1.5 bg-[#2C3E30] text-[#EAE8E4] px-3 py-1.5 rounded-full shadow-sm cursor-default">
                     <FileCheck size={12} className="text-[#EAE8E4]" />
                     <span className="text-[9px] font-bold uppercase tracking-widest text-[#EAE8E4]">Anmeldung</span>
                 </div>
             </div>
 
-            {/* 2. DATES SELECTOR */}
             <div 
                 onClick={toggleCalendar}
                 className={`relative bg-white/40 border rounded-2xl mb-5 cursor-pointer transition-all duration-200 ${showCalendar ? 'border-[#2C3E30] ring-1 ring-[#2C3E30]' : 'border-white/50 hover:bg-white/60'}`}
@@ -147,7 +144,6 @@ const BookingWidget = ({ price }) => {
                 )}
             </div>
 
-            {/* 3. COST BREAKDOWN */}
             {areDatesApplied && isAvailable ? (
                 <div className="mb-5 animation-fade-in text-[#2C3E30]/80 space-y-3">
                     <div className="bg-[#2C3E30]/5 rounded-xl p-3 border border-[#2C3E30]/5">
@@ -208,7 +204,6 @@ const BookingWidget = ({ price }) => {
                 </div>
             )}
 
-            {/* 4. MAIN ACTION BUTTON */}
             <button 
                 onClick={!areDatesApplied ? toggleCalendar : handleBooking}
                 disabled={areDatesApplied && !isAvailable}
@@ -221,7 +216,6 @@ const BookingWidget = ({ price }) => {
             </button>
          </div>
 
-         {/* 5. FOOTER */}
          <div className="bg-white/30 p-3 border-t border-white/50 flex justify-center gap-6 rounded-b-[2rem]">
             <div className="flex items-center gap-1.5 opacity-60">
                 <ShieldCheck size={12} className="text-[#2C3E30]"/>
@@ -234,7 +228,6 @@ const BookingWidget = ({ price }) => {
          </div>
       </div>
 
-      {/* --- SECONDARY CARD --- */}
       <div className="mt-2 flex items-center justify-center gap-3 p-4 rounded-2xl bg-white/40 backdrop-blur-xl border border-white/60 shadow-sm cursor-pointer hover:bg-white/60 hover:border-[#2C3E30]/20 transition-all group">
          <div className="p-2 bg-white/50 rounded-full group-hover:bg-[#2C3E30] transition-colors border border-white/50">
             <Eye size={16} className="text-[#2C3E30] group-hover:text-white transition-colors"/>
@@ -245,36 +238,22 @@ const BookingWidget = ({ price }) => {
          </div>
       </div>
 
-      {/* POPUP CALENDAR */}
       {showCalendar && (
           <div className="absolute top-20 right-0 left-0 bg-white/95 backdrop-blur-xl rounded-2xl shadow-2xl border border-white/60 z-50 p-5 animate-in fade-in zoom-in-95 duration-200">
               <div className="flex justify-between items-center mb-4">
                   <h4 className="font-bold text-sm text-[#2C3E30]">Select dates</h4>
                   <button onClick={() => setShowCalendar(false)}><X size={18} className="text-[#2C3E30]/40 hover:text-[#2C3E30]"/></button>
               </div>
-              
               <div className="bg-white/50 rounded-xl p-4 border border-white/60 mb-4 space-y-4">
                   <div>
                       <label className="block text-[10px] font-bold uppercase tracking-wider text-[#2C3E30]/50 mb-1">Move In Date</label>
-                      <input 
-                        type="date" 
-                        value={checkIn}
-                        onChange={(e) => setCheckIn(e.target.value)}
-                        className="w-full bg-[#F4F3F0] rounded-lg px-3 py-2 text-sm font-bold text-[#2C3E30] focus:ring-1 focus:ring-[#2C3E30] outline-none"
-                      />
+                      <input type="date" value={checkIn} onChange={(e) => setCheckIn(e.target.value)} className="w-full bg-[#F4F3F0] rounded-lg px-3 py-2 text-sm font-bold text-[#2C3E30] focus:ring-1 focus:ring-[#2C3E30] outline-none"/>
                   </div>
                   <div>
                       <label className="block text-[10px] font-bold uppercase tracking-wider text-[#2C3E30]/50 mb-1">Move Out Date</label>
-                      <input 
-                        type="date" 
-                        value={checkOut}
-                        min={checkIn}
-                        onChange={(e) => setCheckOut(e.target.value)}
-                        className="w-full bg-[#F4F3F0] rounded-lg px-3 py-2 text-sm font-bold text-[#2C3E30] focus:ring-1 focus:ring-[#2C3E30] outline-none"
-                      />
+                      <input type="date" value={checkOut} min={checkIn} onChange={(e) => setCheckOut(e.target.value)} className="w-full bg-[#F4F3F0] rounded-lg px-3 py-2 text-sm font-bold text-[#2C3E30] focus:ring-1 focus:ring-[#2C3E30] outline-none"/>
                   </div>
               </div>
-
               <div className="flex justify-between items-center">
                   <button onClick={handleClear} className="text-xs font-bold text-[#2C3E30]/60 hover:text-[#2C3E30] underline decoration-dotted">Clear dates</button>
                   <button onClick={handleApply} className="px-6 py-2.5 bg-[#2C3E30] text-[#EAE8E4] text-xs font-bold rounded-lg hover:bg-[#1A1A1A] transition-colors shadow-lg">Apply Dates</button>

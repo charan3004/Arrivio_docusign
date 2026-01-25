@@ -25,28 +25,31 @@ import Careers from './pages/Careers';
 import BookingSuccess from './pages/BookingSuccess';
 import ApplicationWizard from './pages/ApplicationWizard';
 import SignIn from './pages/SignIn';
+import PaymentPage from './pages/PaymentPage'; 
 
 const Layout = () => {
   const location = useLocation();
   const path = location.pathname;
 
-  // 1. DEFINE THE "TUNNEL" ROUTES
-  // These are pages where we want zero distractions.
-  const isProcessPage = ['/signin', '/apply', '/booking-success'].includes(path);
+  // 1. IDENTIFY THE TUNNEL (No distractions)
+  const isProcessPage = ['/signin', '/apply', '/payment'].includes(path);
+  
+  // 2. IDENTIFY THE SUCCESS PAGE (Needs a way home)
+  const isSuccessPage = path === '/booking-success';
 
   let CurrentNavbar;
 
-  if (isProcessPage) {
-    // 2. NO NAVBAR FOR PROCESS FLOW
+  if (isSuccessPage) {
+    // SHOW Logo Navbar only on Success Page
+    CurrentNavbar = SimpleNavbar;
+  } else if (isProcessPage) {
+    // NO Navbar for the active steps (SignIn, Apply, Payment)
     CurrentNavbar = () => null; 
   } else if (path === '/') {
     CurrentNavbar = Navbar;
   } else if (path.startsWith('/property')) {
     CurrentNavbar = PropertyNavbar;
-  } else if (
-    path.startsWith('/cities') || 
-    path.startsWith('/search')
-  ) {
+  } else if (path.startsWith('/cities') || path.startsWith('/search')) {
     CurrentNavbar = AppNavbar;
   } else {
     CurrentNavbar = SimpleNavbar;
@@ -54,7 +57,6 @@ const Layout = () => {
 
   return (
     <div className="min-h-screen flex flex-col bg-[#EAE8E4]">
-      {/* Only render Navbar if it's not null */}
       <CurrentNavbar />
       
       <main className="flex-grow">
@@ -64,12 +66,11 @@ const Layout = () => {
           <Route path="/property/:id" element={<PropertyDetails />} />
           <Route path="/cities" element={<CityGridPage />} />
           
-          {/* THE PROCESS FLOW */}
           <Route path="/signin" element={<SignIn />} />
           <Route path="/apply" element={<ApplicationWizard />} />
+          <Route path="/payment" element={<PaymentPage />} /> 
           <Route path="/booking-success" element={<BookingSuccess />} />
           
-          {/* OTHER PAGES */}
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<Signup />} />
           <Route path="/business" element={<Employers />} />
@@ -82,9 +83,8 @@ const Layout = () => {
         </Routes>
       </main>
       
-      {/* 3. OPTIONAL: Hide Footer on Process Pages too? */}
-      {/* Usually better to keep footer hidden or minimal during checkout */}
-      {!isProcessPage && <Footer />}
+      {/* Hide Footer on all process/success pages */}
+      {!isProcessPage && !isSuccessPage && <Footer />}
     </div>
   );
 };
