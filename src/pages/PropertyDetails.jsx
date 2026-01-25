@@ -190,7 +190,12 @@ const PropertyDetails = () => {
           {/* RIGHT COLUMN (Sticky Widget) */}
           <div className="lg:col-span-5 relative">
              <div className="sticky top-24 h-fit">
-                <BookingWidget price={property.price} />
+                {/* 👇 UPDATED WIDGET USAGE 👇 */}
+                <BookingWidget 
+                  price={property.price} 
+                  title={property.title}
+                  image={property.image}
+                />
              </div>
           </div>
 
