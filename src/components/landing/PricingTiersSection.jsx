@@ -48,7 +48,7 @@ const PricingTiersSection = () => {
       id: 1,
       name: "The Essential",
       minPrice: 350,
-      maxPrice: 500,
+      maxPrice: 600,
       features: [
         "Private Furnished Bedroom",
         "Shared Designer Kitchen",
@@ -62,7 +62,7 @@ const PricingTiersSection = () => {
       id: 2,
       name: "The Comfort",
       minPrice: 600,
-      maxPrice: 750,
+      maxPrice: 850,
       features: [
         "Private Ensuite Bathroom",
         "City View or Balcony",
@@ -113,6 +113,7 @@ const PricingTiersSection = () => {
       className="bg-[#EAE8E4] py-24 px-4 sm:px-6 lg:px-8"
     >
       <div className="max-w-7xl mx-auto">
+
         {/* --- HEADER --- */}
         <div className="text-center mb-16 md:mb-24">
           <motion.div
@@ -160,25 +161,25 @@ const PricingTiersSection = () => {
 
               {/* CONTENT WRAPPER */}
               <div className="relative z-10 flex flex-col h-full p-4">
-                {/* --- IMAGE TOP --- */}
+
+                {/* IMAGE */}
                 <div className="h-64 relative overflow-hidden rounded-[2rem] shadow-sm mb-6">
                   <img
                     src={tier.image}
                     alt={tier.name}
                     className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
                   />
-                  {/* Tint */}
                   <div className="absolute inset-0 bg-[#2C3E30] mix-blend-multiply opacity-10 transition-opacity group-hover:opacity-0"></div>
 
-                  {/* Name Badge */}
                   <div className="absolute top-4 right-4 bg-[#F5F5F0]/90 backdrop-blur-md px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest text-[#2C3E30] shadow-sm">
                     {tier.name}
                   </div>
                 </div>
 
-                {/* --- PRICE & FEATURES --- */}
+                {/* PRICE + FEATURES */}
                 <div className="px-4 pb-4 flex flex-col flex-grow text-center">
-                  {/* Price */}
+
+                  {/* PRICE */}
                   <div className="mb-6">
                     <div className="flex items-baseline justify-center gap-1 text-[#2C3E30]">
                       <span className="font-serif text-5xl">
@@ -191,7 +192,7 @@ const PricingTiersSection = () => {
                     <div className="w-12 h-[1px] bg-[#2C3E30]/10 mx-auto mt-4 group-hover:w-24 transition-all duration-500"></div>
                   </div>
 
-                  {/* Features List */}
+                  {/* FEATURES */}
                   <ul className="space-y-3 mb-8 text-left mx-auto w-full max-w-[90%]">
                     {tier.features.map((feature, index) => {
                       const Icon = featureIcons[feature] || CheckCircle;
@@ -210,15 +211,28 @@ const PricingTiersSection = () => {
                     })}
                   </ul>
 
-                  {/* CTA Button */}
+                  {/* CTA BUTTON — 🔥 LINKED TO FILTER */}
                   <div className="mt-auto">
-                    <Link to={`/property/${tier.id}`} className="block">
+                    <Link
+                      to="/search"
+                      onClick={() => {
+                        sessionStorage.setItem(
+                          "priceFilter",
+                          JSON.stringify({
+                            min: tier.minPrice,
+                            max: tier.maxPrice,
+                          })
+                        );
+                      }}
+                      className="block"
+                    >
                       <button className="w-full h-14 bg-[#EAE8E4] border border-[#2C3E30]/10 rounded-full font-sans font-bold text-xs uppercase tracking-[0.2em] text-[#2C3E30] flex items-center justify-center gap-2 hover:bg-[#2C3E30] hover:text-[#EAE8E4] transition-all duration-300 shadow-sm group-hover:shadow-md">
                         View Details
                         <ArrowRight size={14} />
                       </button>
                     </Link>
                   </div>
+
                 </div>
               </div>
             </motion.div>

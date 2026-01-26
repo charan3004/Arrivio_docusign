@@ -6,22 +6,22 @@ const VisionSection = () => {
   const features = [
     {
       icon: XCircle,
-      title: 'No SCHUFA',
+      title: 'No Credit Barriers',
       description: 'Your credit history is history. We qualify based on future potential, not past paperwork.',
     },
     {
       icon: Languages,
-      title: 'Multilingual',
+      title: 'You are Heard',
       description: 'We speak your language. English-first contracts and 24/7 dedicated support.',
     },
     {
       icon: DollarSign,
-      title: 'All-In Pricing',
+      title: 'One Simple Payment',
       description: 'Rent, high-speed WiFi, utilities, and furniture. One single monthly bill.',
     },
     {
       icon: FileCheck,
-      title: 'Digital First',
+      title: 'No Infinite Paperwork',
       description: 'Apply on your phone. Upload docs securely. Get approved in 24 hours.',
     },
   ];

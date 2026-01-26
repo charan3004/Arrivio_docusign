@@ -122,7 +122,7 @@ const Search = () => {
                                 className="w-full bg-white/60 backdrop-blur-md border border-[#2C3E30]/10 rounded-xl py-3 pl-10 pr-10 text-xs font-medium text-[#2C3E30] focus:outline-none focus:ring-2 focus:ring-[#2C3E30]/5 transition-all shadow-sm"
                             />
                             {searchTerm && (
-                                <button onClick={() => setSearchTerm("")} className="absolute right-3 top-1/2 -translate-y-1/2 text-[#2C3E30]/40 hover:text-[#2C3E30]">
+                                <button onClick={()=> {setSearchTerm(""); setFilters(prev => ({ ...prev, city: "All"}));  }} className="absolute right-3 top-1/2 -translate-y-1/2 text-[#2C3E30]/40 hover:text-[#2C3E30]">
                                     <X size={14} />
                                 </button>
                             )}

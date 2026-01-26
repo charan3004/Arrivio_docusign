@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { Menu, Globe, MapPin, Grid, X } from 'lucide-react'; 
+import { Menu, Globe, MapPin, Home, X } from 'lucide-react'; 
 import { motion, AnimatePresence } from 'framer-motion';
 
 const AppNavbar = () => {
@@ -23,7 +23,7 @@ const AppNavbar = () => {
 
   const links = [
     { name: 'Cities', path: '/cities', icon: <MapPin size={14}/> },
-    { name: 'Stays', path: '/search', icon: <Grid size={14}/> },
+    { name: 'Stays', path: '/search', icon: <Home size={14}/> },
   ];
 
   return (
@@ -44,7 +44,7 @@ const AppNavbar = () => {
               </Link>
 
               {/* CENTER: ROLLING CURSOR NAV */}
-              <div className="hidden md:flex items-center p-1 bg-white/40 border border-white/60 rounded-full shadow-sm absolute left-1/2 -translate-x-1/2">
+            <motion.div layout className="hidden md:flex items-center p-1 bg-white/40 border border-white/60 rounded-full shadow-sm absolute left-1/2 -translate-x-1/2">
                   {links.map((link) => {
                       // Check if this link is active
                       const isActive = location.pathname.startsWith(link.path);
@@ -57,12 +57,18 @@ const AppNavbar = () => {
                           >
                               {/* THE ROLLING CURSOR (Background) */}
                               {isActive && (
-                                  <motion.div 
-                                      layoutId="rolling-cursor"
-                                      className="absolute inset-0 bg-[#2C3E30] rounded-full shadow-md"
-                                      transition={{ type: "spring", bounce: 0.15, duration: 0.5 }}
-                                  />
-                              )}
+                                <motion.div
+                                    layoutId="rolling-cursor"
+                                    className="absolute inset-0 bg-[#2C3E30] rounded-full shadow-md"
+                                    transition={{
+                                    type: "spring",
+                                    stiffness: 380,
+                                    damping: 30,
+                                    mass: 0.8
+                                    }}
+                                />
+                                )}
+
 
                               {/* CONTENT (Sits on top of cursor) */}
                               <span className={`relative z-10 flex items-center gap-2 text-[10px] font-bold uppercase tracking-widest transition-colors duration-200 ${
@@ -74,7 +80,8 @@ const AppNavbar = () => {
                           </Link>
                       );
                   })}
-              </div>
+            </motion.div>
+            
 
               {/* RIGHT ACTIONS */}
               <div className="flex items-center gap-3 md:gap-8 shrink-0">

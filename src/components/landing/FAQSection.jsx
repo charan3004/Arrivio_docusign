@@ -13,7 +13,7 @@ const faqs = [
   },
   {
     question: "Is Arrivio pet-friendly?",
-    answer: "Yes, we love pets! Specific locations have designated pet-friendly floors and amenities. There is a small additional monthly fee for furry friends to cover deep cleaning services."
+    answer: "Yes, we love pets! 🐾 Selected Arrivio properties offer pet-friendly floors and amenities. A small additional monthly fee may apply for deep cleaning services. Pet policies can vary by location, so please check directly with the property before booking."
   },
   {
     question: "Can I transfer between locations?",

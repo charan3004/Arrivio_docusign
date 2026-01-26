@@ -113,27 +113,27 @@ const CommunityBanner = () => {
         <img
           src={communityBg}
           alt="Community Vibe"
-          className="w-full h-full object-cover blur-sm opacity-90 grayscale-[30%]"
+          className="w-full h-full object-cover opacity-95 grayscale-[20%]"
         />
         <div className="absolute inset-0 bg-[#EAE8E4] mix-blend-color opacity-30"></div>
       </div>
 
       {/* CENTER BLOCK */}
       <div className="relative z-30 text-center px-6 pointer-events-none">
-        <div className="absolute inset-0 bg-[#EAE8E4]/95 blur-3xl rounded-full scale-150 z-20"></div>
+        <div className="absolute inset-0 bg-[#2B2B2B]/90 blur-3xl rounded-full scale-150 z-20"></div>
 
         <div className="relative z-30">
           <div className="inline-flex items-center gap-3 mb-6">
-            <div className="w-8 h-[1px] bg-[#222222]" />
-            <span className="text-xs font-bold uppercase tracking-[0.2em] text-[#222222] font-sans">
+            <div className="w-8 h-[1px] bg-[#FAFAF8]/70" />
+            <span className="text-xs font-bold uppercase tracking-[0.2em] text-[#FAFAF8] font-sans">
               THE COMMUNITY
             </span>
-            <div className="w-8 h-[1px] bg-[#222222]" />
+            <div className="w-8 h-[1px] bg-[#FAFAF8]/70" />
           </div>
 
-          <p className="font-serif text-4xl sm:text-6xl lg:text-7xl text-[#1A1A1A] leading-tight">
+            <p className="font-serif text-4xl sm:text-6xl lg:text-7xl text-[#FAFAF8] leading-tight">
             Life happens <br />
-            <span className="italic text-[#2C3E30]">together.</span>
+            <span className="italic text-[#C6A45E]">together.</span>
           </p>
         </div>
       </div>

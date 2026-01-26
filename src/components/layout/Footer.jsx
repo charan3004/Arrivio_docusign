@@ -13,12 +13,17 @@ const Footer = () => {
       { name: 'Careers', path: '/careers' },
       { name: 'Contact', path: '/contact' },
     ],
-    Locations: [
+      Locations: [
       { name: 'Berlin', path: '/search', state: { location: 'Berlin' } },
       { name: 'Munich', path: '/search', state: { location: 'Munich' } },
       { name: 'Frankfurt', path: '/search', state: { location: 'Frankfurt' } },
       { name: 'Cologne', path: '/search', state: { location: 'Cologne' } },
-    ],
+      { name: 'Düsseldorf', path: '/search', state: { location: 'Düsseldorf' } },
+      { name: 'Aachen', path: '/search', state: { location: 'Aachen' } },
+      { name: 'Bonn', path: '/search', state: { location: 'Bonn' } },
+      { name: 'Hamburg', path: '/search', state: { location: 'Hamburg' } },
+      ],
+
     Legal: [
       { name: 'Privacy Policy', path: '/privacy' },
       { name: 'Terms of Service', path: '/terms' },
@@ -70,26 +75,36 @@ const Footer = () => {
           {/* Right: Sitemap Links */}
           <div className="lg:col-span-7 grid grid-cols-2 md:grid-cols-3 gap-12">
              {Object.entries(footerLinks).map(([title, links]) => (
-                <div key={title}>
-                   <h4 className="text-[10px] font-bold uppercase tracking-[0.3em] mb-8 text-[#C2B280]">
-                      {title}
-                   </h4>
-                   <ul className="space-y-4">
-                      {links.map((link) => (
-                         <li key={link.name}>
-                            <Link 
-                              to={link.path}
-                              state={link.state}
-                              className="text-sm font-sans text-[#EAE8E4]/60 hover:text-[#EAE8E4] transition-colors flex items-center gap-1 group"
-                            >
-                               {link.name}
-                               <ArrowUpRight size={12} className="opacity-0 group-hover:opacity-100 transition-opacity" />
-                            </Link>
-                         </li>
-                      ))}
-                   </ul>
-                </div>
-             ))}
+               <div key={title}>
+                  <h4 className="text-[10px] font-bold uppercase tracking-[0.3em] mb-8 text-[#C2B280]">
+                     {title}
+                  </h4>
+
+                  <ul
+                     className={
+                     title === 'Locations'
+                        ? 'grid grid-cols-2 gap-x-10 gap-y-4 justify-items-start text-left'
+                        : 'space-y-4'
+                     }
+                  >
+                     {links.map((link) => (
+                     <li key={link.name}>
+                        <Link
+                           to={link.path}
+                           state={link.state}
+                           className="text-sm font-sans text-[#EAE8E4]/60 hover:text-[#EAE8E4] transition-colors flex items-center gap-1 group"
+                        >
+                           {link.name}
+                           <ArrowUpRight
+                           size={12}
+                           className="opacity-0 group-hover:opacity-100 transition-opacity"
+                           />
+                        </Link>
+                     </li>
+                     ))}
+                  </ul>
+               </div>
+               ))}
           </div>
         </div>
 

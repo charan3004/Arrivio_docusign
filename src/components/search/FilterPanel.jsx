@@ -5,7 +5,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 // --- IMPORT REAL DATA (Crucial for the graph) ---
 import { allProperties } from '../../data/properties'; 
 
-// --- CONFIG ---
+// --- CONFIG --
 const AVAILABLE_TAGS = ["Central", "Balcony", "Loft", "Waterfront", "Workspace", "Pet Friendly", "Altbau"];
 const CITIES = ["All", "Berlin", "Munich", "Hamburg", "Frankfurt", "Cologne", "Dusseldorf", "Bonn", "Aachen"];
 const FLOORS = ["Any", "Ground", "1st", "2nd", "3rd", "4th", "5th+"];
@@ -133,7 +133,24 @@ const CustomDropdown = ({ label, icon: Icon, value, options, onChange }) => {
 // 3. MAIN FILTER PANEL
 // =========================================================
 const FilterPanel = ({ isVisible, filters, setFilters, onReset }) => {
-    
+  useEffect(() => {
+    const stored = sessionStorage.getItem("priceFilter");
+
+    if (stored) {
+      const { min, max } = JSON.parse(stored);
+
+      setFilters(prev => ({
+        ...prev,
+        priceMin: min,
+        priceMax: max
+      }));
+
+      sessionStorage.removeItem("priceFilter");
+    }
+  }, [setFilters]);
+  
+
+
   const toggleTag = (tag) => {
     setFilters(prev => ({
         ...prev,
