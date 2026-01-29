@@ -55,10 +55,7 @@ const HeroSection = () => {
       <div className="text-center mb-8 md:mb-12 z-10">
         
         {/* TAG */}
-        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-[#2C3E30]/20 text-[#2C3E30] mb-6">
-            <span className="w-2 h-2 rounded-full bg-green-500 animate-pulse"></span>
-            <span className="text-[10px] font-bold uppercase tracking-widest">Live in Germany</span>
-        </div>
+        
 
         <h1 className="text-[#1A1A1A] leading-tight">
             <span className="block font-serif text-4xl md:text-6xl lg:text-7xl tracking-tight">
@@ -66,9 +63,10 @@ const HeroSection = () => {
             </span>
         </h1>
         <p className="font-sans text-sm md:text-base text-[#1A1A1A]/60 mt-4 max-w-2xl mx-auto font-medium">
-            Discover thoughtfully designed community living for immigrants in Germany. <br className="hidden md:block" />
-            No SCHUFA. No complexity. Just home.
+        Thoughtfully designed living spaces made for new beginnings. <br className="hidden md:block" />
+        No paperwork stress. No uncertainty. Just home.
         </p>
+
       </div>
 
       {/* LEVITATING MONOLITH */}
@@ -96,7 +94,7 @@ const HeroSection = () => {
                 <div className="hidden md:flex flex-col gap-2">
                     <div className="flex items-center gap-2">
                         <div className="w-2 h-2 rounded-full bg-green-500 animate-pulse shadow-[0_0_10px_#22c55e]"></div>
-                        <span className="text-[10px] font-bold uppercase tracking-widest text-white/90">System Status: Online</span>
+                        <span className="text-[10px] font-bold uppercase tracking-widest text-white/90">Live in Germany</span>
                     </div>
                     <div className="flex items-center gap-2 bg-white/10 backdrop-blur-md px-3 py-1.5 rounded-lg border border-white/10">
                         <CheckCircle size={12} className="text-green-400" />

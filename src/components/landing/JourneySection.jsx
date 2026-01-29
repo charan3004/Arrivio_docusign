@@ -13,7 +13,7 @@ const JourneySection = () => {
       number: '01',
       icon: Search,
       title: 'Explore',
-      description: "Browse our curated collection of community spaces across Germany's most vibrant cities.",
+      description: "Browse our curated collection of community spaces designed for life wherever you choose to land.",
     },
     {
       number: '02',

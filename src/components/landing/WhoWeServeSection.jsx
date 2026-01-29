@@ -36,13 +36,13 @@ const WhoWeServeSection = () => {
   const personas = [
     {
       title: 'Skilled Professionals',
-      description: 'Perfect for professionals relocating to Germany for work opportunities.',
+      description: 'Made for moments of transition; when everything feels new.',
       features: ['Prime locations', 'Near business districts', 'Fully furnished'],
       icon: Briefcase, // Specific icon for visual storytelling
     },
     {
       title: 'Students',
-      description: 'Ideal living spaces for students pursuing education in Germany.',
+      description: 'Ideal living spaces for students pursuing their education abroad.',
       features: ['Near universities', 'Student-friendly pricing', 'Study spaces'],
       icon: GraduationCap,
     },

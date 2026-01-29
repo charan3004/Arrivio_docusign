@@ -7,7 +7,7 @@ const VisionSection = () => {
     {
       icon: XCircle,
       title: 'No Credit Barriers',
-      description: 'Your credit history is history. We qualify based on future potential, not past paperwork.',
+      description: 'No SCHUFA needed. We qualify based on future potential, not past paperwork.',
     },
     {
       icon: Languages,

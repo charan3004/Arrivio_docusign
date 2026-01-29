@@ -37,6 +37,17 @@ const Search = () => {
     }
   }, [location.state]);
 
+  useEffect(() => {
+    if (searchTerm.trim() === "") {
+        setFilters(prev => ({
+        ...prev,
+        city: "All"
+        }));
+    }
+ }, [searchTerm]);
+
+
+
   // --- CLICK OUTSIDE SUGGESTIONS ---
   useEffect(() => {
     const handleClickOutside = (event) => {
