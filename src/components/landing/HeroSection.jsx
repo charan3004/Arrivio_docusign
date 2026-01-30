@@ -122,8 +122,8 @@ const HeroSection = () => {
                         "
                     >
                         <div className="flex flex-col items-start text-left">
-                            <span className="text-[10px] font-bold uppercase tracking-widest text-[#2C3E30]/80">Next Step</span>
-                            <span className="text-lg font-serif italic text-[#1A1A1A]">Explore Cities</span>
+                            <span className="text-[10px] font-bold uppercase tracking-widest text-[#2C3E30]/80">Select a city,</span>
+                            <span className="text-lg font-serif italic text-[#1A1A1A]">Rent a Home!</span>
                         </div>
                         
                         <div className="w-10 h-10 rounded-full bg-[#2C3E30] flex items-center justify-center text-white group-hover:rotate-45 transition-transform duration-500 shadow-sm">
