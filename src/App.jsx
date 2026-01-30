@@ -1,5 +1,5 @@
 import React from 'react';
-import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, useLocation, Navigate } from 'react-router-dom';
 
 // --- COMPONENTS ---
 import Navbar from './components/layout/Navbar';        
@@ -8,6 +8,12 @@ import SimpleNavbar from './components/layout/SimpleNavbar';
 import PropertyNavbar from './components/layout/PropertyNavbar'; 
 import Footer from './components/layout/Footer';
 import ScrollToTop from './components/common/ScrollToTop';
+
+// --- ADMIN COMPONENTS & PAGES ---
+import AdminLogin from './pages/AdminLogin';
+import AdminLayout from './components/admin/AdminLayout';
+import AdminHome from './pages/admin/AdminHome';
+import AdminProperties from './pages/admin/AdminProperties';
 
 // --- PAGES ---
 import CityGridPage from './components/search/CityGridPage';
@@ -93,7 +99,22 @@ function App() {
   return (
     <Router>
       <ScrollToTop />
-      <Layout />
+      <Routes>
+        {/* Admin Routes */}
+        <Route path="/admin/login" element={<AdminLogin />} />
+        
+        <Route path="/admin" element={<AdminLayout />}>
+          <Route index element={<Navigate to="/admin/dashboard" replace />} />
+          <Route path="dashboard" element={<AdminHome />} />
+          <Route path="properties" element={<AdminProperties />} />
+          <Route path="users" element={<div className="p-6"><h1 className="text-2xl font-bold">Users Management</h1><p className="mt-4 text-gray-600">Coming soon...</p></div>} />
+          <Route path="analytics" element={<div className="p-6"><h1 className="text-2xl font-bold">Analytics</h1><p className="mt-4 text-gray-600">Coming soon...</p></div>} />
+          <Route path="settings" element={<div className="p-6"><h1 className="text-2xl font-bold">Settings</h1><p className="mt-4 text-gray-600">Coming soon...</p></div>} />
+        </Route>
+
+        {/* Main App Layout for Public Routes */}
+        <Route path="*" element={<Layout />} />
+      </Routes>
     </Router>
   );
 }

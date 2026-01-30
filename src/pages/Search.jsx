@@ -4,7 +4,7 @@ import { Search as SearchIcon, SlidersHorizontal, Bed, Bath, Move, FileCheck, X,
 import { motion, AnimatePresence } from 'framer-motion';
 
 // --- IMPORTS ---
-import { allProperties } from '../data/properties'; 
+import { API_BASE_URL } from '../config';
 import PropertyMap from '../components/search/PropertyMap'; 
 import FilterPanel from '../components/search/FilterPanel';
 
@@ -19,6 +19,21 @@ const Search = () => {
   const [hoveredId, setHoveredId] = useState(null);
   const [showFilters, setShowFilters] = useState(false);
   const [showSuggestions, setShowSuggestions] = useState(false);
+  const [properties, setProperties] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    fetch(`${API_BASE_URL}/properties`)
+      .then(res => res.json())
+      .then(data => {
+        setProperties(Array.isArray(data) ? data : []);
+        setLoading(false);
+      })
+      .catch(err => {
+        console.error(err);
+        setLoading(false);
+      });
+  }, []);
 
   const [filters, setFilters] = useState({
     city: initialCity,
@@ -60,7 +75,7 @@ const Search = () => {
   }, []);
 
   // --- REVISED FILTER LOGIC ---
-  const safeProperties = allProperties || [];
+  const safeProperties = properties || [];
 
   const filteredProperties = safeProperties.filter(p => {
     // 1. City Check: If "All" is selected, match everything. 
