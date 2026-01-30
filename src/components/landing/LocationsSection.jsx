@@ -11,8 +11,8 @@ import cologneImg from '../../assets/cities/cologne.jpeg';
 import dusseldorfImg from '../../assets/cities/dusseldorf.jpeg';
 import bonnImg from '../../assets/cities/bonn.jpeg';
 import aachenImg from '../../assets/cities/aachen.jpeg';
-// 1. IMPORT HAMBURG IMAGE (Make sure you have this file in your assets folder!)
 import hamburgImg from '../../assets/cities/hamburg.jpeg'; 
+import germanyMap from '../../assets/germany.png';
 
 const locations = [
   { id: 1, name: "Aachen", top: "52%", left: "10%", count: 3, price: "580", label: "Tech & Uni", description: "Innovation meets history.", image: aachenImg },
@@ -139,9 +139,17 @@ const LocationsSection = () => {
 
               <div className="relative z-20 w-full h-full flex items-center justify-center">
                 <div className="relative w-full h-full max-w-[360px]">
-                  <svg viewBox="0 0 350 500" className="w-full h-full overflow-visible">
-                      <path d="M140,480 L180,490 L220,485 L260,460 L280,420 L320,400 L300,340 L340,300 L320,220 L300,140 L330,80 L260,20 L180,10 L140,30 L90,50 L70,110 L30,140 L10,220 L40,280 L10,350 L40,420 L90,460 Z" className="fill-white/5 stroke-white/20" />
-                  </svg>
+                <img
+                  src={germanyMap}
+                  alt="Germany Map"
+                  className="
+                    absolute inset-0 w-full h-full object-contain pointer-events-none
+                    scale-110 sm:scale-120 lg:scale-150 opacity-40
+                  "
+                />
+
+
+
 
                   {locations.map((loc) => (
                     <motion.div
