@@ -9,7 +9,7 @@ import {
 import { motion, AnimatePresence } from 'framer-motion';
 
 // --- IMPORTS ---
-import { API_BASE_URL } from '../config';
+import { allProperties } from '../data/properties'; 
 import PropertyGallery from '../components/property/PropertyGallery';
 import BookingWidget from '../components/property/BookingWidget';
 import PropertyStats from '../components/property/PropertyStats';
@@ -19,28 +19,10 @@ const PropertyDetails = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const [isExpanded, setIsExpanded] = useState(false);
-  const [property, setProperty] = useState(null);
-  const [loading, setLoading] = useState(true);
   
-  useEffect(() => { 
-      window.scrollTo(0, 0); 
-      fetch(`${API_BASE_URL}/properties/${id}`)
-        .then(res => res.json())
-        .then(data => {
-            if (data.message === 'Property not found') {
-                setProperty(null);
-            } else {
-                setProperty(data);
-            }
-            setLoading(false);
-        })
-        .catch(err => {
-            console.error(err);
-            setLoading(false);
-        });
-  }, [id]);
+  useEffect(() => { window.scrollTo(0, 0); }, [id]);
 
-  if (loading) return <div className="min-h-screen flex items-center justify-center bg-[#EAE8E4]">Loading...</div>;
+  const property = allProperties.find(p => p.id === parseInt(id));
 
   if (!property) {
       return (

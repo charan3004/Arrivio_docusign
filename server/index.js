@@ -8,6 +8,7 @@ const jwt = require('jsonwebtoken');
 const app = express();
 const port = process.env.PORT || 5000;
 const JWT_SECRET = process.env.JWT_SECRET || 'dev_secret_key_123';
+const GOOGLE_CLIENT_ID = "303911068133-uete5ufngfa87959bchmc115c05tfi1m.apps.googleusercontent.com";
 
 // Middleware
 app.use(cors());
@@ -41,6 +42,39 @@ app.get('/', (req, res) => {
 });
 
 // Auth Routes
+app.post('/auth/signup', async (req, res) => {
+    const { fullName, email, password } = req.body;
+    try {
+        // Check if user exists
+        const userCheck = await db.query('SELECT * FROM users WHERE email = $1', [email]);
+        if (userCheck.rows.length > 0) {
+            return res.status(400).json({ message: 'User already exists' });
+        }
+
+        const hashedPassword = await bcrypt.hash(password, 10);
+        const newUser = await db.query(
+            'INSERT INTO users (full_name, email, password_hash, role) VALUES ($1, $2, $3, $4) RETURNING *',
+            [fullName, email, hashedPassword, 'user']
+        );
+        
+        const user = newUser.rows[0];
+        const token = jwt.sign({ id: user.id, email: user.email, role: user.role }, JWT_SECRET, { expiresIn: '24h' });
+        
+        res.status(201).json({ 
+            token, 
+            user: {
+                id: user.id,
+                full_name: user.full_name,
+                email: user.email,
+                role: user.role
+            }
+        });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ error: 'Signup failed' });
+    }
+});
+
 app.post('/auth/login', async (req, res) => {
     const { email, password } = req.body;
     try {
@@ -51,19 +85,78 @@ app.post('/auth/login', async (req, res) => {
         const validPassword = await bcrypt.compare(password, user.password_hash);
         if (!validPassword) return res.status(400).json({ message: 'Invalid password' });
 
-        const token = jwt.sign({ id: user.id, username: user.username, role: user.role }, JWT_SECRET, { expiresIn: '24h' });
+        const token = jwt.sign({ id: user.id, email: user.email, role: user.role }, JWT_SECRET, { expiresIn: '24h' });
         res.json({ 
             token, 
             user: {
                 id: user.id,
-                username: user.username,
+                full_name: user.full_name,
                 email: user.email,
-                role: user.role
+                role: user.role,
+                phone: user.phone,
+                bio: user.bio
             }
         });
     } catch (err) {
         console.error(err);
         res.status(500).json({ error: 'Login failed' });
+    }
+});
+
+// Auth Routes
+app.post('/auth/google', async (req, res) => {
+    const { token } = req.body;
+    try {
+        // Method 2: If using Access Token (from useGoogleLogin hook)
+        // We fetch user info directly from Google
+        const googleRes = await fetch('https://www.googleapis.com/oauth2/v3/userinfo', {
+            headers: { Authorization: `Bearer ${token}` }
+        });
+        
+        if (!googleRes.ok) {
+            throw new Error('Failed to fetch user info from Google');
+        }
+
+        const payload = await googleRes.json();
+        const { email, name, sub: googleId, picture } = payload;
+        
+        // Fallback for name if missing
+        const fullName = name || email.split('@')[0];
+
+        // Check if user exists
+        const userCheck = await db.query('SELECT * FROM users WHERE email = $1', [email]);
+        
+        let user;
+        if (userCheck.rows.length === 0) {
+            const randomPassword = Math.random().toString(36).slice(-8);
+            const hashedPassword = await bcrypt.hash(randomPassword, 10);
+            const newUser = await db.query(
+                'INSERT INTO users (full_name, email, password_hash, google_id, role, bio) VALUES ($1, $2, $3, $4, $5, $6) RETURNING *',
+                [fullName, email, hashedPassword, googleId, 'user', 'Joined via Google']
+            );
+            user = newUser.rows[0];
+        } else {
+            user = userCheck.rows[0];
+            if (!user.google_id) {
+                 await db.query('UPDATE users SET google_id = $1 WHERE id = $2', [googleId, user.id]);
+            }
+        }
+
+        const jwtToken = jwt.sign({ id: user.id, email: user.email, role: user.role }, JWT_SECRET, { expiresIn: '24h' });
+        res.json({ 
+            token: jwtToken, 
+            user: {
+                id: user.id,
+                full_name: user.full_name,
+                email: user.email,
+                role: user.role,
+                phone: user.phone,
+                bio: user.bio
+            }
+        });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ error: 'Google login failed' });
     }
 });
 

@@ -4,7 +4,7 @@ import { Search as SearchIcon, SlidersHorizontal, Bed, Bath, Move, FileCheck, X,
 import { motion, AnimatePresence } from 'framer-motion';
 
 // --- IMPORTS ---
-import { API_BASE_URL } from '../config';
+import { allProperties } from '../data/properties'; 
 import PropertyMap from '../components/search/PropertyMap'; 
 import FilterPanel from '../components/search/FilterPanel';
 
@@ -19,21 +19,6 @@ const Search = () => {
   const [hoveredId, setHoveredId] = useState(null);
   const [showFilters, setShowFilters] = useState(false);
   const [showSuggestions, setShowSuggestions] = useState(false);
-  const [properties, setProperties] = useState([]);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    fetch(`${API_BASE_URL}/properties`)
-      .then(res => res.json())
-      .then(data => {
-        setProperties(Array.isArray(data) ? data : []);
-        setLoading(false);
-      })
-      .catch(err => {
-        console.error(err);
-        setLoading(false);
-      });
-  }, []);
 
   const [filters, setFilters] = useState({
     city: initialCity,
@@ -52,17 +37,6 @@ const Search = () => {
     }
   }, [location.state]);
 
-  useEffect(() => {
-    if (searchTerm.trim() === "") {
-        setFilters(prev => ({
-        ...prev,
-        city: "All"
-        }));
-    }
- }, [searchTerm]);
-
-
-
   // --- CLICK OUTSIDE SUGGESTIONS ---
   useEffect(() => {
     const handleClickOutside = (event) => {
@@ -75,7 +49,7 @@ const Search = () => {
   }, []);
 
   // --- REVISED FILTER LOGIC ---
-  const safeProperties = properties || [];
+  const safeProperties = allProperties || [];
 
   const filteredProperties = safeProperties.filter(p => {
     // 1. City Check: If "All" is selected, match everything. 
@@ -148,7 +122,7 @@ const Search = () => {
                                 className="w-full bg-white/60 backdrop-blur-md border border-[#2C3E30]/10 rounded-xl py-3 pl-10 pr-10 text-xs font-medium text-[#2C3E30] focus:outline-none focus:ring-2 focus:ring-[#2C3E30]/5 transition-all shadow-sm"
                             />
                             {searchTerm && (
-                                <button onClick={()=> {setSearchTerm(""); setFilters(prev => ({ ...prev, city: "All"}));  }} className="absolute right-3 top-1/2 -translate-y-1/2 text-[#2C3E30]/40 hover:text-[#2C3E30]">
+                                <button onClick={() => setSearchTerm("")} className="absolute right-3 top-1/2 -translate-y-1/2 text-[#2C3E30]/40 hover:text-[#2C3E30]">
                                     <X size={14} />
                                 </button>
                             )}

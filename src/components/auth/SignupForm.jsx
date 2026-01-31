@@ -1,7 +1,10 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+import { useGoogleLogin } from '@react-oauth/google';
 import Input from '../common/Input';
 import Button from '../common/Button';
+import { useAuth } from '../../context/AuthContext';
+import { API_BASE_URL } from '../../config';
 
 const SignupForm = () => {
   const [formData, setFormData] = useState({
@@ -11,6 +14,47 @@ const SignupForm = () => {
     confirmPassword: '',
   });
   const [errors, setErrors] = useState({});
+  const [isLoading, setIsLoading] = useState(false);
+  const navigate = useNavigate();
+  const { login } = useAuth();
+
+  const googleLogin = useGoogleLogin({
+    onSuccess: async (tokenResponse) => {
+      try {
+        setIsLoading(true);
+        console.log('Google Token Response:', tokenResponse);
+        const res = await fetch(`${API_BASE_URL}/auth/google`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            token: tokenResponse.credential || tokenResponse.access_token, // Handle both implicit and authorization code flows if needed, but useGoogleLogin usually gives access_token
+          }),
+        });
+
+        const data = await res.json();
+        console.log('Backend Response:', data);
+
+        if (res.ok) {
+          login(data.user, data.token);
+          navigate('/');
+        } else {
+          console.error('Backend Error:', data);
+          setErrors({ form: data.message || 'Google signup failed. See console for details.' });
+        }
+      } catch (err) {
+        console.error('Network/Client Error:', err);
+        setErrors({ form: 'Network error during Google signup. Is the backend running?' });
+      } finally {
+        setIsLoading(false);
+      }
+    },
+    onError: (errorResponse) => {
+      console.error('Google Login Failed:', errorResponse);
+      setErrors({ form: 'Google Login Failed. Check console.' });
+    },
+  });
 
   const handleChange = (e) => {
     setFormData({
@@ -26,7 +70,7 @@ const SignupForm = () => {
     }
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     
     // Basic validation
@@ -55,8 +99,28 @@ const SignupForm = () => {
       return;
     }
 
-    // Handle signup logic here
-    console.log('Signup attempt:', formData);
+    setIsLoading(true);
+    try {
+      const res = await fetch(`${API_BASE_URL}/auth/signup`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData),
+      });
+
+      const data = await res.json();
+      if (res.ok) {
+        login(data.user, data.token);
+        navigate('/');
+      } else {
+        setErrors({ form: data.message || 'Signup failed' });
+      }
+    } catch (err) {
+      setErrors({ form: 'Network error. Please try again.' });
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -129,8 +193,10 @@ const SignupForm = () => {
           variant="secondary"
           className="w-full"
           type="button"
+          onClick={() => googleLogin()}
+          disabled={isLoading}
         >
-          Sign up with Google
+          {isLoading ? 'Connecting...' : 'Sign up with Google'}
         </Button>
 
         {/* Login Link */}
