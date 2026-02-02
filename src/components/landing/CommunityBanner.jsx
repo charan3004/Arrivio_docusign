@@ -115,7 +115,7 @@ const CommunityBanner = () => {
           alt="Community Vibe"
           className="w-full h-full object-cover opacity-95 grayscale-[20%]"
         />
-        <div className="absolute inset-0 bg-[#EAE8E4] mix-blend-color opacity-30"></div>
+        <div className="absolute inset-0 mix-blend-color opacity-30"></div>
       </div>
 
       {/* CENTER BLOCK */}

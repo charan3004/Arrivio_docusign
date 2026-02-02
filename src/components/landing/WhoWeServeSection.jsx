@@ -42,7 +42,7 @@ const WhoWeServeSection = () => {
     },
     {
       title: 'Students',
-      description: 'Ideal living spaces for students pursuing their education abroad.',
+      description: 'Ideal living spaces for students pursuing their ambitions.',
       features: ['Near universities', 'Student-friendly pricing', 'Study spaces'],
       icon: GraduationCap,
     },
