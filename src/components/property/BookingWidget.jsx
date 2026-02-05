@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../../context/AuthContext';
 import {
   ShieldCheck,
   Info,
@@ -12,6 +13,7 @@ import {
 
 const BookingWidget = ({ price, title, image }) => {
   const navigate = useNavigate();
+  const { isAuthenticated } = useAuth();
 
   const [checkIn, setCheckIn] = useState('');
   const [checkOut, setCheckOut] = useState('');
@@ -66,21 +68,24 @@ const BookingWidget = ({ price, title, image }) => {
   }, [checkIn, checkOut]);
 
   const handleBooking = () => {
-    navigate('/signin', {
-      state: {
-        title: title || 'Luxury Apartment',
-        image: image || '',
-        price,
-        total: oneTimeTotal + (monthlyTotal * (nights / 30)),
-        nights,
-        checkIn,
-        checkOut,
-        guests: 1,
-        monthlyTotal,
-        oneTimeTotal,
-        deposit,
-      },
-    });
+    const state = {
+      title: title || 'Luxury Apartment',
+      image: image || '',
+      price,
+      total: oneTimeTotal + (monthlyTotal * (nights / 30)),
+      nights,
+      checkIn,
+      checkOut,
+      guests: 1,
+      monthlyTotal,
+      oneTimeTotal,
+      deposit,
+    };
+    if (isAuthenticated) {
+      navigate('/apply', { state });
+    } else {
+      navigate('/signin', { state });
+    }
   };
 
   return (

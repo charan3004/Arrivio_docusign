@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { CreditCard, Lock, ChevronRight, ArrowLeft, Calendar, RefreshCcw, ChevronDown, ShieldCheck, CheckCircle } from 'lucide-react';
+import { CreditCard, Lock, ChevronRight, ArrowLeft, Calendar, RefreshCcw, ChevronDown, ShieldCheck, CheckCircle, User } from 'lucide-react';
 import GameLevelTracker from '../components/shared/GameLevelTracker';
+import { useAuth } from '../context/AuthContext';
 
 // Shared Price Breakdown (Stays the same)
 const DetailedPriceBreakdown = ({ state, theme = "dark" }) => {
@@ -38,8 +39,15 @@ const DetailedPriceBreakdown = ({ state, theme = "dark" }) => {
 const PaymentPage = () => {
   const { state } = useLocation();
   const navigate = useNavigate();
+  const { user } = useAuth();
   const [loading, setLoading] = useState(false);
   const [showMobileSummary, setShowMobileSummary] = useState(false);
+
+  React.useEffect(() => {
+    if (!user) {
+      navigate('/signin');
+    }
+  }, [user, navigate]);
 
   const bookingData = state || {
      title: "Debug Apartment",
@@ -87,6 +95,18 @@ const PaymentPage = () => {
                     <p className="text-[11px] text-[#2C3E30]/60">Confirm your reservation with a secure payment.</p>
                 </div>
 
+                {user && (
+                    <div className="mb-6 bg-[#2C3E30]/5 p-3 rounded-xl border border-[#2C3E30]/10 flex items-center gap-3">
+                        <div className="w-8 h-8 rounded-full bg-[#2C3E30] flex items-center justify-center text-white flex-shrink-0">
+                             <User size={14}/>
+                        </div>
+                        <div>
+                             <p className="text-[10px] font-bold uppercase tracking-widest text-[#2C3E30]/50">Receipt will be sent to</p>
+                             <p className="text-xs font-bold text-[#2C3E30]">{user.email}</p>
+                        </div>
+                    </div>
+                )}
+
                 <div className="bg-white p-5 rounded-[2rem] shadow-sm border border-[#2C3E30]/5">
                      <div className="flex justify-between items-center mb-4 pb-3 border-b border-[#2C3E30]/5">
                         <span className="text-[10px] font-bold text-[#2C3E30]/40 uppercase tracking-widest">Due Today</span>
@@ -102,7 +122,7 @@ const PaymentPage = () => {
                             <input type="text" placeholder="MM / YY" className="px-4 py-3 rounded-xl bg-[#F4F3F0] text-xs font-bold text-[#2C3E30] outline-none"/>
                             <input type="text" placeholder="CVC" className="px-4 py-3 rounded-xl bg-[#F4F3F0] text-xs font-bold text-[#2C3E30] outline-none"/>
                         </div>
-                        <input type="text" placeholder="Cardholder Name" className="w-full px-4 py-3 rounded-xl bg-[#F4F3F0] text-xs font-bold text-[#2C3E30] outline-none"/>
+                        <input type="text" placeholder="Cardholder Name" defaultValue={user?.full_name} className="w-full px-4 py-3 rounded-xl bg-[#F4F3F0] text-xs font-bold text-[#2C3E30] outline-none"/>
                      </div>
 
                      <div className="flex items-center justify-between mt-4 pt-1">

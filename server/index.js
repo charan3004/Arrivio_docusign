@@ -8,7 +8,7 @@ const jwt = require('jsonwebtoken');
 const app = express();
 const port = process.env.PORT || 5000;
 const JWT_SECRET = process.env.JWT_SECRET || 'dev_secret_key_123';
-const GOOGLE_CLIENT_ID = "303911068133-uete5ufngfa87959bchmc115c05tfi1m.apps.googleusercontent.com";
+const GOOGLE_CLIENT_ID = process.env.GOOGLE_CLIENT_ID || "303911068133-uete5ufngfa87959bchmc115c05tfi1m.apps.googleusercontent.com";
 
 // Middleware
 app.use(cors());

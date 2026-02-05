@@ -2,6 +2,9 @@ import React, { useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { ArrowRight, Lock, CheckCircle, Mail, Phone } from 'lucide-react'; 
 import { motion } from 'framer-motion';
+import { useGoogleLogin } from '@react-oauth/google';
+import { useAuth } from '../context/AuthContext';
+import { API_BASE_URL } from '../config';
 
 // --- IMPORT TRACKER ---
 import GameLevelTracker from '../components/shared/GameLevelTracker';
@@ -22,6 +25,18 @@ const FacebookIcon = () => (
 const SignIn = () => {
   const { state } = useLocation(); 
   const navigate = useNavigate();
+  const { login, isAuthenticated } = useAuth();
+
+  // Redirect if already authenticated
+  React.useEffect(() => {
+    if (isAuthenticated) {
+      if (state) {
+        navigate('/apply', { state: state });
+      } else {
+        navigate('/apply');
+      }
+    }
+  }, [isAuthenticated, navigate, state]);
   
   // State for flow control
   const [step, setStep] = useState(1); // 1 = Input, 2 = OTP
@@ -29,6 +44,53 @@ const SignIn = () => {
   const [otp, setOtp] = useState('');
   const [loading, setLoading] = useState(false);
   const [inputType, setInputType] = useState('email'); // 'email' or 'phone' (detected automatically)
+
+  // --- HANDLER: GOOGLE LOGIN ---
+  const googleLogin = useGoogleLogin({
+    onSuccess: async (tokenResponse) => {
+      try {
+        setLoading(true);
+        console.log('Google Token Response:', tokenResponse);
+        
+        // Get User Info from Google (optional, but backend does it with token)
+        // Send access token to backend
+        const res = await fetch(`${API_BASE_URL}/auth/google`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            token: tokenResponse.access_token,
+          }),
+        });
+
+        const data = await res.json();
+        console.log('Backend Response:', data);
+
+        if (res.ok) {
+          login(data.user, data.token);
+          // Redirect to application process
+          if (state) {
+             navigate('/apply', { state: state });
+          } else {
+             navigate('/apply');
+          }
+        } else {
+          console.error('Google login failed:', data.message);
+          alert(data.message || 'Google login failed');
+        }
+      } catch (err) {
+        console.error('Google Login Error:', err);
+        alert('Network error during Google login.');
+      } finally {
+        setLoading(false);
+      }
+    },
+    onError: () => {
+      console.error('Google Login Failed');
+      alert('Google Login Failed');
+    },
+  });
 
   // --- HANDLER: DETECT INPUT TYPE ---
   const handleInputChange = (val) => {
@@ -156,7 +218,7 @@ const SignIn = () => {
 
                         {/* SOCIAL BUTTONS GRID */}
                         <div className="grid grid-cols-3 gap-3">
-                            <button onClick={() => handleSocialLogin('Google')} className="flex items-center justify-center py-3 rounded-xl border border-[#2C3E30]/10 hover:bg-[#F4F3F0] transition-colors">
+                            <button onClick={() => googleLogin()} className="flex items-center justify-center py-3 rounded-xl border border-[#2C3E30]/10 hover:bg-[#F4F3F0] transition-colors">
                                 <GoogleIcon />
                             </button>
                             <button onClick={() => handleSocialLogin('Apple')} className="flex items-center justify-center py-3 rounded-xl border border-[#2C3E30]/10 hover:bg-[#F4F3F0] transition-colors text-[#2C3E30]">

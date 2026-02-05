@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { Share, Heart, Menu, X } from 'lucide-react'; 
+import { Share, Heart, Menu, X, User } from 'lucide-react'; 
 import { motion, AnimatePresence } from 'framer-motion';
+import { useAuth } from '../../context/AuthContext';
 
 const PropertyNavbar = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
+  const { isAuthenticated } = useAuth();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -68,11 +70,19 @@ const PropertyNavbar = () => {
                 </Link>
             </div>
             <div className="mt-8">
-                <Link to="/login" onClick={() => setIsMobileMenuOpen(false)}>
-                    <button className="w-fit px-10 py-3 rounded-full font-sans text-xs font-bold uppercase tracking-widest bg-[#2C3E30] text-[#EAE8E4] shadow-lg">
-                        Sign In
-                    </button>
-                </Link>
+                {isAuthenticated ? (
+                    <Link to="/profile" onClick={() => setIsMobileMenuOpen(false)}>
+                        <button className="w-fit px-10 py-3 rounded-full font-sans text-xs font-bold uppercase tracking-widest bg-[#2C3E30] text-[#EAE8E4] shadow-lg flex items-center gap-2">
+                            <User size={16} /> My Profile
+                        </button>
+                    </Link>
+                ) : (
+                    <Link to="/login" onClick={() => setIsMobileMenuOpen(false)}>
+                        <button className="w-fit px-10 py-3 rounded-full font-sans text-xs font-bold uppercase tracking-widest bg-[#2C3E30] text-[#EAE8E4] shadow-lg">
+                            Sign In
+                        </button>
+                    </Link>
+                )}
             </div>
             <div className="mt-8 pb-8">
                 <span className="text-[10px] uppercase tracking-widest text-[#2C3E30]/40">© 2024 Arrivio</span>

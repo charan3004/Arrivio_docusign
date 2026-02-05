@@ -2,6 +2,17 @@ const { Client } = require('pg');
 const path = require('path');
 require('dotenv').config({ path: path.resolve(__dirname, '..', '.env') });
 
+/**
+ * This script was originally for creating a LOCAL PostgreSQL database.
+ * When DATABASE_URL (Supabase / managed Postgres) is set, we should NOT try
+ * to create databases, so we just exit early with a helpful message.
+ */
+if (process.env.DATABASE_URL) {
+  console.log('DATABASE_URL detected – assuming managed Supabase/Postgres.');
+  console.log('init-db.js is only needed for local PostgreSQL development. Nothing to do.');
+  process.exit(0);
+}
+
 async function ensureDatabase() {
   const {
     DB_USER,

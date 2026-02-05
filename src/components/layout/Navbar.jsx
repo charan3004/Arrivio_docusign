@@ -174,27 +174,11 @@ const Navbar = () => {
                 </div>
                 <div className="mt-8">
                     {isAuthenticated ? (
-                        <div className="flex flex-col gap-4">
-                            <div className="flex flex-col">
-                                <span className="font-serif text-2xl text-[#2C3E30]">
-                                    {user?.full_name || 'User'}
-                                </span>
-                                <span className="font-sans text-xs text-[#2C3E30]/70">
-                                    {user?.email}
-                                </span>
-                            </div>
-                            <button 
-                                onClick={() => {
-                                    logout();
-                                    setIsMobileMenuOpen(false);
-                                    navigate('/');
-                                }}
-                                className="w-fit px-10 py-3 rounded-full font-sans text-xs font-bold uppercase tracking-widest bg-[#2C3E30] text-[#EAE8E4] shadow-lg active:scale-95 transition-transform flex items-center gap-2"
-                            >
-                                <LogOut size={16} />
-                                Logout
+                        <Link to="/profile" onClick={() => setIsMobileMenuOpen(false)}>
+                            <button className="w-fit px-10 py-3 rounded-full font-sans text-xs font-bold uppercase tracking-widest bg-[#2C3E30] text-[#EAE8E4] shadow-lg active:scale-95 transition-transform flex items-center gap-2">
+                                <User size={16} /> My Profile
                             </button>
-                        </div>
+                        </Link>
                     ) : (
                         <Link to="/login" onClick={() => setIsMobileMenuOpen(false)}>
                             <button className="w-fit px-10 py-3 rounded-full font-sans text-xs font-bold uppercase tracking-widest bg-[#2C3E30] text-[#EAE8E4] shadow-lg active:scale-95 transition-transform">

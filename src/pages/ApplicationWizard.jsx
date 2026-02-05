@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ShieldCheck, Upload, FileText, CheckCircle, ChevronRight, ArrowLeft, PenTool, ChevronDown, RefreshCcw, Calendar } from 'lucide-react';
+import { ShieldCheck, Upload, FileText, CheckCircle, ChevronRight, ArrowLeft, PenTool, ChevronDown, RefreshCcw, Calendar, User, Mail } from 'lucide-react';
+import { useAuth } from '../context/AuthContext';
 
 // --- IMPORT TRACKER ---
 import GameLevelTracker from '../components/shared/GameLevelTracker';
@@ -72,9 +73,20 @@ const DetailedPriceBreakdown = ({ state, theme = "dark" }) => {
 };
 
 // --- INTERNAL STEPS ---
-const StepIdentity = () => (
+const StepIdentity = ({ user }) => (
   <div className="space-y-6">
     <h2 className="text-xl font-serif text-[#2C3E30]">Verify your Identity</h2>
+    
+    {user && (
+        <div className="flex items-center gap-3 bg-[#2C3E30]/5 p-4 rounded-xl border border-[#2C3E30]/10">
+            <div className="w-8 h-8 bg-[#2C3E30] rounded-full flex items-center justify-center text-white flex-shrink-0"><User size={14}/></div>
+            <div>
+                <p className="text-xs font-bold text-[#2C3E30]">Applying as {user.full_name}</p>
+                <p className="text-[10px] text-[#2C3E30]/60">{user.email}</p>
+            </div>
+        </div>
+    )}
+
     <p className="text-xs text-[#2C3E30]/60">We need to verify your ID to generate a legal German rental contract.</p>
     <div className="grid grid-cols-1 gap-4">
         <div className="border border-dashed border-[#2C3E30]/20 rounded-xl p-6 flex flex-col items-center justify-center text-center bg-[#F4F3F0] hover:bg-white transition-colors cursor-pointer group">
@@ -89,7 +101,7 @@ const StepIdentity = () => (
   </div>
 );
 
-const StepSolvency = () => (
+const StepSolvency = ({ user }) => (
   <div className="space-y-6">
     <h2 className="text-xl font-serif text-[#2C3E30]">Proof of Income</h2>
     <p className="text-xs text-[#2C3E30]/60">Landlords require proof that you can afford the monthly rent.</p>
@@ -107,7 +119,7 @@ const StepSolvency = () => (
   </div>
 );
 
-const StepContract = () => (
+const StepContract = ({ user }) => (
   <div className="space-y-6">
     <h2 className="text-xl font-serif text-[#2C3E30]">Sign Lease Agreement</h2>
     <p className="text-xs text-[#2C3E30]/60">Please review the standard German residential lease agreement.</p>
@@ -118,7 +130,7 @@ const StepContract = () => (
     </div>
     <div className="flex items-center gap-3 bg-[#2C3E30]/5 p-4 rounded-xl border border-[#2C3E30]/10 cursor-pointer hover:bg-[#2C3E30]/10 transition-colors">
         <div className="w-8 h-8 bg-[#2C3E30] rounded-full flex items-center justify-center text-white"><PenTool size={14}/></div>
-        <span className="text-xs font-bold text-[#2C3E30] font-serif italic">Click to digitally sign as "John Doe"</span>
+        <span className="text-xs font-bold text-[#2C3E30] font-serif italic">Click to digitally sign as "{user ? user.full_name : 'John Doe'}"</span>
     </div>
   </div>
 );
@@ -127,9 +139,16 @@ const StepContract = () => (
 const ApplicationWizard = () => {
   const { state } = useLocation();
   const navigate = useNavigate();
+  const { user } = useAuth();
   const [step, setStep] = useState(1);
   const [showMobileSummary, setShowMobileSummary] = useState(false);
   const totalSteps = 3;
+
+  React.useEffect(() => {
+    if (!user) {
+      navigate('/signin');
+    }
+  }, [user, navigate]);
 
   // --- DEV MODE: FALLBACK DATA ---
   // This ensures the page works even if you refresh or access it directly
@@ -237,9 +256,9 @@ const ApplicationWizard = () => {
                         transition={{ duration: 0.3 }}
                         className="h-full"
                     >
-                        {step === 1 && <StepIdentity />}
-                        {step === 2 && <StepSolvency />}
-                        {step === 3 && <StepContract />}
+                        {step === 1 && <StepIdentity user={user} />}
+                        {step === 2 && <StepSolvency user={user} />}
+                        {step === 3 && <StepContract user={user} />}
                     </motion.div>
                 </AnimatePresence>
             </div>
