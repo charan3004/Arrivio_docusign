@@ -38,8 +38,9 @@ const Layout = () => {
   const location = useLocation();
   const path = location.pathname;
 
-  // 1. IDENTIFY THE TUNNEL (No distractions)
-  const isProcessPage = ['/signin', '/apply', '/payment', '/admin'].includes(path);
+  // 1. IDENTIFY SPECIAL ROUTES
+  const isProcessPage = ['/signin', '/apply', '/payment'].includes(path);
+  const isAdminRoute = path.startsWith('/admin');
   
   // 2. IDENTIFY THE SUCCESS PAGE (Needs a way home)
   const isSuccessPage = path === '/booking-success';
@@ -49,8 +50,8 @@ const Layout = () => {
   if (isSuccessPage) {
     // SHOW Logo Navbar only on Success Page
     CurrentNavbar = SimpleNavbar;
-  } else if (isProcessPage) {
-    // NO Navbar for the active steps (SignIn, Apply, Payment)
+  } else if (isProcessPage || isAdminRoute) {
+    // NO Navbar for process steps or admin area
     CurrentNavbar = () => null; 
   } else if (path === '/') {
     CurrentNavbar = Navbar;
@@ -99,8 +100,8 @@ const Layout = () => {
         </Routes>
       </main>
       
-      {/* Hide Footer on all process/success pages */}
-      {!isProcessPage && !isSuccessPage && <Footer />}
+      {/* Hide Footer on process, success, and admin pages */}
+      {!isProcessPage && !isSuccessPage && !isAdminRoute && <Footer />}
     </div>
   );
 };

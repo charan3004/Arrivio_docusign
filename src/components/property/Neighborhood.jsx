@@ -7,13 +7,35 @@ const Neighborhood = ({ property }) => {
   // Safety check: if no property data, show nothing
   if (!property) return null;
 
-  // Simulated Hotspots Data
+  // Neighborhood data from backend (admin-controlled)
+  const n = property.details?.neighborhood;
+
   const hotspots = [
-    { icon: <Train size={16}/>, label: "U-Bahn Station", dist: "3 min walk", type: "Transport" },
-    { icon: <Coffee size={16}/>, label: "Third Wave Coffee", dist: "5 min walk", type: "Lifestyle" },
-    { icon: <ShoppingBag size={16}/>, label: "Organic Grocery", dist: "2 min walk", type: "Essentials" },
-    { icon: <Leaf size={16}/>, label: "City Park", dist: "8 min walk", type: "Nature" },
-  ];
+    n?.transport && {
+      icon: <Train size={16} />,
+      label: n.transport.station || 'Nearest station',
+      dist: n.transport.time || '',
+      type: 'Transport',
+    },
+    n?.groceries && {
+      icon: <ShoppingBag size={16} />,
+      label: n.groceries.name || 'Groceries',
+      dist: n.groceries.time || '',
+      type: 'Essentials',
+    },
+    n?.park && {
+      icon: <Leaf size={16} />,
+      label: n.park.name || 'Park',
+      dist: n.park.time || '',
+      type: 'Nature',
+    },
+    n?.coffee && {
+      icon: <Coffee size={16} />,
+      label: n.coffee.name || 'Coffee',
+      dist: n.coffee.time || '',
+      type: 'Lifestyle',
+    },
+  ].filter(Boolean);
 
   return (
     <div className="relative">
@@ -28,9 +50,24 @@ const Neighborhood = ({ property }) => {
            </div>
            
            {/* Visual Map Link (Optional: You could link this to Google Maps) */}
-           <button className="hidden md:flex items-center gap-2 text-xs font-bold uppercase tracking-widest text-[#2C3E30] hover:opacity-70 transition-opacity">
+           {property.lat && property.lng ? (
+             <a
+               className="hidden md:flex items-center gap-2 text-xs font-bold uppercase tracking-widest text-[#2C3E30] hover:opacity-70 transition-opacity"
+               href={`https://www.google.com/maps?q=${property.lat},${property.lng}`}
+               target="_blank"
+               rel="noreferrer"
+             >
                <Navigation size={14} /> Open in Maps
-           </button>
+             </a>
+           ) : (
+             <button
+               className="hidden md:flex items-center gap-2 text-xs font-bold uppercase tracking-widest text-[#2C3E30]/40 cursor-not-allowed"
+               title="Set Latitude/Longitude in Admin to enable map link"
+               disabled
+             >
+               <Navigation size={14} /> Open in Maps
+             </button>
+           )}
        </div>
 
        {/* CONTENT GRID */}
@@ -72,8 +109,12 @@ const Neighborhood = ({ property }) => {
                {/* Commute Summary Card */}
                <div className="mt-2 p-5 bg-[#2C3E30] rounded-2xl text-[#EAE8E4] flex items-center justify-between shadow-lg">
                    <div>
-                       <span className="block text-[10px] uppercase tracking-widest opacity-60 mb-1">Commute to City Center</span>
-                       <span className="text-lg font-serif font-medium">15 Minutes</span>
+                       <span className="block text-[10px] uppercase tracking-widest opacity-60 mb-1">
+                         {n?.commuteLabel || 'Commute to City Center'}
+                       </span>
+                       <span className="text-lg font-serif font-medium">
+                         {n?.commuteTime || '15 Minutes'}
+                       </span>
                    </div>
                    <div className="h-10 w-10 bg-[#EAE8E4]/10 rounded-full flex items-center justify-center">
                         <Train size={18} />

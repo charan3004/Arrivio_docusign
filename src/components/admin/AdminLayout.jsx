@@ -26,14 +26,15 @@ const AdminLayout = () => {
       {/* Main Content */}
       <div className="flex-1 flex flex-col min-w-0 overflow-hidden">
         {/* Mobile Header */}
-        <div className="lg:hidden bg-white shadow-sm p-4 flex items-center">
+        <div className="lg:hidden bg-white shadow-sm p-4 flex items-center justify-between">
           <button
             onClick={() => setIsSidebarOpen(true)}
             className="p-2 rounded-md text-gray-400 hover:text-gray-500 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-primary-500"
           >
             <Menu className="h-6 w-6" />
           </button>
-          <span className="ml-4 text-xl font-bold text-gray-900">ARRIVIO Admin</span>
+          {/* Keep mobile header minimal to avoid overlapping branding with sidebar */}
+          <span className="ml-2 text-sm font-semibold text-gray-600">Admin Panel</span>
         </div>
 
         {/* Content Area */}

@@ -3,6 +3,13 @@ CREATE TABLE IF NOT EXISTS properties (
   title TEXT NOT NULL,
   city TEXT NOT NULL,
   price INTEGER NOT NULL,
+  image TEXT,
+  rating DECIMAL(2, 1),
+  tags TEXT[],
+  details JSONB,
+  gallery TEXT[],
+  lat DOUBLE PRECISION,
+  lng DOUBLE PRECISION,
   created_at TIMESTAMP NOT NULL DEFAULT NOW()
 );
 

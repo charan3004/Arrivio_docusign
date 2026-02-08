@@ -9,7 +9,7 @@ import {
 import { motion, AnimatePresence } from 'framer-motion';
 
 // --- IMPORTS ---
-import { allProperties } from '../data/properties'; 
+import { API_BASE_URL } from '../config';
 import PropertyGallery from '../components/property/PropertyGallery';
 import BookingWidget from '../components/property/BookingWidget';
 import PropertyStats from '../components/property/PropertyStats';
@@ -19,15 +19,44 @@ const PropertyDetails = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const [isExpanded, setIsExpanded] = useState(false);
+  const [property, setProperty] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
   
   useEffect(() => { window.scrollTo(0, 0); }, [id]);
 
-  const property = allProperties.find(p => p.id === parseInt(id));
+  useEffect(() => {
+    const fetchProperty = async () => {
+      try {
+        setLoading(true);
+        const res = await fetch(`${API_BASE_URL}/properties/${id}`);
+        if (!res.ok) throw new Error('Failed to load property');
+        const data = await res.json();
+        setProperty(data);
+      } catch (err) {
+        console.error('Error fetching property', err);
+        setError('Could not load property.');
+      } finally {
+        setLoading(false);
+      }
+    };
 
-  if (!property) {
+    fetchProperty();
+  }, [id]);
+
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-[#EAE8E4]">
+        <p className="text-sm text-[#2C3E30]/60 font-medium">Loading property...</p>
+      </div>
+    );
+  }
+
+  if (error || !property) {
       return (
           <div className="min-h-screen flex flex-col items-center justify-center bg-[#EAE8E4]">
-              <h2 className="text-2xl font-serif text-[#2C3E30] mb-4">Property not found</h2>
+              <h2 className="text-2xl font-serif text-[#2C3E30] mb-2">Property not found</h2>
+              <p className="text-sm text-[#2C3E30]/60 mb-4">{error || 'We could not find this property.'}</p>
               <button onClick={() => navigate(-1)} className="text-sm underline font-bold">Go Back</button>
           </div>
       );
@@ -49,11 +78,13 @@ const PropertyDetails = () => {
     return <CheckCircle size={16} />;
   };
 
-  const amenityCategories = [
-    { title: "Productivity", items: ["Fiber Internet", "Dedicated Desk", "Ergonomic Chair", "Monitor"] },
-    { title: "Living", items: ["Weekly Cleaning", "Smart TV", "Washer/Dryer", "Fully Furnished"] },
-    { title: "Building", items: ["Elevator", "Secure Entry", "Bike Storage", "Mail Service"] }
-  ];
+  const amenityCategories = property.details?.amenities && property.details.amenities.length
+    ? property.details.amenities
+    : [
+        { title: "Productivity", items: ["Fiber Internet", "Dedicated Desk", "Ergonomic Chair", "Monitor"] },
+        { title: "Living", items: ["Weekly Cleaning", "Smart TV", "Washer/Dryer", "Fully Furnished"] },
+        { title: "Building", items: ["Elevator", "Secure Entry", "Bike Storage", "Mail Service"] }
+      ];
 
   return (
     <div className="min-h-screen bg-[#EAE8E4] pb-20">
@@ -111,12 +142,11 @@ const PropertyDetails = () => {
                     className="relative overflow-hidden"
                 >
                     <p className="text-[#2C3E30]/80 text-sm leading-7 font-medium font-sans">
-                        Relocate without the stress. This Arrivio apartment is fully furnished, managed, and equipped for immediate move-in. 
-                        We handle the paperwork, utilities, and internet setup so you can focus on your new job from day one.
-                        <br/><br/>
-                        <span className="text-[#2C3E30] font-bold bg-white/50 px-1 rounded">Anmeldung is guaranteed</span> with this rental contract, allowing you to register with the city immediately.
-                        <br/><br/>
-                        The living area features a custom-designed sofa, 55" Smart TV, and a dining area that doubles as a workspace. The kitchen is fully stocked with premium appliances, Nespresso machine, and cooking essentials.
+                        {property.details?.description
+                          ? property.details.description
+                          : `Relocate without the stress. This Arrivio apartment is fully furnished, managed, and equipped for immediate move-in.
+                             We handle the paperwork, utilities, and internet setup so you can focus on your new job from day one.
+                             Anmeldung is guaranteed with this rental contract, allowing you to register with the city immediately.`}
                     </p>
                     
                     <AnimatePresence>
@@ -164,17 +194,37 @@ const PropertyDetails = () => {
             {/* Things to Know */}
             <div className="pt-8 border-t border-[#2C3E30]/10">
                 <h3 className="font-serif text-2xl text-[#2C3E30] mb-8 pt-4">Things to know</h3>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-y-4 gap-x-12 mb-8">
-                    <div className="flex items-center gap-3"><Baby size={18} className="text-[#2C3E30]/60"/> <span className="text-sm text-[#2C3E30]/80 font-medium">Suitable for children</span></div>
-                    <div className="flex items-center gap-3"><Dog size={18} className="text-[#2C3E30]/60"/> <span className="text-sm text-[#2C3E30]/80 font-medium">Pets allowed</span></div>
-                    <div className="flex items-center gap-3"><Ban size={18} className="text-[#2C3E30]/60"/> <span className="text-sm text-[#2C3E30]/80 font-medium">No parties or events</span></div>
-                    <div className="flex items-center gap-3"><Cigarette size={18} className="text-[#2C3E30]/60"/> <span className="text-sm text-[#2C3E30]/80 font-medium">No smoking allowed</span></div>
-                </div>
+                {(() => {
+                  const rules = Array.isArray(property.details?.rules) ? property.details.rules : [];
+                  const getRuleIcon = (rule) => {
+                    const r = String(rule || '').toLowerCase();
+                    if (r.includes('child')) return <Baby size={18} className="text-[#2C3E30]/60" />;
+                    if (r.includes('pet')) return <Dog size={18} className="text-[#2C3E30]/60" />;
+                    if (r.includes('smok')) return <Cigarette size={18} className="text-[#2C3E30]/60" />;
+                    if (r.includes('party') || r.includes('event')) return <Ban size={18} className="text-[#2C3E30]/60" />;
+                    return <CheckCircle size={18} className="text-[#2C3E30]/60" />;
+                  };
+
+                  return rules.length > 0 ? (
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-y-4 gap-x-12 mb-8">
+                      {rules.map((rule, idx) => (
+                        <div key={`${rule}-${idx}`} className="flex items-center gap-3">
+                          {getRuleIcon(rule)}
+                          <span className="text-sm text-[#2C3E30]/80 font-medium">{rule}</span>
+                        </div>
+                      ))}
+                    </div>
+                  ) : (
+                    <div className="mb-8 text-sm text-[#2C3E30]/50 font-medium italic">
+                      No rules have been set for this property yet.
+                    </div>
+                  );
+                })()}
 
                 <div className="flex items-start gap-4 p-5 bg-white/40 border border-white/60 rounded-xl shadow-sm hover:border-[#2C3E30]/20 transition-colors cursor-default">
                     <FileText size={20} className="text-[#2C3E30] shrink-0 mt-0.5"/>
                     <p className="text-[#2C3E30]/80 text-xs leading-relaxed">
-                        In any case, we will refund 100% of the payment (excl. card processing fees) if you cancel the booking 30+ days before moving in.
+                        {property.details?.refundPolicy || 'In any case, we will refund 100% of the payment (excl. card processing fees) if you cancel the booking 30+ days before moving in.'}
                     </p>
                 </div>
             </div>

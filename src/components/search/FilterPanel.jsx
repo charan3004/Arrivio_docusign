@@ -2,25 +2,21 @@ import React, { useState, useEffect, useRef, useMemo } from 'react';
 import { Check, MapPin, Layers, ChevronDown } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
-// --- IMPORT REAL DATA (Crucial for the graph) ---
-import { allProperties } from '../../data/properties'; 
-
 // --- CONFIG --
 const AVAILABLE_TAGS = ["Central", "Balcony", "Loft", "Waterfront", "Workspace", "Pet Friendly", "Altbau"];
-const CITIES = ["All", "Berlin", "Munich", "Hamburg", "Frankfurt", "Cologne", "Dusseldorf", "Bonn", "Aachen"];
 const FLOORS = ["Any", "Ground", "1st", "2nd", "3rd", "4th", "5th+"];
 
 // =========================================================
 // 1. PRICE HISTOGRAM (Real Data Logic)
 // =========================================================
-const PriceHistogram = ({ currentMax, maxLimit = 5000 }) => {
+const PriceHistogram = ({ currentMax, maxLimit = 5000, properties = [] }) => {
   const bars = useMemo(() => {
     const bucketCount = 24; // Number of bars
     const step = maxLimit / bucketCount; // Price range per bar (e.g. €200)
     const buckets = new Array(bucketCount).fill(0);
     
-    // 1. Scan real data and count houses in each price range
-    const safeProperties = allProperties || [];
+    // 1. Scan data and count houses in each price range
+    const safeProperties = properties || [];
     safeProperties.forEach(p => {
       if (p.price < maxLimit) {
         const index = Math.floor(p.price / step);
@@ -132,7 +128,7 @@ const CustomDropdown = ({ label, icon: Icon, value, options, onChange }) => {
 // =========================================================
 // 3. MAIN FILTER PANEL
 // =========================================================
-const FilterPanel = ({ isVisible, filters, setFilters, onReset }) => {
+const FilterPanel = ({ isVisible, filters, setFilters, onReset, allProperties, cities }) => {
   useEffect(() => {
     const stored = sessionStorage.getItem("priceFilter");
 
@@ -178,7 +174,7 @@ const FilterPanel = ({ isVisible, filters, setFilters, onReset }) => {
                             label="Location"
                             icon={MapPin}
                             value={filters.city}
-                            options={CITIES}
+                            options={cities && cities.length ? cities : ["All"]}
                             onChange={(val) => setFilters(prev => ({...prev, city: val}))}
                         />
 
@@ -191,8 +187,8 @@ const FilterPanel = ({ isVisible, filters, setFilters, onReset }) => {
                                 </span>
                             </div>
                             
-                            {/* --- THE REAL DATA GRAPH --- */}
-                            <PriceHistogram currentMax={filters.priceMax} maxLimit={5000} />
+                            {/* --- PRICE GRAPH BASED ON CURRENT PROPERTIES --- */}
+                            <PriceHistogram currentMax={filters.priceMax} maxLimit={5000} properties={allProperties} />
 
                             <input 
                                 type="range" 

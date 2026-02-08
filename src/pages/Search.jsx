@@ -4,7 +4,7 @@ import { Search as SearchIcon, SlidersHorizontal, Bed, Bath, Move, FileCheck, X,
 import { motion, AnimatePresence } from 'framer-motion';
 
 // --- IMPORTS ---
-import { allProperties } from '../data/properties'; 
+import { API_BASE_URL } from '../config';
 import PropertyMap from '../components/search/PropertyMap'; 
 import FilterPanel from '../components/search/FilterPanel';
 
@@ -19,6 +19,9 @@ const Search = () => {
   const [hoveredId, setHoveredId] = useState(null);
   const [showFilters, setShowFilters] = useState(false);
   const [showSuggestions, setShowSuggestions] = useState(false);
+  const [properties, setProperties] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   const [filters, setFilters] = useState({
     city: initialCity,
@@ -37,6 +40,26 @@ const Search = () => {
     }
   }, [location.state]);
 
+  // --- LOAD PROPERTIES FROM API ---
+  useEffect(() => {
+    const fetchProperties = async () => {
+      try {
+        setLoading(true);
+        const res = await fetch(`${API_BASE_URL}/properties`);
+        if (!res.ok) throw new Error('Failed to load properties');
+        const data = await res.json();
+        setProperties(data || []);
+      } catch (err) {
+        console.error('Error fetching properties', err);
+        setError('Could not load properties.');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchProperties();
+  }, []);
+
   // --- CLICK OUTSIDE SUGGESTIONS ---
   useEffect(() => {
     const handleClickOutside = (event) => {
@@ -49,7 +72,11 @@ const Search = () => {
   }, []);
 
   // --- REVISED FILTER LOGIC ---
-  const safeProperties = allProperties || [];
+  const safeProperties = properties || [];
+  const availableCities = [
+    'All',
+    ...Array.from(new Set(safeProperties.map((p) => p.city).filter(Boolean))),
+  ];
 
   const filteredProperties = safeProperties.filter(p => {
     // 1. City Check: If "All" is selected, match everything. 
@@ -169,7 +196,14 @@ const Search = () => {
                         )}
                     </AnimatePresence>
 
-                    <FilterPanel isVisible={showFilters} filters={filters} setFilters={setFilters} onReset={resetFilters} />
+                    <FilterPanel 
+                      isVisible={showFilters} 
+                      filters={filters} 
+                      setFilters={setFilters} 
+                      onReset={resetFilters}
+                      allProperties={safeProperties}
+                      cities={availableCities}
+                    />
                 </div>
             </div>
 

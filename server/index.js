@@ -184,11 +184,11 @@ app.get('/properties/:id', async (req, res) => {
 
 // Admin Only: Create Property
 app.post('/properties', authenticateToken, isAdmin, async (req, res) => {
-    const { title, city, price, image, rating, tags, details, gallery } = req.body;
+    const { title, city, price, image, rating, tags, details, gallery, lat, lng } = req.body;
     try {
         const result = await db.query(
-            'INSERT INTO properties (title, city, price, image, rating, tags, details, gallery) VALUES ($1, $2, $3, $4, $5, $6, $7, $8) RETURNING *',
-            [title, city, price, image, rating, tags, details, gallery]
+            'INSERT INTO properties (title, city, price, image, rating, tags, details, gallery, lat, lng) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10) RETURNING *',
+            [title, city, price, image, rating, tags, details, gallery, lat, lng]
         );
         res.status(201).json(result.rows[0]);
     } catch (err) {
@@ -199,16 +199,16 @@ app.post('/properties', authenticateToken, isAdmin, async (req, res) => {
 // Admin Only: Update Property
 app.put('/properties/:id', authenticateToken, isAdmin, async (req, res) => {
     const { id } = req.params;
-    const { title, city, price, image, rating, tags, details, gallery } = req.body;
+    const { title, city, price, image, rating, tags, details, gallery, lat, lng } = req.body;
     try {
         // We'll use COALESCE in SQL or just pass undefined if not provided? 
         // Better to expect full object or handle partial updates. 
         // For now let's assume the frontend sends the full object back.
         const result = await db.query(
             `UPDATE properties 
-             SET title = $1, city = $2, price = $3, image = $4, rating = $5, tags = $6, details = $7, gallery = $8 
-             WHERE id = $9 RETURNING *`,
-            [title, city, price, image, rating, tags, details, gallery, id]
+             SET title = $1, city = $2, price = $3, image = $4, rating = $5, tags = $6, details = $7, gallery = $8, lat = $9, lng = $10
+             WHERE id = $11 RETURNING *`,
+            [title, city, price, image, rating, tags, details, gallery, lat, lng, id]
         );
         if (result.rows.length === 0) return res.status(404).json({ message: 'Property not found' });
         res.json(result.rows[0]);
