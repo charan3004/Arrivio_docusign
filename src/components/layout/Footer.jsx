@@ -10,25 +10,17 @@ const Footer = () => {
     Company: [
       { name: 'Our Vision', path: '/#vision' },
       { name: 'Community', path: '/#community' },
-      { name: 'Careers', path: '/careers' },
-      { name: 'Contact', path: '/contact' },
     ],
       Locations: [
-      { name: 'Berlin', path: '/search', state: { location: 'Berlin' } },
-      { name: 'Munich', path: '/search', state: { location: 'Munich' } },
-      { name: 'Frankfurt', path: '/search', state: { location: 'Frankfurt' } },
-      { name: 'Cologne', path: '/search', state: { location: 'Cologne' } },
-      { name: 'Düsseldorf', path: '/search', state: { location: 'Düsseldorf' } },
-      { name: 'Aachen', path: '/search', state: { location: 'Aachen' } },
-      { name: 'Bonn', path: '/search', state: { location: 'Bonn' } },
-      { name: 'Hamburg', path: '/search', state: { location: 'Hamburg' } },
+      { name: 'Berlin', path: '/cities' },
+      { name: 'Munich', path: '/cities' },
+      { name: 'Frankfurt', path: '/cities' },
+      { name: 'Cologne', path: '/cities' },
+      { name: 'Düsseldorf', path: '/cities' },
+      { name: 'Aachen', path: '/cities' },
+      { name: 'Bonn', path: '/cities' },
+      { name: 'Hamburg', path: '/cities' },
       ],
-
-    Legal: [
-      { name: 'Privacy Policy', path: '/privacy' },
-      { name: 'Terms of Service', path: '/terms' },
-      { name: 'Imprint', path: '/imprint' },
-    ],
   };
 
   return (

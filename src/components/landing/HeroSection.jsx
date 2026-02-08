@@ -158,7 +158,7 @@ const HeroSection = () => {
               <div className="p-2 bg-white rounded-full text-[#2C3E30] shadow-sm"><Star size={14} /></div>
               <div>
                   <span className="block text-[14px] font-serif font-bold text-[#1A1A1A]">4.9/5</span>
-                  <span className="text-[10px] uppercase tracking-widest text-[#1A1A1A]/60">Talent Rating</span>
+                  <span className="text-[10px] uppercase tracking-widest text-[#1A1A1A]/60">Tenant Rating</span>
               </div>
           </div>
       </div>

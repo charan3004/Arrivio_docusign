@@ -21,7 +21,7 @@ const VisionSection = () => {
     },
     {
       icon: FileCheck,
-      title: 'No Infinite Paperwork',
+      title: '10-Minute Booking',
       description: 'Apply on your phone. Upload docs securely. Get approved in 24 hours.',
     },
   ];

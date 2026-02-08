@@ -5,59 +5,26 @@ import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-route
 import Navbar from './components/layout/Navbar';        
 import AppNavbar from './components/layout/AppNavbar';  
 import SimpleNavbar from './components/layout/SimpleNavbar'; 
-import PropertyNavbar from './components/layout/PropertyNavbar'; 
 import Footer from './components/layout/Footer';
 import ScrollToTop from './components/common/ScrollToTop';
 
 // --- PAGES ---
 import CityGridPage from './components/search/CityGridPage';
 import Landing from './pages/Landing';
-import Search from './pages/Search';
-import PropertyDetails from './pages/PropertyDetails';
-import Login from './pages/Login';
-import Signup from './pages/Signup';
-import Employers from './pages/Employers';
-import Privacy from './pages/Privacy';
-import Terms from './pages/Terms';
-import Imprint from './pages/Imprint';
-import Contact from './pages/Contact';
-import Careers from './pages/Careers';
-import BookingSuccess from './pages/BookingSuccess';
-import ApplicationWizard from './pages/ApplicationWizard';
-import SignIn from './pages/SignIn';
-import PaymentPage from './pages/PaymentPage'; 
-import UserProfile from './pages/UserProfile';
+import Business from './pages/Business';
 
-// --- ADMIN PAGES ---
-import AdminLogin from './pages/AdminLogin';
-import AdminHome from './pages/admin/AdminHome';
-import AdminProperties from './pages/admin/AdminProperties';
-import AdminLayout from './components/admin/AdminLayout';
 
 const Layout = () => {
   const location = useLocation();
   const path = location.pathname;
 
-  // 1. IDENTIFY SPECIAL ROUTES
-  const isProcessPage = ['/signin', '/apply', '/payment'].includes(path);
-  const isAdminRoute = path.startsWith('/admin');
-  
-  // 2. IDENTIFY THE SUCCESS PAGE (Needs a way home)
-  const isSuccessPage = path === '/booking-success';
 
   let CurrentNavbar;
+  const isBusinessRoute = path.startsWith('/business');
 
-  if (isSuccessPage) {
-    // SHOW Logo Navbar only on Success Page
-    CurrentNavbar = SimpleNavbar;
-  } else if (isProcessPage || isAdminRoute) {
-    // NO Navbar for process steps or admin area
-    CurrentNavbar = () => null; 
-  } else if (path === '/') {
+  if (path === '/') {
     CurrentNavbar = Navbar;
-  } else if (path.startsWith('/property')) {
-    CurrentNavbar = PropertyNavbar;
-  } else if (path.startsWith('/cities') || path.startsWith('/search')) {
+  } else if (path.startsWith('/cities')) {
     CurrentNavbar = AppNavbar;
   } else {
     CurrentNavbar = SimpleNavbar;
@@ -69,39 +36,14 @@ const Layout = () => {
       
       <main className="flex-grow">
         <Routes>
+          {/* MAIN PAGES */}
           <Route path="/" element={<Landing />} />
-          <Route path="/search" element={<Search />} />
-          <Route path="/property/:id" element={<PropertyDetails />} />
           <Route path="/cities" element={<CityGridPage />} />
-          
-          <Route path="/signin" element={<SignIn />} />
-          <Route path="/apply" element={<ApplicationWizard />} />
-          <Route path="/payment" element={<PaymentPage />} /> 
-          <Route path="/booking-success" element={<BookingSuccess />} />
-          
-          <Route path="/login" element={<Login />} />
-          <Route path="/signup" element={<Signup />} />
-          <Route path="/business" element={<Employers />} />
-          <Route path="/employers" element={<Employers />} />
-          <Route path="/privacy" element={<Privacy />} />
-          <Route path="/terms" element={<Terms />} />
-          <Route path="/imprint" element={<Imprint />} />
-          <Route path="/contact" element={<Contact />} />
-          <Route path="/careers" element={<Careers />} />
-          <Route path="/profile" element={<UserProfile />} />
-
-          {/* ADMIN ROUTES */}
-          <Route path="/admin" element={<AdminLogin />} />
-          
-          <Route element={<AdminLayout />}>
-            <Route path="/admin/dashboard" element={<AdminHome />} />
-            <Route path="/admin/properties" element={<AdminProperties />} />
-          </Route>
+          <Route path="/business" element={<Business />} />
         </Routes>
       </main>
       
-      {/* Hide Footer on process, success, and admin pages */}
-      {!isProcessPage && !isSuccessPage && !isAdminRoute && <Footer />}
+      {!isBusinessRoute && <Footer />}
     </div>
   );
 };

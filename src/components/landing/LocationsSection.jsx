@@ -108,7 +108,7 @@ const LocationsSection = () => {
                   </div>
                 </div>
                 
-                <Link to="/search" state={{ location: activeLocation.name }}>
+                <Link to="/cities">
                   <button className="w-full h-12 bg-[#C2B280]/20 hover:bg-[#2C3E30] hover:text-white text-[#2C3E30] rounded-xl font-bold font-sans uppercase tracking-widest text-xs transition-all duration-300 flex items-center justify-center gap-2">
                     View Homes in {activeLocation.name}
                     <ArrowRight size={16} />

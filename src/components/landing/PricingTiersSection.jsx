@@ -214,16 +214,7 @@ const PricingTiersSection = () => {
                   {/* CTA BUTTON — 🔥 LINKED TO FILTER */}
                   <div className="mt-auto">
                     <Link
-                      to="/search"
-                      onClick={() => {
-                        sessionStorage.setItem(
-                          "priceFilter",
-                          JSON.stringify({
-                            min: tier.minPrice,
-                            max: tier.maxPrice,
-                          })
-                        );
-                      }}
+                      to="/cities"
                       className="block"
                     >
                       <button className="w-full h-14 bg-[#EAE8E4] border border-[#2C3E30]/10 rounded-full font-sans font-bold text-xs uppercase tracking-[0.2em] text-[#2C3E30] flex items-center justify-center gap-2 hover:bg-[#2C3E30] hover:text-[#EAE8E4] transition-all duration-300 shadow-sm group-hover:shadow-md">

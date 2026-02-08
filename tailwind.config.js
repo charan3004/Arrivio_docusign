@@ -19,12 +19,16 @@ export default {
         earthBrown: '#5A4634',
         // Accent: Muted Gold
         mutedGold: '#C6A45E',
+        // Business page colors
+        arrivioGreen: '#2C3E30',
       },
       fontFamily: {
         // Headings: IBM Plex Sans
         heading: ['IBM Plex Sans', 'sans-serif'],
         // Body: Inter
         body: ['Inter', 'sans-serif'],
+        // Business page display font
+        display: ['Playfair Display', 'serif'],
       },
     },
   },

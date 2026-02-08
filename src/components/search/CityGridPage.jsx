@@ -1,10 +1,6 @@
 import React from 'react';
 import { ArrowRight } from 'lucide-react';
-import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
-
-// ✅ SEARCH BAR
-import CitySearch from '../CitySearch/CitySearch';
 
 // --- IMPORT LOCAL ASSETS ---
 import berlin from '../../assets/cities/berlin.jpeg';
@@ -29,10 +25,8 @@ const cities = [
 ];
 
 const CityGridPage = () => {
-  const navigate = useNavigate();
-
   const handleCityClick = (city) => {
-    navigate('/search', { state: { location: city.name } });
+    // Search page removed - do nothing or show message
   };
 
   return (
@@ -49,9 +43,6 @@ const CityGridPage = () => {
           From the creative avenues of Berlin to the historic streets of Bonn.
           Explore our curated collection of premium apartments.
         </p>
-
-        {/* ✅ SEARCH BAR */}
-        <CitySearch />
 
       </div>
 

@@ -1,11 +1,8 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Menu, X, Globe, User, LogOut } from 'lucide-react';
+import { Menu, X, Globe } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
-import { useAuth } from '../../context/AuthContext';
-
 const Navbar = () => {
-  const { isAuthenticated, user, logout } = useAuth();
   const navigate = useNavigate();
   const [isScrolled, setIsScrolled] = useState(false);
   const [isVisible, setIsVisible] = useState(true);
@@ -54,6 +51,7 @@ const Navbar = () => {
     { name: 'Community', path: '/#community' },
     { name: 'Pricing', path: '/#living-spaces' },
     { name: 'Locations', path: '/#locations' },
+    { name: 'For Business', path: '/business' },
   ];
 
   return (
@@ -116,27 +114,7 @@ const Navbar = () => {
                   <span className="hidden md:block font-sans text-[10px] font-bold uppercase tracking-widest">EN</span>
               </div>
               
-              {isAuthenticated ? (
-                <Link to="/profile">
-                  <button className={`hidden md:flex items-center justify-center w-10 h-10 rounded-full transition-all duration-500 ${
-                    isScrolled 
-                      ? 'bg-[#2C3E30] text-[#EAE8E4] hover:bg-[#1A1A1A] shadow-lg' 
-                      : 'bg-[#1A1A1A]/5 backdrop-blur-md border border-[#1A1A1A]/10 text-[#1A1A1A] hover:bg-[#1A1A1A] hover:text-white'
-                  }`}>
-                    <User size={18} />
-                  </button>
-                </Link>
-              ) : (
-                <Link to="/login">
-                  <button className={`hidden md:flex items-center px-8 py-2.5 rounded-full font-sans text-[10px] font-bold uppercase tracking-widest transition-all duration-500 ${
-                    isScrolled 
-                      ? 'bg-[#2C3E30] text-[#EAE8E4] hover:bg-[#1A1A1A] shadow-lg' 
-                      : 'bg-[#1A1A1A]/5 backdrop-blur-md border border-[#1A1A1A]/10 text-[#1A1A1A] hover:bg-[#1A1A1A] hover:text-white'
-                  }`}>
-                    Sign In
-                  </button>
-                </Link>
-              )}
+              {/* Login/Profile links removed - pages not active */}
 
               <button 
                 className="md:hidden p-2 text-[#2C3E30]"
@@ -172,21 +150,7 @@ const Navbar = () => {
                         </Link>
                     ))}
                 </div>
-                <div className="mt-8">
-                    {isAuthenticated ? (
-                        <Link to="/profile" onClick={() => setIsMobileMenuOpen(false)}>
-                            <button className="w-fit px-10 py-3 rounded-full font-sans text-xs font-bold uppercase tracking-widest bg-[#2C3E30] text-[#EAE8E4] shadow-lg active:scale-95 transition-transform flex items-center gap-2">
-                                <User size={16} /> My Profile
-                            </button>
-                        </Link>
-                    ) : (
-                        <Link to="/login" onClick={() => setIsMobileMenuOpen(false)}>
-                            <button className="w-fit px-10 py-3 rounded-full font-sans text-xs font-bold uppercase tracking-widest bg-[#2C3E30] text-[#EAE8E4] shadow-lg active:scale-95 transition-transform">
-                                Sign In
-                            </button>
-                        </Link>
-                    )}
-                </div>
+                {/* Login/Profile links removed - pages not active */}
                 <div className="mt-8 pb-8">
                     <span className="text-[10px] uppercase tracking-widest text-[#2C3E30]/40">© 2024 Arrivio</span>
                 </div>

@@ -1,14 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { Menu, Globe, MapPin, Home, X, User } from 'lucide-react'; 
+import { Menu, Globe, MapPin, X, Home } from 'lucide-react'; 
 import { motion, AnimatePresence } from 'framer-motion';
-import { useAuth } from '../../context/AuthContext';
-
 const AppNavbar = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
   const location = useLocation();
-  const { isAuthenticated } = useAuth();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -25,7 +22,7 @@ const AppNavbar = () => {
 
   const links = [
     { name: 'Cities', path: '/cities', icon: <MapPin size={14}/> },
-    { name: 'Stays', path: '/search', icon: <Home size={14}/> },
+    { name: 'For Business', path: '/business', icon: <Home size={14}/> },
   ];
 
   return (
@@ -92,19 +89,7 @@ const AppNavbar = () => {
                       <span className="hidden md:block font-sans text-[10px] font-bold uppercase tracking-widest">EN</span>
                   </div>
                   
-                  {isAuthenticated ? (
-                    <Link to="/profile">
-                        <button className="hidden md:flex items-center justify-center w-10 h-10 rounded-full bg-[#2C3E30] text-[#EAE8E4] hover:bg-[#1A1A1A] shadow-lg transition-all duration-300">
-                            <User size={18} />
-                        </button>
-                    </Link>
-                  ) : (
-                    <Link to="/login">
-                        <button className="hidden md:flex items-center px-8 py-2.5 rounded-full font-sans text-[10px] font-bold uppercase tracking-widest transition-all duration-300 bg-[#2C3E30] text-[#EAE8E4] hover:bg-[#1A1A1A] shadow-lg">
-                            Sign In
-                        </button>
-                    </Link>
-                  )}
+                  {/* Login/Profile links removed - pages not active */}
 
                   <button 
                       className="md:hidden p-2 text-[#2C3E30] hover:bg-white/50 rounded-full transition-colors z-20"
@@ -141,21 +126,7 @@ const AppNavbar = () => {
                         </Link>
                     ))}
                 </div>
-                <div className="mt-8">
-                    {isAuthenticated ? (
-                        <Link to="/profile" onClick={() => setIsMobileMenuOpen(false)}>
-                            <button className="w-fit px-10 py-3 rounded-full font-sans text-xs font-bold uppercase tracking-widest bg-[#2C3E30] text-[#EAE8E4] shadow-lg active:scale-95 transition-transform flex items-center gap-2">
-                                <User size={16} /> My Profile
-                            </button>
-                        </Link>
-                    ) : (
-                        <Link to="/login" onClick={() => setIsMobileMenuOpen(false)}>
-                            <button className="w-fit px-10 py-3 rounded-full font-sans text-xs font-bold uppercase tracking-widest bg-[#2C3E30] text-[#EAE8E4] shadow-lg active:scale-95 transition-transform">
-                                Sign In
-                            </button>
-                        </Link>
-                    )}
-                </div>
+                {/* Login/Profile links removed - pages not active */}
                 <div className="mt-8 pb-8">
                     <span className="text-[10px] uppercase tracking-widest text-[#2C3E30]/40">© 2024 Arrivio</span>
                 </div>
