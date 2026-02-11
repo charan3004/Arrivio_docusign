@@ -7,6 +7,7 @@ import AppNavbar from './components/layout/AppNavbar';
 import SimpleNavbar from './components/layout/SimpleNavbar';
 import Footer from './components/layout/Footer';
 import ScrollToTop from './components/common/ScrollToTop';
+import ArrivioRobot from './components/common/ArrivioRobot';
 
 // --- PAGES ---
 import CityGridPage from './components/search/CityGridPage';
@@ -63,6 +64,7 @@ function App() {
     <Router>
       <ScrollToTop />
       <Layout />
+      <ArrivioRobot />
     </Router>
   );
 }
