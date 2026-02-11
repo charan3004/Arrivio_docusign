@@ -58,20 +58,19 @@
   max-width: 220px;
   box-shadow: 0 4px 14px rgba(0, 0, 0, 0.1);
 
-  transition: opacity 0.6s ease, transform 0.6s ease;
-}
-
-/* Fade In State */
-.fade-in {
-  opacity: 1;
-  transform: translateY(0);
+  transition: opacity 0.6s ease;
   animation: bubbleFloat 2.4s ease-in-out infinite;
 }
 
-/* Fade Out State */
+/* Fade In */
+.fade-in {
+  opacity: 1;
+}
+
+/* Fade Out */
 .fade-out {
   opacity: 0;
-  transform: translateY(10px);
+  animation-play-state: paused; /* Prevent snap */
 }
 
 /* Gentle bubble float */
