@@ -18,11 +18,9 @@ import Privacy from './pages/Privacy';
 import Terms from './pages/Terms';
 import Imprint from './pages/Imprint';
 
-
 const Layout = () => {
   const location = useLocation();
   const path = location.pathname;
-
 
   let CurrentNavbar;
   const isBusinessRoute = path.startsWith('/business');

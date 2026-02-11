@@ -27,7 +27,7 @@ const Schedule = () => {
           {/* CAL.COM IFRAME */}
           <div className="max-w-6xl mx-auto mt-16 px-4">
             <iframe
-              src="https://cal.com/arrivio-wwthvc/arrivio-strategy-call?theme=light&primaryColor=%231A2E22"
+              src="https://cal.eu/zaki-amawi?theme=light&primaryColor=%231A2E22"
               title="Arrivio Strategy Call"
               className="w-full h-[750px] rounded-2xl border border-black/10 bg-white"
               loading="lazy"
