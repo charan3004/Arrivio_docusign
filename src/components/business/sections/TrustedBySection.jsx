@@ -1,10 +1,9 @@
 import React from "react";
 import { motion } from "framer-motion";
 import logo1 from "../../../assets/business/logos/logo1.png";
-import logo2 from "../../../assets/business/logos/logo2.jpg";
 import logo3 from "../../../assets/business/logos/logo3.jpg";
 
-const logos = [logo1, logo2, logo3];
+const logos = [logo1, logo3];
 
 const TrustedBySection = () => {
   return (
@@ -33,7 +32,7 @@ const TrustedBySection = () => {
         </motion.div>
 
         {/* LOGO CARDS */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 lg:gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 lg:gap-8">
           {logos.map((logo, i) => (
             <motion.div
               key={i}

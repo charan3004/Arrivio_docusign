@@ -116,7 +116,7 @@ const Footer = () => {
 
                {/* Copyright */}
                <div className="flex flex-col md:flex-row items-center gap-4 text-[10px] font-bold uppercase tracking-widest text-[#EAE8E4]/40">
-                  <span>© {currentYear} Arrivio Living GmbH</span>
+                  <span>© {currentYear} Arrivio Living</span>
                   <div className="hidden md:block w-1 h-1 bg-[#C2B280] rounded-full"></div>
                   <div className="flex items-center gap-2">
                      <Globe size={12} />

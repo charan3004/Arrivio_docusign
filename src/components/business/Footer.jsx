@@ -75,7 +75,7 @@ const Footer = () => {
         {/* Bottom */}
         <div className="pt-12 border-t border-[#EAE8E4]/10 flex flex-col md:flex-row justify-between items-center gap-8 font-body text-[10px] uppercase tracking-widest text-[#EAE8E4]/40">
           <div className="flex items-center gap-4">
-            <span>© {currentYear} Arrivio Living GmbH</span>
+            <span>© {currentYear} Arrivio Living</span>
             <span className="hidden md:inline">•</span>
             <span className="flex items-center gap-2">
               <Globe size={12} /> Berlin, Germany

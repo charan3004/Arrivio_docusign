@@ -15,21 +15,12 @@ const Contact = () => {
                     <div>
                         <h3 className="font-serif text-2xl text-[#1A1A1A] mb-4">General Inquiries</h3>
                         <p className="font-sans text-[#5C5C50] mb-2">hello@arrivio.com</p>
-                        <p className="font-sans text-[#5C5C50]">+49 (0) 30 1234 5678</p>
+                        <p className="font-sans text-[#5C5C50]">+49 178 8354826</p>
                     </div>
                     <div>
                         <h3 className="font-serif text-2xl text-[#1A1A1A] mb-4">Corporate Partnerships</h3>
                         <p className="font-sans text-[#5C5C50] mb-2">business@arrivio.com</p>
                     </div>
-                </div>
-
-                <div className="mt-16 pt-16 border-t border-[#1A1A1A]/10">
-                    <h3 className="font-serif text-2xl text-[#1A1A1A] mb-6">Visit Us</h3>
-                    <p className="font-sans text-[#5C5C50] leading-relaxed">
-                        Arrivio Living GmbH<br />
-                        Torstraße 1<br />
-                        10119 Berlin, Germany
-                    </p>
                 </div>
             </div>
         </div>
