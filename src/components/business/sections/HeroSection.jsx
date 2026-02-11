@@ -1,4 +1,5 @@
 import React from "react";
+import { ArrowRight, Download } from "lucide-react";
 import meetImage from "../../../assets/business/meet.jpg";
 
 const HeroSection = () => {
@@ -28,42 +29,26 @@ const HeroSection = () => {
             for your new hires.
           </p>
 
-          <div className="flex flex-wrap gap-4">
-            {/* Partner with Us */}
+          <div className="flex flex-col sm:flex-row gap-4 mt-8">
+            {/* Partner with Us (Primary) */}
             <button
               onClick={handleScrollToSchedule}
-              className="
-                border border-[#2C3E30]/40
-                px-7 py-3 rounded-full
-                font-sans font-medium
-                text-[#2C3E30]
-                bg-transparent
-                transition-all duration-300
-                hover:bg-[#2C3E30]
-                hover:text-[#EAE8E4]
-                hover:shadow-lg
-              "
+              className="group relative inline-flex items-center justify-center gap-3 px-8 py-4 bg-[#2C3E30] text-[#EAE8E4] rounded-full overflow-hidden transition-all duration-500 hover:scale-105 shadow-lg hover:shadow-xl w-full sm:w-auto"
             >
-              Partner with Us
+              <span className="relative z-10 font-serif text-base font-medium tracking-wide">Partner with Us</span>
+              <div className="relative z-10 w-6 h-6 rounded-full bg-[#EAE8E4] text-[#2C3E30] flex items-center justify-center transition-transform duration-500 group-hover:rotate-[-45deg] group-hover:bg-white">
+                <ArrowRight size={12} className="transition-transform duration-300 group-hover:translate-x-0.5" />
+              </div>
             </button>
 
-            {/* Download Company Deck */}
+            {/* Download Company Deck (Secondary) */}
             <a
               href="/arrivio-b2b-deck.pdf"
               download
-              className="
-                border border-[#2C3E30]/40
-                px-7 py-3 rounded-full
-                font-sans font-medium
-                text-[#2C3E30]
-                bg-transparent
-                transition-all duration-300
-                hover:bg-[#2C3E30]
-                hover:text-[#EAE8E4]
-                hover:shadow-lg
-              "
+              className="group relative inline-flex items-center justify-center gap-3 px-8 py-4 bg-transparent border border-[#2C3E30]/30 text-[#2C3E30] rounded-full overflow-hidden transition-all duration-300 hover:bg-[#2C3E30]/5 w-full sm:w-auto"
             >
-              Download Company Deck
+              <span className="relative z-10 font-serif text-base font-medium tracking-wide">Download Company Deck</span>
+              <Download size={18} className="relative z-10 transition-transform duration-300 group-hover:translate-y-0.5" />
             </a>
           </div>
         </div>

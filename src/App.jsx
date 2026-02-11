@@ -2,9 +2,9 @@ import React from 'react';
 import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
 
 // --- COMPONENTS ---
-import Navbar from './components/layout/Navbar';        
-import AppNavbar from './components/layout/AppNavbar';  
-import SimpleNavbar from './components/layout/SimpleNavbar'; 
+import Navbar from './components/layout/Navbar';
+import AppNavbar from './components/layout/AppNavbar';
+import SimpleNavbar from './components/layout/SimpleNavbar';
 import Footer from './components/layout/Footer';
 import ScrollToTop from './components/common/ScrollToTop';
 
@@ -12,6 +12,11 @@ import ScrollToTop from './components/common/ScrollToTop';
 import CityGridPage from './components/search/CityGridPage';
 import Landing from './pages/Landing';
 import Business from './pages/Business';
+import Contact from './pages/Contact';
+import Careers from './pages/Careers';
+import Privacy from './pages/Privacy';
+import Terms from './pages/Terms';
+import Imprint from './pages/Imprint';
 
 
 const Layout = () => {
@@ -33,16 +38,23 @@ const Layout = () => {
   return (
     <div className="min-h-screen flex flex-col bg-[#EAE8E4]">
       <CurrentNavbar />
-      
+
       <main className="flex-grow">
         <Routes>
           {/* MAIN PAGES */}
           <Route path="/" element={<Landing />} />
           <Route path="/cities" element={<CityGridPage />} />
           <Route path="/business" element={<Business />} />
+
+          {/* INFO PAGES */}
+          <Route path="/contact" element={<Contact />} />
+          <Route path="/careers" element={<Careers />} />
+          <Route path="/privacy" element={<Privacy />} />
+          <Route path="/terms" element={<Terms />} />
+          <Route path="/imprint" element={<Imprint />} />
         </Routes>
       </main>
-      
+
       {!isBusinessRoute && <Footer />}
     </div>
   );

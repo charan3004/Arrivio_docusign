@@ -3,7 +3,7 @@ import WhyArrivioSection from "../components/business/sections/WhyArrivioSection
 import TrustedBySection from "../components/business/sections/TrustedBySection";
 import HowItWorksSection from "../components/business/sections/HowItWorksSection";
 import Schedule from "../components/business/sections/Schedule";
-import BusinessFooter from "../components/business/layout/Footer";
+import Footer from "../components/layout/Footer";
 
 const Business = () => {
   return (
@@ -13,7 +13,7 @@ const Business = () => {
       <TrustedBySection />
       <HowItWorksSection />
       <Schedule />
-      <BusinessFooter />
+      <Footer />
     </div>
   );
 };
