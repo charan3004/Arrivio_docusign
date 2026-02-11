@@ -89,13 +89,21 @@ const Navbar = () => {
           <div className="flex items-center justify-between w-full">
 
             {/* LOGO */}
-            <Link to="/" className="relative z-10 shrink-0 flex items-center gap-0.5" onClick={() => setIsMobileMenuOpen(false)}>
+            <Link
+              to="/"
+              className="relative z-10 shrink-0 flex items-center gap-2"
+              onClick={() => setIsMobileMenuOpen(false)}
+            >
               <img
-                src={isScrolled ? logo1Img : logoImg}
+                src={isScrolled ? logo1Img : logo1Img}
                 alt="Arrivio Logo"
-                className={`object-contain rounded-md transition-all duration-500 ${isScrolled ? 'h-8 w-8 opacity-100' : 'h-12 w-12 opacity-90'}`}
+                className="h-9 w-auto object-contain transition-all duration-500"
               />
-              <span className={`font-serif text-2xl md:text-3xl tracking-tighter transition-colors duration-500 ${isScrolled ? 'text-[#2C3E30]' : 'text-white'}`}>
+
+              <span
+                className={`font-serif text-2xl md:text-3xl tracking-tight leading-none transition-colors duration-500 ${isScrolled ? 'text-[#2C3E30]' : 'text-white'
+                  }`}
+              >
                 Arrivio.
               </span>
             </Link>
