@@ -1,22 +1,17 @@
 import React from 'react';
 import { ArrowRight } from 'lucide-react';
 import { motion } from 'framer-motion';
+import { useNavigate } from 'react-router-dom';
 
 // --- IMPORT LOCAL ASSETS ---
-import berlin from '../../assets/cities/berlin.jpeg';
-import munich from '../../assets/cities/munich.jpeg';
-import dusseldorf from '../../assets/cities/dusseldorf.jpeg';
-import frankfurt from '../../assets/cities/frankfurt.jpeg';
-import cologne from '../../assets/cities/cologne.jpeg';
-import aachen from '../../assets/cities/aachen.jpeg';
-import bonn from '../../assets/cities/bonn.jpeg';
-import hamburg from '../../assets/cities/hamburg.jpeg';
 
 import { cities } from '../../data/cities';
 
 const CityGridPage = () => {
+  const navigate = useNavigate();
+
   const handleCityClick = (city) => {
-    // Search page removed - do nothing or show message
+    navigate('/business');
   };
 
   return (
@@ -92,7 +87,7 @@ const CityGridPage = () => {
 
                   <div className="flex items-center gap-2 text-white border border-white/30 px-4 py-2 rounded-full hover:bg-white hover:text-[#2C3E30] transition-colors bg-white/5 backdrop-blur-sm">
                     <span className="text-[10px] font-bold uppercase tracking-widest">
-                      View Homes
+                      Schedule a Call
                     </span>
                     <ArrowRight size={12} />
                   </div>

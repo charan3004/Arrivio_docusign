@@ -2,7 +2,7 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import { Instagram, Linkedin, Twitter, ArrowUpRight, Globe, Mail } from 'lucide-react';
 import { Link } from 'react-router-dom';
-import logoImg from '../../assets/logo.png';
+import logo1 from '../../assets/logo1.png';
 
 const Footer = () => {
    const currentYear = new Date().getFullYear();
@@ -13,7 +13,7 @@ const Footer = () => {
          { name: 'Community', path: '/#community' },
          { name: 'Careers', path: '/careers' },
          { name: 'Contact', path: '/contact' },
-         { name: 'For Business', path: '/business' },
+         { name: 'For Businesses', path: '/business' },
       ],
       Locations: [
          { name: 'Aachen', path: '/cities' },
@@ -49,13 +49,13 @@ const Footer = () => {
                {/* Left: Brand & Newsletter */}
                <div className="lg:col-span-5">
                   <div className="mb-8">
-                     <div className="flex items-center mb-4">
+                     <div className="flex items-center gap-2 mb-4">
                         <img
-                           src={logoImg}
+                           src={logo1}
                            alt="Arrivio Logo"
-                           className="h-14 w-14 object-contain rounded-md"
+                           className="h-10 w-auto object-contain"
                         />
-                        <h2 className="font-serif text-4xl">Arrivio.</h2>
+                        <h2 className="font-serif text-5xl">Arrivio.</h2>
                      </div>
                      <p className="font-sans text-[#EAE8E4]/60 text-lg max-w-sm leading-relaxed">
                         Redefining belonging for the global citizen. Stability is the ultimate luxury.

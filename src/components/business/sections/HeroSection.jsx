@@ -35,19 +35,19 @@ const HeroSection = () => {
             <button
               onClick={handleScrollToSchedule}
               className="group inline-flex items-center justify-center gap-3 px-8 py-4 
-              bg-[#EAE8E4] text-[#2C3E30] border border-[#2C3E30]/20 
+              bg-[#2C3E30] text-[#EAE8E4] border border-[#2C3E30] 
               rounded-full transition-all duration-300 
-              hover:bg-[#2C3E30] hover:text-[#EAE8E4] 
-              shadow-md hover:shadow-xl w-full sm:w-auto"
+              hover:bg-[#1A2E22] hover:border-[#1A2E22] 
+              shadow-lg hover:shadow-xl w-full sm:w-auto"
             >
               <span className="font-serif text-base font-medium tracking-wide">
                 Partner with Us
               </span>
 
-              <div className="w-6 h-6 rounded-full bg-[#2C3E30]/10 
+              <div className="w-6 h-6 rounded-full bg-white/20 
                 flex items-center justify-center 
                 transition-all duration-300 
-                group-hover:bg-white/20"
+                group-hover:bg-white/30"
               >
                 <ArrowRight size={12} />
               </div>
@@ -58,10 +58,10 @@ const HeroSection = () => {
               href="/arrivio-b2b-deck.pdf"
               download
               className="group inline-flex items-center justify-center gap-3 px-8 py-4 
-              bg-[#EAE8E4] text-[#2C3E30] border border-[#2C3E30]/20 
+              bg-transparent text-[#2C3E30] border-2 border-[#2C3E30] 
               rounded-full transition-all duration-300 
               hover:bg-[#2C3E30] hover:text-[#EAE8E4] 
-              shadow-md hover:shadow-xl w-full sm:w-auto"
+              shadow-md hover:shadow-lg w-full sm:w-auto"
             >
               <span className="font-serif text-base font-medium tracking-wide">
                 Download Company Deck

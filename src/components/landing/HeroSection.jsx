@@ -103,7 +103,7 @@ const HeroSection = () => {
                 {/* HEADLINES */}
                 <div>
                     <h1 className="text-white leading-tight drop-shadow-2xl">
-                        <span className="block font-serif text-5xl md:text-7xl lg:text-8xl tracking-tight mb-2">
+                        <span className="block font-serif text-6xl md:text-7xl lg:text-8xl tracking-tight mb-2">
                             Arrival to <span className="italic text-[#E2D5B2]">Belonging.</span>
                         </span>
                     </h1>
@@ -114,15 +114,15 @@ const HeroSection = () => {
                 </div>
                 {/* CTA BUTTON - Moved Up & Redesigned */}
                 {/* DUAL CTA BUTTONS - Responsive Layout */}
-                <div className="animate-fade-in-up flex flex-col md:flex-row items-center gap-4 mt-8 w-full md:w-auto px-4 md:px-0">
+                <div className="animate-fade-in-up flex flex-col md:flex-row items-center justify-center gap-4 mt-8">
 
                     {/* BUTTON 1: EXPLORE CITIES (Primary) */}
                     <Link
                         to="/cities"
-                        className="group relative inline-flex items-center justify-center gap-3 px-8 py-4 bg-[#F5F5F0] text-[#1A1A1A] rounded-full overflow-hidden transition-all duration-500 hover:scale-105 shadow-[0_0_20px_rgba(255,255,255,0.3)] hover:shadow-[0_0_40px_rgba(255,255,255,0.6)] border border-white/50 backdrop-blur-sm w-full md:w-auto min-w-[200px]"
+                        className="group relative inline-flex items-center justify-center gap-3 px-10 py-4 bg-[#F5F5F0] text-[#1A1A1A] rounded-full overflow-hidden transition-all duration-500 hover:scale-105 shadow-[0_0_20px_rgba(255,255,255,0.3)] hover:shadow-[0_0_40px_rgba(255,255,255,0.6)] border border-white/50 backdrop-blur-sm min-w-[240px]"
                     >
-                        <span className="relative z-10 font-serif text-base font-medium tracking-wide">Explore Cities</span>
-                        <div className="relative z-10 w-6 h-6 rounded-full bg-[#1A1A1A] text-white flex items-center justify-center transition-colors duration-500 group-hover:bg-black">
+                        <span className="relative z-10 font-serif text-lg md:text-base font-medium tracking-wide">Explore Cities</span>
+                        <div className="relative z-10 w-6 h-6 rounded-full bg-[#2C3E30] text-white flex items-center justify-center transition-colors duration-500 group-hover:bg-[#1A2E22]">
                             <Building2 size={12} className="transition-transform duration-300 group-hover:scale-110" />
                         </div>
                         <div className="absolute inset-0 -translate-x-full group-hover:animate-[shimmer_1.5s_infinite] bg-gradient-to-r from-transparent via-white/40 to-transparent z-0"></div>
@@ -131,10 +131,10 @@ const HeroSection = () => {
                     {/* BUTTON 2: BOOK A MEETING (Secondary - Now Identical Style) */}
                     <Link
                         to="/business"
-                        className="group relative inline-flex items-center justify-center gap-3 px-8 py-4 bg-[#F5F5F0] text-[#1A1A1A] rounded-full overflow-hidden transition-all duration-500 hover:scale-105 shadow-[0_0_20px_rgba(255,255,255,0.3)] hover:shadow-[0_0_40px_rgba(255,255,255,0.6)] border border-white/50 backdrop-blur-sm w-full md:w-auto min-w-[200px]"
+                        className="group relative inline-flex items-center justify-center gap-3 px-10 py-4 bg-[#F5F5F0] text-[#1A1A1A] rounded-full overflow-hidden transition-all duration-500 hover:scale-105 shadow-[0_0_20px_rgba(255,255,255,0.3)] hover:shadow-[0_0_40px_rgba(255,255,255,0.6)] border border-white/50 backdrop-blur-sm min-w-[240px]"
                     >
-                        <span className="relative z-10 font-serif text-base font-medium tracking-wide">Book a Meeting</span>
-                        <div className="relative z-10 w-6 h-6 rounded-full bg-[#1A1A1A] text-white flex items-center justify-center transition-transform duration-500 group-hover:scale-110 group-hover:bg-black">
+                        <span className="relative z-10 font-serif text-lg md:text-base font-medium tracking-wide">Schedule a Call</span>
+                        <div className="relative z-10 w-6 h-6 rounded-full bg-[#2C3E30] text-white flex items-center justify-center transition-transform duration-500 group-hover:scale-110 group-hover:bg-[#1A2E22]">
                             <Calendar size={12} className="transition-transform duration-300" />
                         </div>
                         <div className="absolute inset-0 -translate-x-full group-hover:animate-[shimmer_1.5s_infinite] bg-gradient-to-r from-transparent via-white/40 to-transparent z-0"></div>

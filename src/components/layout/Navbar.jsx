@@ -2,7 +2,8 @@ import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Menu, X, Globe } from 'lucide-react';
 import { Link } from 'react-router-dom';
-import logoImg from '../../assets/logo.png';
+import logo1 from '../../assets/logo1.png';
+import logo2 from '../../assets/logo2.png';
 
 const Navbar = () => {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -56,43 +57,39 @@ const Navbar = () => {
         transition={{ duration: 0.4, ease: 'easeInOut' }}
         className={`fixed top-0 left-0 w-full z-[100]
           h-20 px-6 flex items-center justify-center
-          ${
-            isScrolled
-              ? 'bg-[#EAE8E4]/90 backdrop-blur-xl border-b border-[#2C3E30]/10'
-              : 'bg-transparent'
+          ${isScrolled
+            ? 'bg-[#EAE8E4]/90 backdrop-blur-xl border-b border-[#2C3E30]/10'
+            : 'bg-transparent'
           }
-          ${
-            isScrolled
-              ? 'md:h-auto md:mt-4 md:px-12 md:bg-transparent'
-              : 'md:h-20 md:mt-0 md:px-12 md:bg-transparent'
+          ${isScrolled
+            ? 'md:h-auto md:mt-4 md:px-12 md:bg-transparent md:backdrop-blur-none md:border-b-0'
+            : 'md:h-20 md:mt-0 md:px-12 md:bg-transparent'
           }`}
       >
         <div
           className={`w-full mx-auto transition-all duration-500 ease-in-out flex items-center
-          ${
-            isScrolled
-              ? 'md:bg-[#F5F5F0]/90 md:backdrop-blur-3xl md:shadow-sm md:py-3 md:px-8 md:rounded-full md:border md:border-white/20 md:max-w-7xl'
+          ${isScrolled
+              ? 'md:bg-[#F5F5F0] md:shadow-sm md:py-3 md:px-8 md:rounded-full md:border md:border-white/20 md:max-w-7xl'
               : 'md:bg-transparent md:h-full md:px-0 md:max-w-7xl'
-          }`}
+            }`}
         >
           <div className="flex items-center justify-between w-full">
 
             {/* LOGO */}
             <Link
               to="/"
-              className="relative z-10 shrink-0 flex items-center gap-3"
+              className="relative z-10 shrink-0 flex items-center gap-1"
               onClick={() => setIsMobileMenuOpen(false)}
             >
               <img
-                src={logoImg}
+                src={isScrolled ? logo2 : logo1}
                 alt="Arrivio Logo"
-                className="h-10 w-auto object-contain transition-all duration-500"
+                className="h-6 md:h-6 w-auto object-contain transition-all duration-500"
               />
 
               <span
-                className={`font-serif text-2xl md:text-3xl tracking-tight leading-none transition-colors duration-500 ${
-                  isScrolled ? 'text-[#2C3E30]' : 'text-white'
-                }`}
+                className={`font-serif text-3xl md:text-3xl tracking-tight leading-none transition-colors duration-500 ${isScrolled ? 'text-[#2C3E30]' : 'text-white'
+                  }`}
               >
                 Arrivio.
               </span>
@@ -104,11 +101,10 @@ const Navbar = () => {
                 <Link
                   key={link.name}
                   to={link.path}
-                  className={`px-6 py-2.5 rounded-full border transition-all duration-300 font-serif tracking-wide ${
-                    isScrolled
-                      ? 'border-transparent text-[#2C3E30] hover:bg-[#2C3E30]/5 text-base font-medium'
-                      : 'border-white text-white hover:bg-white hover:text-[#2C3E30] text-sm font-medium'
-                  }`}
+                  className={`px-6 py-2.5 rounded-full border transition-all duration-300 font-serif tracking-wide ${isScrolled
+                    ? 'border-transparent text-[#2C3E30] hover:bg-[#2C3E30]/5 text-base font-medium'
+                    : 'border-white text-white hover:bg-white hover:text-[#2C3E30] text-sm font-medium'
+                    }`}
                 >
                   {link.name}
                 </Link>
@@ -118,28 +114,26 @@ const Navbar = () => {
             {/* RIGHT ACTIONS */}
             <div className="flex items-center gap-3 md:gap-8 shrink-0">
               <div
-                className={`flex items-center gap-2 transition-colors duration-500 cursor-pointer ${
-                  isScrolled
-                    ? 'text-[#2C3E30]/60 hover:text-[#2C3E30]'
-                    : 'text-white/80 hover:text-white'
-                }`}
+                className={`flex items-center gap-2 transition-colors duration-500 cursor-pointer ${isScrolled
+                  ? 'text-[#2C3E30]/60 hover:text-[#2C3E30]'
+                  : 'text-white/80 hover:text-white'
+                  }`}
               >
-                <Globe size={20} className="md:w-[14px] md:h-[14px]" />
+                <Globe size={24} className="md:w-[18px] md:h-[18px]" />
                 <span className="hidden md:block font-sans text-[10px] font-bold uppercase tracking-widest">
                   EN
                 </span>
               </div>
 
               <button
-                className={`md:hidden p-2 transition-colors duration-500 ${
-                  isScrolled ? 'text-[#2C3E30]' : 'text-white'
-                }`}
+                className={`md:hidden p-2 transition-colors duration-500 ${isScrolled ? 'text-[#2C3E30]' : 'text-white'
+                  }`}
                 onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
               >
                 {isMobileMenuOpen ? (
-                  <X size={24} className="text-[#2C3E30]" />
+                  <X size={28} className="text-[#2C3E30]" />
                 ) : (
-                  <Menu size={24} />
+                  <Menu size={28} />
                 )}
               </button>
             </div>
