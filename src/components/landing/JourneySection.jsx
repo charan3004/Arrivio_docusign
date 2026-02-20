@@ -122,7 +122,7 @@ const JourneySection = () => {
                // Mobile: Centered button. Desktop: Left aligned button.
                className="mt-12 flex justify-center lg:justify-start lg:pl-6"
              >
-               <Link to="/search">
+               <Link to="/cities">
                   <button className="h-14 px-8 bg-[#2C3E30] text-[#EAE8E4] rounded-full font-sans font-bold text-xs uppercase tracking-[0.2em] flex items-center gap-3 hover:bg-[#1A1A1A] hover:scale-105 transition-all shadow-xl">
                      Start Exploring
                      <ArrowRight size={16} />

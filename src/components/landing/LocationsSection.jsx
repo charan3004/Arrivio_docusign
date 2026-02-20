@@ -11,7 +11,7 @@ import cologneImg from '../../assets/cities/cologne.jpeg';
 import dusseldorfImg from '../../assets/cities/dusseldorf.jpeg';
 import bonnImg from '../../assets/cities/bonn.jpeg';
 import aachenImg from '../../assets/cities/aachen.jpeg';
-import hamburgImg from '../../assets/cities/hamburg.jpeg'; 
+import hamburgImg from '../../assets/cities/hamburg.jpeg';
 import germanyMap from '../../assets/germany.png';
 
 const locations = [
@@ -23,9 +23,9 @@ const locations = [
   { id: 6, name: "Frankfurt", top: "60%", left: "35%", count: 6, price: "850", label: "Finance Hub", description: "Skyscrapers & connectivity.", image: frankfurtImg },
   { id: 7, name: "Hamburg", top: "18%", left: "40%", count: 10, price: "820", label: "Gateway to World", description: "Maritime charm & media hub.", image: hamburgImg },
   { id: 8, name: "Munich", top: "80%", left: "60%", count: 8, price: "950", label: "Bavarian Heart", description: "Business & tradition.", image: munichImg },
-  
-  
-  
+
+
+
 ];
 
 const LocationsSection = () => {
@@ -40,14 +40,14 @@ const LocationsSection = () => {
   };
 
   return (
-    <section className="py-24 bg-[#EAE8E4] relative overflow-hidden" id="locations">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        
+    <section className="min-h-screen py-24 bg-[#EAE8E4] relative overflow-hidden scroll-mt-28 flex items-center" id="locations">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full">
+
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20 items-center">
-          
+
           {/* LEFT: Content & Controls */}
           <div className="order-2 lg:order-1 flex flex-col justify-center">
-            
+
             <motion.div
               initial={{ opacity: 0, x: -20 }}
               whileInView={{ opacity: 1, x: 0 }}
@@ -57,7 +57,7 @@ const LocationsSection = () => {
                 Explore our <br />
                 <span className="italic text-[#C2B280]">prime locations</span>
               </h2>
-              
+
               <p className="text-[#5C5C50] font-sans text-lg mb-8 leading-relaxed max-w-md">
                 Click on a city to preview the lifestyle. Find the vibe that fits your journey.
               </p>
@@ -71,14 +71,14 @@ const LocationsSection = () => {
                   onClick={() => setActiveCityId(city.id)}
                   className={`
                     px-4 py-3 rounded-xl text-sm font-medium transition-all duration-300 flex items-center justify-between group border
-                    ${activeCityId === city.id 
-                      ? 'bg-[#2C3E30] text-white border-[#2C3E30] shadow-lg scale-105' 
+                    ${activeCityId === city.id
+                      ? 'bg-[#2C3E30] text-white border-[#2C3E30] shadow-lg scale-105'
                       : 'bg-[#F5F5F0]/40 backdrop-blur-sm border-white/60 text-[#2C3E30]/70 hover:border-[#2C3E30]/50 hover:text-[#2C3E30]'
                     }
                   `}
                 >
                   <span className="flex items-center gap-2">
-                    {activeCityId === city.id && <Sparkles size={14} className="animate-pulse text-[#C2B280]"/>}
+                    {activeCityId === city.id && <Sparkles size={14} className="animate-pulse text-[#C2B280]" />}
                     {city.name}
                   </span>
                   <span className={`text-[10px] font-bold uppercase tracking-wider ${activeCityId === city.id ? 'text-white/60' : 'text-[#2C3E30]/40'}`}>
@@ -107,10 +107,10 @@ const LocationsSection = () => {
                     <p className="text-xl font-serif font-bold text-[#2C3E30]">€{activeLocation.price}<span className="text-sm font-sans font-normal text-[#5C5C50]">/mo</span></p>
                   </div>
                 </div>
-                
-                <Link to="/search" state={{ location: activeLocation.name }}>
+
+                <Link to="/business">
                   <button className="w-full h-12 bg-[#C2B280]/20 hover:bg-[#2C3E30] hover:text-white text-[#2C3E30] rounded-xl font-bold font-sans uppercase tracking-widest text-xs transition-all duration-300 flex items-center justify-center gap-2">
-                    View Homes in {activeLocation.name}
+                    Schedule a Call
                     <ArrowRight size={16} />
                   </button>
                 </Link>
@@ -121,10 +121,10 @@ const LocationsSection = () => {
           {/* RIGHT: Map Portal */}
           <div className="order-1 lg:order-2 relative h-[500px] lg:h-[600px] w-full">
             <div className="absolute inset-0 bg-[#1A1A1A] rounded-[2.5rem] overflow-hidden shadow-2xl border-[6px] border-white">
-              
+
               {/* --- IMAGE POP ANIMATION --- */}
               <AnimatePresence mode="wait">
-                <motion.div 
+                <motion.div
                   key={activeCityId}
                   variants={popVariants}
                   initial="hidden"
@@ -134,19 +134,19 @@ const LocationsSection = () => {
                   style={{ backgroundImage: `url(${activeLocation.image})` }}
                 />
               </AnimatePresence>
-              
+
               <div className="absolute inset-0 bg-gradient-to-b from-black/80 via-transparent to-black/80 z-10" />
 
               <div className="relative z-20 w-full h-full flex items-center justify-center">
                 <div className="relative w-full h-full max-w-[360px]">
-                <img
-                  src={germanyMap}
-                  alt="Germany Map"
-                  className="
+                  <img
+                    src={germanyMap}
+                    alt="Germany Map"
+                    className="
                     absolute inset-0 w-full h-full object-contain pointer-events-none
                     scale-110 sm:scale-120 lg:scale-150 opacity-40
                   "
-                />
+                  />
 
 
 
@@ -174,15 +174,15 @@ const LocationsSection = () => {
               {/* HUD Elements */}
               <div className="absolute bottom-8 left-8 z-20">
                 <AnimatePresence mode="wait">
-                    <motion.div
-                        key={activeLocation.name}
-                        initial={{ opacity: 0, y: 10 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        exit={{ opacity: 0, y: -10 }}
-                    >
-                        <p className="text-white font-serif font-bold text-3xl mb-1">{activeLocation.name.toUpperCase()}</p>
-                        <p className="text-[#C2B280] text-[10px] font-bold uppercase tracking-[0.2em]">Available Now</p>
-                    </motion.div>
+                  <motion.div
+                    key={activeLocation.name}
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -10 }}
+                  >
+                    <p className="text-white font-serif font-bold text-3xl mb-1">{activeLocation.name.toUpperCase()}</p>
+                    <p className="text-[#C2B280] text-[10px] font-bold uppercase tracking-[0.2em]">Available Now</p>
+                  </motion.div>
                 </AnimatePresence>
               </div>
 

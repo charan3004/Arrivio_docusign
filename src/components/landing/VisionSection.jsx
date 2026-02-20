@@ -22,7 +22,7 @@ const VisionSection = () => {
     {
       icon: FileCheck,
       title: '10-Minute Booking',
-      description: 'Apply on your phone. Upload docs securely. A fast, secure application',
+      description: 'Apply on your phone. Upload docs securely. Get approved in 24 hours.',
     },
   ];
 

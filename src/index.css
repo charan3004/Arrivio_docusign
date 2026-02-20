@@ -12,16 +12,25 @@
     @apply bg-softWhite text-charcoal font-body;
   }
 
-  h1, h2, h3, h4, h5, h6 {
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
     @apply font-heading;
   }
 }
+
 /* Add to src/index.css */
 
 @keyframes bounce-slow {
-  0%, 100% {
+
+  0%,
+  100% {
     transform: translateY(-5%);
   }
+
   50% {
     transform: translateY(5%);
   }
@@ -33,10 +42,19 @@
 
 /* Optional: Adds a cool shimmer to the text */
 @keyframes gradient-x {
-  0% { background-position: 0% 50%; }
-  50% { background-position: 100% 50%; }
-  100% { background-position: 0% 50%; }
+  0% {
+    background-position: 0% 50%;
+  }
+
+  50% {
+    background-position: 100% 50%;
+  }
+
+  100% {
+    background-position: 0% 50%;
+  }
 }
+
 .animate-gradient-x {
   background-size: 200% 200%;
   animation: gradient-x 3s ease infinite;
@@ -46,12 +64,15 @@
 
 /* --- INVISIBLE SCROLLBAR UTILITY --- */
 .custom-scrollbar {
-  -ms-overflow-style: none;  /* Internet Explorer 10+ */
-  scrollbar-width: none;  /* Firefox */
+  -ms-overflow-style: none;
+  /* Internet Explorer 10+ */
+  scrollbar-width: none;
+  /* Firefox */
 }
 
-.custom-scrollbar::-webkit-scrollbar { 
-  display: none;  /* Safari and Chrome */
+.custom-scrollbar::-webkit-scrollbar {
+  display: none;
+  /* Safari and Chrome */
 }
 
 
@@ -63,23 +84,24 @@
 
 /* 1. UNSELECTED: Pure White (Visible on Dark Map) */
 .pin-bubble {
-  background-color: #FFFFFF; 
-  color: #2C3E30; /* Dark Green Text */
+  background-color: #FFFFFF;
+  color: #2C3E30;
+  /* Dark Green Text */
   padding: 6px 10px;
   border-radius: 8px;
   font-family: sans-serif;
   font-weight: 700;
   font-size: 12px;
-  
+
   /* Strong shadow to lift off the 3D map */
-  box-shadow: 0 4px 10px rgba(0,0,0,0.5);
-  
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+
   white-space: nowrap;
   display: flex;
   justify-content: center;
   align-items: center;
   position: relative;
-  transition: all 0.2s ease-out; 
+  transition: all 0.2s ease-out;
 }
 
 /* Arrow (White) */
@@ -89,28 +111,30 @@
   bottom: -5px;
   left: 50%;
   transform: translateX(-50%);
-  width: 0; 
-  height: 0; 
+  width: 0;
+  height: 0;
   border-left: 5px solid transparent;
   border-right: 5px solid transparent;
-  border-top: 5px solid #FFFFFF; 
+  border-top: 5px solid #FFFFFF;
 }
 
 /* 2. SELECTED: Dark Green (Brand Active State) */
 .pin-bubble.selected {
-  background-color: #2C3E30; /* Dark Green */
-  color: #FFFFFF; /* White Text */
-  transform: scale(1.2) translateY(-4px); 
-  z-index: 9999 !important; 
-  
+  background-color: #2C3E30;
+  /* Dark Green */
+  color: #FFFFFF;
+  /* White Text */
+  transform: scale(1.2) translateY(-4px);
+  z-index: 9999 !important;
+
   /* White Border to separate from dark trees */
-  border: 2px solid #FFFFFF; 
-  box-shadow: 0 10px 25px rgba(0,0,0,0.7);
+  border: 2px solid #FFFFFF;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.7);
 }
 
 /* Arrow turns Dark Green */
 .pin-bubble.selected::after {
-  border-top-color: #2C3E30; 
+  border-top-color: #2C3E30;
 }
 
 /* 3. COPYRIGHT CLEANUP */

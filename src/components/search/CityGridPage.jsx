@@ -1,38 +1,17 @@
 import React from 'react';
 import { ArrowRight } from 'lucide-react';
-import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
-
-// ✅ SEARCH BAR
-import CitySearch from '../CitySearch/CitySearch';
+import { useNavigate } from 'react-router-dom';
 
 // --- IMPORT LOCAL ASSETS ---
-import berlin from '../../assets/cities/berlin.jpeg';
-import munich from '../../assets/cities/munich.jpeg';
-import dusseldorf from '../../assets/cities/dusseldorf.jpeg';
-import frankfurt from '../../assets/cities/frankfurt.jpeg';
-import cologne from '../../assets/cities/cologne.jpeg';
-import aachen from '../../assets/cities/aachen.jpeg';
-import bonn from '../../assets/cities/bonn.jpeg';
-import hamburg from '../../assets/cities/hamburg.jpeg';
 
-// ALPHABETICAL ORDER
-const cities = [
-  { id: 1, name: "Aachen", count: 8, price: "580", img: aachen, description: "Innovation Hub" },
-  { id: 2, name: "Berlin", count: 42, price: "750", img: berlin, description: "Creative Capital" },
-  { id: 3, name: "Bonn", count: 9, price: "650", img: bonn, description: "Historic Charm" },
-  { id: 4, name: "Cologne", count: 12, price: "720", img: cologne, description: "Media City" },
-  { id: 5, name: "Dusseldorf", count: 24, price: "780", img: dusseldorf, description: "Fashion & Art" },
-  { id: 6, name: "Frankfurt", count: 15, price: "850", img: frankfurt, description: "Finance Center" },
-  { id: 8, name: "Hamburg", count: 28, price: "820", img: hamburg, description: "Port & Culture" },
-  { id: 7, name: "Munich", count: 18, price: "950", img: munich, description: "Tech & Tradition" },
-];
+import { cities } from '../../data/cities';
 
 const CityGridPage = () => {
   const navigate = useNavigate();
 
   const handleCityClick = (city) => {
-    navigate('/search', { state: { location: city.name } });
+    navigate('/business');
   };
 
   return (
@@ -49,9 +28,6 @@ const CityGridPage = () => {
           From the creative avenues of Berlin to the historic streets of Bonn.
           Explore our curated collection of premium apartments.
         </p>
-
-        {/* ✅ SEARCH BAR */}
-        <CitySearch />
 
       </div>
 
@@ -111,7 +87,7 @@ const CityGridPage = () => {
 
                   <div className="flex items-center gap-2 text-white border border-white/30 px-4 py-2 rounded-full hover:bg-white hover:text-[#2C3E30] transition-colors bg-white/5 backdrop-blur-sm">
                     <span className="text-[10px] font-bold uppercase tracking-widest">
-                      View Homes
+                      Schedule a Call
                     </span>
                     <ArrowRight size={12} />
                   </div>

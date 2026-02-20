@@ -10,8 +10,7 @@ import communityImg5 from '../../assets/communityImg5.jpeg';
 import communityImg6 from '../../assets/communityImg6.jpeg';
 import communityImg7 from '../../assets/communityImg7.jpeg';
 import communityImg8 from '../../assets/communityImg8.jpeg';
-
-import communityBg from '../../assets/communityBg.png'; 
+import communityBg from '../../assets/communityBg.png';
 
 // --- DATA ---
 const BUBBLE_DATA = [
@@ -42,8 +41,6 @@ const BUBBLE_DATA = [
   { type: "image", content: communityImg8 },
 ];
 
-const MIN_DISTANCE = 18; // spacing between bubbles (%)
-
 const CommunityBanner = () => {
   const [bubbles, setBubbles] = useState([]);
 
@@ -60,68 +57,56 @@ const CommunityBanner = () => {
 
     while (!validPosition && attempts < 60) {
       attempts++;
-
       top = Math.random() * 60 + 20;
       left = Math.random() * 60 + 20;
 
-      // ❌ block center text area
       const inCenterWidth = left > 25 && left < 75;
       const inCenterHeight = top > 25 && top < 75;
       if (inCenterWidth && inCenterHeight) continue;
 
-      // ❌ prevent overlapping with other bubbles
       const isOverlapping = bubbles.some(b => {
         const dx = Math.abs(b.left - left);
         const dy = Math.abs(b.top - top);
-        return dx < MIN_DISTANCE && dy < MIN_DISTANCE;
+        // Reduced buffer to allow more bubbles to coexist
+        return dx < 12 && dy < 12;
       });
 
       if (isOverlapping) continue;
-
       validPosition = true;
     }
 
     if (validPosition) {
       const newBubble = { id, ...data, side, rotation, scale, top, left };
-
       setBubbles(prev => [...prev, newBubble]);
 
+      // NEW: Reduced stay duration (1.8 seconds)
       setTimeout(() => {
         setBubbles(prev => prev.filter(b => b.id !== id));
-      }, 2200);
+      }, 1800);
     }
   }, [bubbles]);
 
   useEffect(() => {
-    let timer;
-
-    const loop = () => {
-      spawnBubble();
-      timer = setTimeout(loop, 3000); // ⏱ 1 second gap
-    };
-
-    timer = setTimeout(loop, 600);
-
-    return () => clearTimeout(timer);
+    // NEW: Increased spawn rate (one every 0.8 seconds)
+    const interval = setInterval(spawnBubble, 800);
+    return () => clearInterval(interval);
   }, [spawnBubble]);
 
   return (
-    <section className="relative w-full h-[32rem] sm:h-[40rem] bg-[#EAE8E4] overflow-hidden flex items-center justify-center">
+    <section id="community" className="relative w-full h-[32rem] sm:h-[40rem] bg-[#EAE8E4] overflow-hidden flex items-center justify-center">
 
       {/* BACKGROUND */}
       <div className="absolute inset-0 z-0">
         <img
           src={communityBg}
           alt="Community Vibe"
-          className="w-full h-full object-cover opacity-95 grayscale-[20%]"
+          className="w-full h-full object-cover opacity-100 grayscale-[10%]"
         />
-        <div className="absolute inset-0 mix-blend-color opacity-30"></div>
       </div>
 
       {/* CENTER BLOCK */}
       <div className="relative z-30 text-center px-6 pointer-events-none">
         <div className="absolute inset-0 bg-[#2B2B2B]/90 blur-3xl rounded-full scale-150 z-20"></div>
-
         <div className="relative z-30">
           <div className="inline-flex items-center gap-3 mb-6">
             <div className="w-8 h-[1px] bg-[#FAFAF8]/70" />
@@ -130,8 +115,7 @@ const CommunityBanner = () => {
             </span>
             <div className="w-8 h-[1px] bg-[#FAFAF8]/70" />
           </div>
-
-            <p className="font-serif text-4xl sm:text-6xl lg:text-7xl text-[#FAFAF8] leading-tight">
+          <p className="font-serif text-4xl sm:text-6xl lg:text-7xl text-[#FAFAF8] leading-tight">
             Life happens <br />
             <span className="italic text-[#C6A45E]">together.</span>
           </p>
@@ -144,10 +128,12 @@ const CommunityBanner = () => {
           {bubbles.map((bubble) => (
             <motion.div
               key={bubble.id}
-              initial={{ opacity: 0, scale: 0.5, y: 30 }}
+              // NEW: Snappier initial pop
+              initial={{ opacity: 0, scale: 0.3, y: 20 }}
               animate={{ opacity: 1, scale: bubble.scale, y: 0, rotate: bubble.rotation }}
-              exit={{ opacity: 0, scale: 0.8, y: -30 }}
-              transition={{ duration: 0.6, type: "spring", stiffness: 80 }}
+              exit={{ opacity: 0, scale: 0.5, y: -20 }}
+              // NEW: Snappier spring transition
+              transition={{ duration: 0.4, type: "spring", stiffness: 120 }}
               style={{
                 top: `${bubble.top}%`,
                 left: `${bubble.left}%`,
@@ -157,10 +143,9 @@ const CommunityBanner = () => {
               }}
               className={`
                 max-w-[200px] sm:max-w-[260px]
-                shadow-xl backdrop-blur-md border border-white/30
                 ${bubble.type === 'image'
-                  ? 'p-0 bg-transparent rounded-[20px]'
-                  : 'px-5 py-3 rounded-[24px] text-sm font-medium'}
+                  ? 'p-0 bg-transparent shadow-none border-none overflow-visible'
+                  : 'px-5 py-3 rounded-[24px] text-sm font-medium shadow-xl backdrop-blur-md border border-white/30'}
                 ${bubble.type !== 'image' && bubble.side === 'left'
                   ? 'bg-[#F5F5F0]/90 text-[#1A1A1A] rounded-bl-none'
                   : ''}
@@ -173,17 +158,14 @@ const CommunityBanner = () => {
                 <img
                   src={bubble.content}
                   alt=""
-                  className="w-[130px] h-[150px] sm:w-[160px] sm:h-[180px] object-cover rounded-[18px] shadow-2xl"
-                  style={{ transform: `rotate(${bubble.rotation * 5}deg) scale(1.05)` }}
+                  className="w-[130px] h-[150px] sm:w-[160px] sm:h-[180px] object-cover rounded-[18px] shadow-2xl border-none"
+                  style={{ transform: `rotate(${bubble.rotation}deg)` }}
                 />
               ) : (
                 <div className="flex flex-col gap-1">
                   <span
-                    className={`text-[11px] font-semibold tracking-wide ${
-                      bubble.side === 'left'
-                        ? 'text-[#1A1A1A]/60'
-                        : 'text-[#EAE8E4]/70'
-                    }`}
+                    className={`text-[11px] font-semibold tracking-wide ${bubble.side === 'left' ? 'text-[#1A1A1A]/60' : 'text-[#EAE8E4]/70'
+                      }`}
                   >
                     {bubble.name}
                   </span>
