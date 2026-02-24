@@ -14,22 +14,52 @@ import aachenImg from '../../assets/cities/aachen.jpeg';
 import hamburgImg from '../../assets/cities/hamburg.jpeg';
 import germanyMap from '../../assets/germany.png';
 
-const locations = [
-  { id: 1, name: "Aachen", top: "52%", left: "10%", count: 3, price: "580", label: "Tech & Uni", description: "Innovation meets history.", image: aachenImg },
-  { id: 2, name: "Berlin", top: "28%", left: "72%", count: 12, price: "750", label: "The Capital", description: "Vibrant culture & tech hub.", image: berlinImg },
-  { id: 3, name: "Bonn", top: "55%", left: "19%", count: 4, price: "650", label: "Historic", description: "Former capital charm.", image: bonnImg },
-  { id: 4, name: "Cologne", top: "48%", left: "18%", count: 9, price: "720", label: "Media City", description: "Cathedral city on the Rhine.", image: cologneImg },
-  { id: 5, name: "Dusseldorf", top: "42%", left: "15%", count: 7, price: "780", label: "Fashion & Art", description: "Luxury & lifestyle.", image: dusseldorfImg },
-  { id: 6, name: "Frankfurt", top: "60%", left: "35%", count: 6, price: "850", label: "Finance Hub", description: "Skyscrapers & connectivity.", image: frankfurtImg },
-  { id: 7, name: "Hamburg", top: "18%", left: "40%", count: 10, price: "820", label: "Gateway to World", description: "Maritime charm & media hub.", image: hamburgImg },
-  { id: 8, name: "Munich", top: "80%", left: "60%", count: 8, price: "950", label: "Bavarian Heart", description: "Business & tradition.", image: munichImg },
+import { supabase } from '../../supabase/client'; // ✅ Import supabase
 
-
-
+const initialLocations = [
+  { id: 1, name: "Aachen", top: "52%", left: "10%", count: 0, price: "580", label: "Tech & Uni", description: "Innovation meets history.", image: aachenImg },
+  { id: 2, name: "Berlin", top: "28%", left: "72%", count: 0, price: "750", label: "The Capital", description: "Vibrant culture & tech hub.", image: berlinImg },
+  { id: 3, name: "Bonn", top: "55%", left: "19%", count: 0, price: "650", label: "Historic", description: "Former capital charm.", image: bonnImg },
+  { id: 4, name: "Cologne", top: "48%", left: "18%", count: 0, price: "720", label: "Media City", description: "Cathedral city on the Rhine.", image: cologneImg },
+  { id: 5, name: "Dusseldorf", top: "42%", left: "15%", count: 0, price: "780", label: "Fashion & Art", description: "Luxury & lifestyle.", image: dusseldorfImg },
+  { id: 6, name: "Frankfurt", top: "60%", left: "35%", count: 0, price: "850", label: "Finance Hub", description: "Skyscrapers & connectivity.", image: frankfurtImg },
+  { id: 7, name: "Hamburg", top: "18%", left: "40%", count: 0, price: "820", label: "Gateway to World", description: "Maritime charm & media hub.", image: hamburgImg },
+  { id: 8, name: "Munich", top: "80%", left: "60%", count: 0, price: "950", label: "Bavarian Heart", description: "Business & tradition.", image: munichImg },
 ];
 
 const LocationsSection = () => {
   const [activeCityId, setActiveCityId] = useState(1);
+  const [locations, setLocations] = useState(initialLocations); // ✅ State for locations
+
+  // Fetch counts from DB
+  React.useEffect(() => {
+    const fetchCounts = async () => {
+      const { data, error } = await supabase
+        .from('properties')
+        .select('city');
+
+      if (error) {
+        console.error("Error fetching property counts:", error);
+        return;
+      }
+
+      // Count properties per city
+      const counts = {};
+      data.forEach(p => {
+        const city = p.city ? p.city.trim() : "";
+        counts[city] = (counts[city] || 0) + 1;
+      });
+
+      // Update locations state
+      setLocations(prev => prev.map(loc => ({
+        ...loc,
+        count: counts[loc.name] || 0 // Default to 0 if no properties
+      })));
+    };
+
+    fetchCounts();
+  }, []);
+
   const activeLocation = locations.find(l => l.id === activeCityId);
 
   // Animation variants for the pop effect
@@ -40,8 +70,8 @@ const LocationsSection = () => {
   };
 
   return (
-    <section className="min-h-screen py-24 bg-[#EAE8E4] relative overflow-hidden scroll-mt-28 flex items-center" id="locations">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full">
+    <section className="py-24 bg-[#EAE8E4] relative overflow-hidden" id="locations">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20 items-center">
 
@@ -108,9 +138,9 @@ const LocationsSection = () => {
                   </div>
                 </div>
 
-                <Link to="/business">
+                <Link to="/search" state={{ location: activeLocation.name }}>
                   <button className="w-full h-12 bg-[#C2B280]/20 hover:bg-[#2C3E30] hover:text-white text-[#2C3E30] rounded-xl font-bold font-sans uppercase tracking-widest text-xs transition-all duration-300 flex items-center justify-center gap-2">
-                    Schedule a Call
+                    View Homes in {activeLocation.name}
                     <ArrowRight size={16} />
                   </button>
                 </Link>
@@ -196,3 +226,4 @@ const LocationsSection = () => {
 };
 
 export default LocationsSection;
+

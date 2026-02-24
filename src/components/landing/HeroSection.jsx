@@ -1,7 +1,7 @@
 import React, { useState, useRef } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import { ArrowRight, Star, MapPin, Briefcase, CheckCircle, Calendar, Building2 } from 'lucide-react';
-
+import { ArrowRight, Star, MapPin, Briefcase, CheckCircle } from 'lucide-react';
+import HeroSearchBar from './HeroSearchBar';
 
 // --- IMPORTS ---
 import heroVideo1 from '../../assets/hero/video1.mp4';
@@ -49,7 +49,7 @@ const HeroSection = () => {
                 if (currentRef.current) {
                     currentRef.current.pause();
                 }
-            }).catch(e => console.log("Transition failed", e));
+            }).catch(() => { });
         }
     };
 
@@ -95,15 +95,14 @@ const HeroSection = () => {
 
 
             {/* --- 2. CENTERED TEXT CONTENT (With Top Badge) --- */}
-            <div className="relative z-30 text-center px-4 max-w-5xl mx-auto flex flex-col items-center gap-10">
-
+            <div className="relative z-30 text-center px-4 max-w-5xl mx-auto -mt-20 flex flex-col items-center gap-8">
 
 
 
                 {/* HEADLINES */}
                 <div>
                     <h1 className="text-white leading-tight drop-shadow-2xl">
-                        <span className="block font-serif text-6xl md:text-7xl lg:text-8xl tracking-tight mb-2">
+                        <span className="block font-serif text-5xl md:text-7xl lg:text-8xl tracking-tight mb-2">
                             Arrival to <span className="italic text-[#E2D5B2]">Belonging.</span>
                         </span>
                     </h1>
@@ -112,47 +111,24 @@ const HeroSection = () => {
                         No paperwork stress. No uncertainty. Just home.
                     </p>
                 </div>
-                {/* CTA BUTTON - Moved Up & Redesigned */}
-                {/* DUAL CTA BUTTONS - Responsive Layout */}
-                <div className="animate-fade-in-up flex flex-col md:flex-row items-center justify-center gap-4 mt-8">
-
-                    {/* BUTTON 1: EXPLORE CITIES (Primary) */}
-                    <Link
-                        to="/cities"
-                        className="group relative inline-flex items-center justify-center gap-3 px-10 py-4 bg-[#F5F5F0] text-[#1A1A1A] rounded-full overflow-hidden transition-all duration-500 hover:scale-105 shadow-[0_0_20px_rgba(255,255,255,0.3)] hover:shadow-[0_0_40px_rgba(255,255,255,0.6)] border border-white/50 backdrop-blur-sm min-w-[240px]"
-                    >
-                        <span className="relative z-10 font-serif text-lg md:text-base font-medium tracking-wide">Explore Cities</span>
-                        <div className="relative z-10 w-6 h-6 rounded-full bg-[#2C3E30] text-white flex items-center justify-center transition-colors duration-500 group-hover:bg-[#1A2E22]">
-                            <Building2 size={12} className="transition-transform duration-300 group-hover:scale-110" />
-                        </div>
-                        <div className="absolute inset-0 -translate-x-full group-hover:animate-[shimmer_1.5s_infinite] bg-gradient-to-r from-transparent via-white/40 to-transparent z-0"></div>
-                    </Link>
-
-                    {/* BUTTON 2: BOOK A MEETING (Secondary - Now Identical Style) */}
-                    <Link
-                        to="/business"
-                        className="group relative inline-flex items-center justify-center gap-3 px-10 py-4 bg-[#F5F5F0] text-[#1A1A1A] rounded-full overflow-hidden transition-all duration-500 hover:scale-105 shadow-[0_0_20px_rgba(255,255,255,0.3)] hover:shadow-[0_0_40px_rgba(255,255,255,0.6)] border border-white/50 backdrop-blur-sm min-w-[240px]"
-                    >
-                        <span className="relative z-10 font-serif text-lg md:text-base font-medium tracking-wide">Schedule a Call</span>
-                        <div className="relative z-10 w-6 h-6 rounded-full bg-[#2C3E30] text-white flex items-center justify-center transition-transform duration-500 group-hover:scale-110 group-hover:bg-[#1A2E22]">
-                            <Calendar size={12} className="transition-transform duration-300" />
-                        </div>
-                        <div className="absolute inset-0 -translate-x-full group-hover:animate-[shimmer_1.5s_infinite] bg-gradient-to-r from-transparent via-white/40 to-transparent z-0"></div>
-                    </Link>
-
-                </div>
             </div>
 
 
-            {/* --- 3. BOTTOM INDICATOR --- */}
-            <div className="absolute bottom-8 left-0 w-full flex justify-center z-30 animate-fade-in-up delay-300">
-                <div className="flex items-center gap-2 px-4 py-2 bg-white/5 backdrop-blur-md rounded-full border border-white/10 hover:bg-white/10 transition-colors cursor-default">
-                    <div className="w-2 h-2 rounded-full bg-[#4ADE80] animate-pulse shadow-[0_0_8px_rgba(74,222,128,0.5)]"></div>
-                    <span className="text-white/90 text-[10px] md:text-xs font-medium tracking-wide font-sans">Live in Germany</span>
+            {/* --- 3. BOTTOM SEARCH BAR (With Badge Below) --- */}
+            <div className="absolute bottom-12 md:bottom-8 left-0 w-full z-40 px-4 flex flex-col items-center gap-4">
+                <HeroSearchBar />
+
+                {/* EXPLORE LINK */}
+                <div className="text-[#F5F5F0]/90 text-sm font-medium drop-shadow-md animate-fade-in-up md:-mt-2">
+                    Not sure? <Link to="/cities" className="text-white hover:text-[#E2D5B2] underline decoration-1 underline-offset-4 transition-colors">Explore all our cities</Link>
+                </div>
+
+                {/* LIVE BADGE (Moved Below Search) */}
+                <div className="inline-flex items-center justify-center gap-2 px-4 py-1.5 rounded-full bg-white/10 backdrop-blur-md border border-white/10 shadow-lg animate-fade-in-down hover:scale-105 transition-transform duration-500 cursor-default group">
+                    <div className="w-1.5 h-1.5 rounded-full bg-[#4ADE80] animate-pulse shadow-[0_0_10px_rgba(74,222,128,0.6)]"></div>
+                    <span className="text-[10px] font-bold uppercase tracking-widest text-[#F5F5F0] group-hover:text-white transition-colors">Now Live in Germany</span>
                 </div>
             </div>
-
-
 
 
         </div>

@@ -10,7 +10,7 @@ import communityImg5 from '../../assets/communityImg5.jpeg';
 import communityImg6 from '../../assets/communityImg6.jpeg';
 import communityImg7 from '../../assets/communityImg7.jpeg';
 import communityImg8 from '../../assets/communityImg8.jpeg';
-import communityBg from '../../assets/communityBg.png';
+import communityBg from '../../assets/communityBg.webp';
 
 // --- DATA ---
 const BUBBLE_DATA = [
@@ -173,12 +173,14 @@ const CommunityBanner = () => {
                 </div>
               )}
             </motion.div>
-          ))}
-        </AnimatePresence>
-      </div>
+          ))
+          }
+        </AnimatePresence >
+      </div >
 
-    </section>
+    </section >
   );
 };
 
 export default CommunityBanner;
+

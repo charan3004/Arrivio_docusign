@@ -35,14 +35,14 @@ const FAQItem = ({ question, answer, isOpen, onClick }) => {
         <span className={`text-lg md:text-xl font-serif transition-colors duration-300 ${isOpen ? 'text-[#2C3E30]' : 'text-[#1A1A1A] group-hover:text-[#2C3E30]'}`}>
           {question}
         </span>
-        
+
         {/* Animated Icon Container */}
         <span className={`ml-4 flex-shrink-0 w-8 h-8 flex items-center justify-center rounded-full transition-all duration-300 ${isOpen ? 'bg-[#2C3E30] text-[#EAE8E4]' : 'bg-[#EAE8E4] text-[#2C3E30] group-hover:bg-[#2C3E30]/10'}`}>
           <motion.div
             animate={{ rotate: isOpen ? 180 : 0 }}
             transition={{ duration: 0.3 }}
           >
-             {isOpen ? <Minus size={16} /> : <Plus size={16} />}
+            {isOpen ? <Minus size={16} /> : <Plus size={16} />}
           </motion.div>
         </span>
       </button>
@@ -72,38 +72,38 @@ const FAQSection = () => {
   return (
     // Background: Warm Stone (#EAE8E4)
     <section id="faq" className="py-24 bg-[#EAE8E4] px-4 sm:px-6 lg:px-8">
-      
+
       <div className="max-w-4xl mx-auto">
-        
+
         {/* --- HEADER --- */}
         <div className="text-center mb-16">
-           <motion.div 
-             initial={{ opacity: 0, y: 20 }}
-             whileInView={{ opacity: 1, y: 0 }}
-             viewport={{ once: true }}
-             className="inline-flex items-center gap-3 mb-6 opacity-60"
-           >
-              <div className="w-8 h-[1px] bg-[#2C3E30]"></div>
-              <span className="text-xs font-bold uppercase tracking-[0.2em] text-[#2C3E30] font-sans">
-                 Need to Know
-              </span>
-              <div className="w-8 h-[1px] bg-[#2C3E30]"></div>
-           </motion.div>
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="inline-flex items-center gap-3 mb-6 opacity-60"
+          >
+            <div className="w-8 h-[1px] bg-[#2C3E30]"></div>
+            <span className="text-xs font-bold uppercase tracking-[0.2em] text-[#2C3E30] font-sans">
+              Need to Know
+            </span>
+            <div className="w-8 h-[1px] bg-[#2C3E30]"></div>
+          </motion.div>
 
-           <motion.h2 
-             initial={{ opacity: 0, y: 20 }}
-             whileInView={{ opacity: 1, y: 0 }}
-             viewport={{ once: true }}
-             transition={{ delay: 0.1 }}
-             className="font-serif text-4xl md:text-5xl lg:text-6xl text-[#1A1A1A] leading-tight mb-4"
-           >
-              Frequently Asked <br/>
-              <span className="italic text-[#2C3E30]">Questions.</span>
-           </motion.h2>
+          <motion.h2
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ delay: 0.1 }}
+            className="font-serif text-4xl md:text-5xl lg:text-6xl text-[#1A1A1A] leading-tight mb-4"
+          >
+            Frequently Asked <br />
+            <span className="italic text-[#2C3E30]">Questions.</span>
+          </motion.h2>
         </div>
-        
+
         {/* --- GLASS ACCORDION CONTAINER --- */}
-        <motion.div 
+        <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
@@ -127,3 +127,4 @@ const FAQSection = () => {
 };
 
 export default FAQSection;
+

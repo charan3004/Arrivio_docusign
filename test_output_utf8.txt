@@ -1,0 +1,116 @@
+﻿
+[1m[46m RUN [49m[22m [36mv4.0.18 [39m[90mD:/RKM ARRIVIO/ArrivioOriginal/ArrivioG[39m
+
+ [31mΓ¥»[39m src/components/search/__tests__/FilterPanel.test.jsx [2m([22m[2m0 test[22m[2m)[22m
+node.exe : 
+At line:1 char:1
++ & "C:\Program Files
+\nodejs/node.exe" "C:
+\Users\hp\AppData\Roa
+ming\npm ...
++ ~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~
+    + CategoryInfo   
+           : NotSpe  
+  cified: (:String   
+ ) [], RemoteExce    
+ption
+    + FullyQualified 
+   ErrorId : Native  
+  CommandError
+ 
+[31mΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»Γ
+Ä»[39m[1m[41m 
+Failed Suites 1 [49m
+[22m[31mΓÄ»ΓÄ»ΓÄ»ΓÄ
+»ΓÄ»ΓÄ»ΓÄ»[39m
+
+[41m[1m FAIL 
+[22m[49m src/compon
+ents/search/__tests__
+/FilterPanel.test.jsx
+[2m [ src/components
+/search/__tests__/Fil
+terPanel.test.jsx 
+][22m
+[31m[1mError[22m: 
+Transform failed 
+with 1 error:
+D:/RKM ARRIVIO/Arrivi
+oOriginal/ArrivioG/sr
+c/components/search/F
+ilterPanel.jsx:6:9: 
+ERROR: The symbol 
+"useMemo" has 
+already been 
+declared[39m
+  Plugin: [35mvite:e
+sbuild[39m
+  File: [36mD:/RKM A
+RRIVIO/ArrivioOrigina
+l/ArrivioG/src/compon
+ents/search/FilterPan
+el.jsx[39m:6:9
+[33m  
+  [33mThe symbol 
+"useMemo" has 
+already been 
+declared[33m
+  4  |  
+  5  |  // --- 
+IMPORT DYNAMIC DATA 
+---
+  6  |  import { 
+useMemo } from 
+'react';
+     |           ^
+  7  |  
+  8  |  // ==========
+=====================
+=====================
+=====
+  [39m
+[90m [2mΓ¥»[22m 
+failureErrorWithLog n
+ode_modules/vitest/no
+de_modules/esbuild/li
+b/main.js:[2m1467:15
+[22m[39m
+[90m [2mΓ¥»[22m no
+de_modules/vitest/nod
+e_modules/esbuild/lib
+/main.js:[2m736:50[
+22m[39m
+[90m [2mΓ¥»[22m re
+sponseCallbacks.<comp
+uted> node_modules/vi
+test/node_modules/esb
+uild/lib/main.js:[2m
+603:9[22m[39m
+[90m [2mΓ¥»[22m 
+handleIncomingPacket 
+node_modules/vitest/n
+ode_modules/esbuild/l
+ib/main.js:[2m658:12
+[22m[39m
+[90m [2mΓ¥»[22m So
+cket.readFromStdout n
+ode_modules/vitest/no
+de_modules/esbuild/li
+b/main.js:[2m581:7[
+22m[39m
+
+[31m[2mΓÄ»ΓÄ»ΓÄ»ΓÄ»
+ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»
+ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»
+ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»[1/
+1]ΓÄ»[22m[39m
+
+
+[2m Test Files [22m [1m[31m1 failed[39m[22m[90m (1)[39m
+[2m      Tests [22m [2mno tests[22m
+[2m   Start at [22m 09:52:32
+[2m   Duration [22m 4.42s[2m (transform 134ms, setup 564ms, import 0ms, tests 0ms, environment 2.35s)[22m
+

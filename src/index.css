@@ -9,7 +9,7 @@
   }
 
   body {
-    @apply bg-softWhite text-charcoal font-body;
+    @apply bg-arrivio-beige text-charcoal font-sans;
   }
 
   h1,
@@ -60,6 +60,25 @@
   animation: gradient-x 3s ease infinite;
 }
 
+/* --- SKELETON SHIMMER (light sweep reflector) --- */
+@keyframes shimmer {
+  0% {
+    transform: translateX(-100%);
+  }
+
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+.skeleton-shimmer {
+  background: linear-gradient(90deg,
+      transparent 0%,
+      rgba(255, 255, 255, 0.4) 50%,
+      transparent 100%);
+  animation: shimmer 1.5s ease-in-out infinite;
+}
+
 
 
 /* --- INVISIBLE SCROLLBAR UTILITY --- */
@@ -73,6 +92,39 @@
 .custom-scrollbar::-webkit-scrollbar {
   display: none;
   /* Safari and Chrome */
+}
+
+/* --- ARRIVIO THEMED SCROLLBAR --- */
+.arrivio-scrollbar {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(44, 62, 48, 0.15) transparent;
+}
+
+.arrivio-scrollbar::-webkit-scrollbar {
+  width: 4px;
+}
+
+.arrivio-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.arrivio-scrollbar::-webkit-scrollbar-thumb {
+  background: rgba(44, 62, 48, 0.15);
+  border-radius: 999px;
+}
+
+.arrivio-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: rgba(44, 62, 48, 0.3);
+}
+
+/* Common utility for hiding scrollbars */
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
 }
 
 
@@ -144,16 +196,7 @@
   padding: 0 6px !important;
   font-size: 9px !important;
   color: #666 !important;
-  margin-right: 10px !important;
-  margin-bottom: 6px !important;
-  text-decoration: none !important;
-}
-
-.leaflet-control-attribution {
   margin-right: 20px !important;
   margin-bottom: 10px !important;
-  background: rgba(255, 255, 255, 0.8) !important;
-  border-radius: 4px;
-  padding: 0 4px;
-  font-size: 8px !important;
+  text-decoration: none !important;
 }

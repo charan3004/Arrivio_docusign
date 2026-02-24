@@ -11,7 +11,7 @@ import TestimonialsSection from '../components/landing/TestimonialsSection';
 
 const Landing = () => {
   return (
-    <div className="min-h-screen bg-softWhite">
+    <div className="min-h-screen bg-[#EAE8E4]">
       {/* 1. Hero & Vision */}
       <HeroSection />
       <VisionSection />
@@ -23,13 +23,13 @@ const Landing = () => {
       {/* 3. Personas & Pricing */}
       <WhoWeServeSection />
       <PricingTiersSection />
-      
+
       {/* 4. Social Proof & Objections */}
       {/* ADDED ID HERE for Navbar scrolling */}
       <div id="stories">
         <TestimonialsSection />
       </div>
-      
+
       {/* FAQSection has internal id="faq" */}
       <FAQSection />
 

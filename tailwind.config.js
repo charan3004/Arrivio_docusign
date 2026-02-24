@@ -7,28 +7,33 @@ export default {
   theme: {
     extend: {
       colors: {
-        // Primary Color (Anchor): Forest Green
-        forestGreen: '#2F5D50',
-        // Secondary Background: Warm Sand / Beige
-        warmSand: '#EDE6DA',
-        // Main Background: Soft White
-        softWhite: '#FAFAF8',
-        // Text Body: Charcoal
+        // Arrivio Brand Palette (Nested for robust class generation)
+        arrivio: {
+          green: '#2C3E30',
+          beige: '#EAE8E4',
+          accent: '#CAA472',
+          dark: '#1a261d',
+        },
+
+        // Identity Colors
         charcoal: '#2B2B2B',
-        // Sub-headings: Earth Brown
+        forestGreen: '#2F5D50',
+        warmSand: '#EDE6DA',
+        softWhite: '#FAFAF8',
         earthBrown: '#5A4634',
-        // Accent: Muted Gold
         mutedGold: '#C6A45E',
-        // Business page colors
-        arrivioGreen: '#2C3E30',
+        adminGreen: '#243B33',
       },
       fontFamily: {
-        // Headings: IBM Plex Sans
+        // Arrivio Font Stack
+        sans: ['Inter', 'ui-sans-serif', 'system-ui', 'sans-serif'],
+        serif: ['Playfair Display', 'serif'],
         heading: ['IBM Plex Sans', 'sans-serif'],
-        // Body: Inter
-        body: ['Inter', 'sans-serif'],
-        // Business page display font
-        display: ['Playfair Display', 'serif'],
+
+        // Aliases for clarity
+        arrivioSans: ['Inter', 'sans-serif'],
+        arrivioSerif: ['Playfair Display', 'serif'],
+        arrivioHeading: ['IBM Plex Sans', 'sans-serif'],
       },
     },
   },
