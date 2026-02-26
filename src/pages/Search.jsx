@@ -3,7 +3,8 @@ import { useNavigate } from "react-router-dom";
 import {
   Map as MapIcon,
   List as ListIcon,
-  Search as SearchIcon
+  Search as SearchIcon,
+  X as CloseIcon
 } from "lucide-react";
 import { motion } from "framer-motion";
 
@@ -87,7 +88,7 @@ const Search = () => {
         <div className={`transition-all duration-500 ease-in-out ${showMap ? 'lg:w-[60%]' : 'w-full'}`}>
 
           {/* 1.5 TYPE TOGGLE (Stays vs Cities) */}
-          <div className="flex justify-center mb-8">
+          <div className="flex md:hidden justify-center mb-8">
             <div className="bg-white/50 backdrop-blur-sm p-1.5 rounded-2xl border border-[#2C3E30]/5 flex items-center shadow-sm">
               <button
                 onClick={() => setSearchType("cities")}
@@ -178,7 +179,7 @@ const Search = () => {
 
           {/* FLOATING MAP TOGGLE */}
           {filteredProperties.length > 0 && (
-            <div className="sticky bottom-6 z-[40] flex justify-center mt-8 pointer-events-none">
+            <div className="fixed md:sticky bottom-24 md:bottom-6 left-0 right-0 md:left-auto md:right-auto z-[40] flex justify-center pointer-events-none">
               <button
                 onClick={handleToggleMap}
                 className="pointer-events-auto bg-[#2C3E30] text-white px-5 py-2 rounded-full shadow-xl flex items-center gap-2 font-medium text-sm"
@@ -207,6 +208,14 @@ const Search = () => {
             : 'translate-y-full lg:translate-y-0 lg:w-0 lg:translate-x-full lg:hidden'
             }`}
         >
+          {/* MOBILE CLOSE BUTTON */}
+          <button
+            onClick={handleToggleMap}
+            className="absolute top-24 right-6 z-[110] bg-white p-3 rounded-full shadow-xl border border-black/5 lg:hidden text-[#2C3E30] active:scale-95 transition-transform"
+          >
+            <CloseIcon size={20} />
+          </button>
+
           <PropertyMap
             properties={filteredProperties}
             hoveredId={hoveredId}

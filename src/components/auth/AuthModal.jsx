@@ -43,6 +43,11 @@ const AuthModal = () => {
     const [resendTimer, setResendTimer] = useState(30);
     const [canResend, setCanResend] = useState(false);
 
+    // REMEMBER ME STATE
+    const [rememberMe, setRememberMe] = useState(() => {
+        return localStorage.getItem('arrivio_remember_me') === 'true';
+    });
+
     // RESET STATE ON OPEN
     useEffect(() => {
         if (isAuthModalOpen) {
@@ -89,6 +94,12 @@ const AuthModal = () => {
         // Backend type is already set by toggleAuthMethod, but specific regex checks could happen here if needed
     };
 
+    // REMEMBER ME HANDLING
+    const handleRememberMeChange = (checked) => {
+        setRememberMe(checked);
+        localStorage.setItem('arrivio_remember_me', checked.toString());
+    };
+
     // 1. SEND OTP
     const handleSendOtp = async (e) => {
         e.preventDefault();
@@ -96,6 +107,8 @@ const AuthModal = () => {
 
         setLoading(true);
         try {
+            // Persist preference before sending OTP
+            localStorage.setItem('arrivio_remember_me', rememberMe.toString());
             await signInWithOtp(inputValue);
             setResendTimer(30);
             setCanResend(false);
@@ -130,19 +143,18 @@ const AuthModal = () => {
     const handleGoogleLogin = async () => {
         setLoading(true);
 
-        // Save booking state in case popup fails and falls back to redirect
+        // Save booking state for recovery after redirect
         sessionStorage.setItem('auth_return_path', location.pathname);
+        localStorage.setItem('arrivio_remember_me', rememberMe.toString());
         if (pendingBookingStateRef?.current) {
             sessionStorage.setItem('booking_redirect_state', JSON.stringify(pendingBookingStateRef.current));
         }
 
         try {
-            // Use popup approach so user stays on the current page
-            const { data, error } = await supabase.auth.signInWithOAuth({
+            const { error } = await supabase.auth.signInWithOAuth({
                 provider: 'google',
                 options: {
                     redirectTo: window.location.origin + '/auth/callback',
-                    skipBrowserRedirect: true,
                     queryParams: {
                         access_type: 'offline',
                         prompt: 'select_account',
@@ -151,20 +163,9 @@ const AuthModal = () => {
             });
 
             if (error) throw error;
-
-            if (data?.url) {
-                const width = 500;
-                const height = 600;
-                const left = window.screen.width / 2 - width / 2;
-                const top = window.screen.height / 2 - height / 2;
-                window.open(
-                    data.url,
-                    'GoogleAuth',
-                    `toolbar=no, location=no, directories=no, status=no, menubar=no, scrollbars=no, resizable=no, copyhistory=no, width=${width}, height=${height}, top=${top}, left=${left}`
-                );
-            }
         } catch (error) {
             console.error('Google Login Error:', error);
+            alert(error.message);
         } finally {
             setLoading(false);
         }
@@ -300,17 +301,32 @@ const AuthModal = () => {
                                             </button>
                                         </div>
 
-                                        {/* TERMS */}
-                                        <div className="mt-6 flex items-start gap-3">
-                                            <div className="pt-0.5">
-                                                <input type="checkbox" defaultChecked className="accent-[#2C3E30] w-4 h-4 rounded cursor-pointer" />
+                                        {/* REMEMBER ME & TERMS */}
+                                        <div className="mt-6 space-y-3">
+                                            <div className="flex items-center gap-3">
+                                                <input
+                                                    id="remember-me"
+                                                    type="checkbox"
+                                                    checked={rememberMe}
+                                                    onChange={(e) => handleRememberMeChange(e.target.checked)}
+                                                    className="accent-[#2C3E30] w-4 h-4 rounded cursor-pointer"
+                                                />
+                                                <label htmlFor="remember-me" className="text-sm text-gray-700 cursor-pointer select-none">
+                                                    Keep me signed in
+                                                </label>
                                             </div>
-                                            <p className="text-xs text-gray-500 leading-relaxed">
-                                                By signing in you agree to our{' '}
-                                                <button className="text-[#2C3E30] hover:underline font-medium">Privacy Policy</button>
-                                                {' '}and{' '}
-                                                <button className="text-[#2C3E30] hover:underline font-medium">Terms & Conditions</button>
-                                            </p>
+
+                                            <div className="flex items-start gap-3">
+                                                <div className="pt-0.5">
+                                                    <input type="checkbox" defaultChecked className="accent-[#2C3E30] w-4 h-4 rounded cursor-pointer" />
+                                                </div>
+                                                <p className="text-xs text-gray-500 leading-relaxed">
+                                                    By signing in you agree to our{' '}
+                                                    <button className="text-[#2C3E30] hover:underline font-medium">Privacy Policy</button>
+                                                    {' '}and{' '}
+                                                    <button className="text-[#2C3E30] hover:underline font-medium">Terms & Conditions</button>
+                                                </p>
+                                            </div>
                                         </div>
                                     </>
                                 )}

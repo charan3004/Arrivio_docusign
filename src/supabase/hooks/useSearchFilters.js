@@ -40,7 +40,7 @@ export function useSearchFilters() {
     });
 
     const [activeTab, setActiveTab] = useState(() => getSession("activeTab", "Anyone"));
-    const [searchType, setSearchType] = useState(() => getSession("searchType", "cities"));
+    const [searchType, setSearchType] = useState("stays");
     const [showFilters, setShowFilters] = useState(false);
     const [showSuggestions, setShowSuggestions] = useState(false);
     const [showMap, setShowMap] = useState(() => getSession("showMap", false));
@@ -65,9 +65,6 @@ export function useSearchFilters() {
         sessionStorage.setItem("search_activeTab", JSON.stringify(activeTab));
     }, [activeTab]);
 
-    useEffect(() => {
-        sessionStorage.setItem("search_searchType", JSON.stringify(searchType));
-    }, [searchType]);
 
     useEffect(() => {
         sessionStorage.setItem("search_showMap", JSON.stringify(showMap));

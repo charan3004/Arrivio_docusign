@@ -7,10 +7,17 @@ export default function AdminLoginForm() {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
+  const [rememberMe, setRememberMe] = useState(() => {
+    return localStorage.getItem('arrivio_remember_me') === 'true';
+  });
+
   const handleLogin = async (e) => {
     e.preventDefault();
     setLoading(true);
     setError("");
+
+    // Persist preference
+    localStorage.setItem('arrivio_remember_me', rememberMe.toString());
 
     const { error } = await supabase.auth.signInWithPassword({
       email,
@@ -67,6 +74,23 @@ export default function AdminLoginForm() {
                        focus:outline-none focus:ring-2 focus:ring-black"
             required
           />
+        </div>
+
+        {/* Keep me signed in */}
+        <div className="flex items-center gap-2">
+          <input
+            id="admin-remember-me"
+            type="checkbox"
+            checked={rememberMe}
+            onChange={(e) => {
+              setRememberMe(e.target.checked);
+              localStorage.setItem('arrivio_remember_me', e.target.checked.toString());
+            }}
+            className="w-4 h-4 rounded border-gray-300 text-black focus:ring-black"
+          />
+          <label htmlFor="admin-remember-me" className="text-sm text-gray-700 cursor-pointer select-none">
+            Keep me signed in
+          </label>
         </div>
 
         {error && (
