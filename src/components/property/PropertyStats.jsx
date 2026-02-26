@@ -57,9 +57,9 @@ const PropertyStats = ({ details, propertyType, furnishing, capacity }) => {
 
   return (
     <div className="py-4 border-y border-[#2C3E30]/5 my-2">
-      <div className="grid grid-cols-2 gap-y-6 gap-x-4 md:flex md:items-center md:gap-x-8 md:gap-y-3">
+      <div className="grid grid-cols-2 gap-y-6 gap-x-4 md:flex md:flex-wrap md:items-center md:gap-x-4 md:gap-y-4">
         {stats.map((stat, i) => (
-          <div key={i} className="flex items-center gap-3.5 relative">
+          <div key={i} className="flex items-center gap-2.5 relative">
             {/* Minimalist Large Icon */}
             <div className="text-[#2C3E30]/60 flex items-center justify-center shrink-0">
               <stat.icon size={20} strokeWidth={1.5} />
@@ -76,7 +76,7 @@ const PropertyStats = ({ details, propertyType, furnishing, capacity }) => {
 
             {/* Subtle Vertical Divider - Only on desktop and not for last item */}
             {i < stats.length - 1 && (
-              <div className="hidden md:block h-8 w-[1px] bg-[#2C3E30]/10 ml-4 lg:ml-8 shrink-0" />
+              <div className="hidden md:block h-8 w-[1px] bg-[#2C3E30]/10 ml-2 lg:ml-4 shrink-0" />
             )}
           </div>
         ))}
