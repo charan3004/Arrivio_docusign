@@ -2,6 +2,8 @@ import React, { useState, useEffect, useRef, useMemo } from 'react';
 import { Check, MapPin, Layers, ChevronDown, X } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
+import ReactDOM from 'react-dom';
+
 // =========================================================
 // 1. PRICE HISTOGRAM
 // =========================================================
@@ -140,28 +142,33 @@ const FilterPanel = ({ isVisible, filters, setFilters, onReset, onClose, propert
     });
   };
 
-  return (
+  return ReactDOM.createPortal(
     <AnimatePresence>
       {isVisible && (
-        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
+        <div className="fixed inset-0 z-[99999] flex items-center justify-center p-4">
           {/* Backdrop */}
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             onClick={onClose}
-            className="absolute inset-0 bg-black/10 backdrop-blur-[2px]"
+            className="absolute inset-0 bg-black/40 backdrop-blur-[2px]"
           />
 
           {/* Content Panel (Compacted to max-w-md) */}
           <motion.div
-            initial={{ opacity: 0, scale: 0.98, y: 10 }}
+            initial={{ opacity: 0, scale: 0.98, y: 30 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
-            exit={{ opacity: 0, scale: 0.98, y: 10 }}
-            className="relative bg-white w-full max-w-md rounded-2xl shadow-2xl border border-slate-200 overflow-hidden z-20 flex flex-col max-h-[85vh]"
+            exit={{ opacity: 0, scale: 0.98, y: 30 }}
+            onClick={(e) => e.stopPropagation()}
+            onMouseDown={(e) => e.stopPropagation()}
+            className="relative bg-white w-full max-w-md rounded-3xl shadow-2xl border border-slate-200 overflow-hidden z-[100000] flex flex-col max-h-[90vh]"
           >
+            {/* Mobile Grabber/Handle Bar */}
+            <div className="w-12 h-1.5 bg-slate-300 rounded-full mx-auto mt-4 mb-2 shrink-0 md:hidden" />
+
             {/* Compact Header */}
-            <div className="flex items-center justify-between px-6 py-4 border-b border-slate-100 bg-slate-50/50">
+            <div className="flex items-center justify-between px-6 py-4 border-b border-slate-100 bg-white shrink-0">
               <h2 className="text-base font-bold text-[#2C3E30] tracking-tight">Filters</h2>
               <button
                 onClick={onClose}
@@ -174,9 +181,8 @@ const FilterPanel = ({ isVisible, filters, setFilters, onReset, onClose, propert
             {/* Scrollable Body */}
             <div
               ref={scrollContainerRef}
-              className="overflow-y-auto px-6 pb-6 space-y-8 no-scrollbar"
+              className="flex-1 overflow-y-auto px-6 pb-6 space-y-8 no-scrollbar"
             >
-              {/* 1. PRICE RANGE (TOP) */}
               {/* 1. PRICE RANGE (TOP) */}
               <section className="pt-6">
                 <div className="flex justify-between items-end mb-3 px-1">
@@ -254,7 +260,7 @@ const FilterPanel = ({ isVisible, filters, setFilters, onReset, onClose, propert
                 />
               </section>
 
-              {/* 5. FACILITIES & AMENITIES (Compact 2-col) */}
+              {/* 5. FACILITIES & AMENITIES */}
               <section>
                 <div className="grid grid-cols-2 gap-x-6 gap-y-6">
                   <div className="space-y-3">
@@ -298,26 +304,27 @@ const FilterPanel = ({ isVisible, filters, setFilters, onReset, onClose, propert
               <section>
                 <span className="block text-[9px] font-bold uppercase tracking-widest text-[#2C3E30]/60 mb-3 ml-1">Furniture</span>
                 <div className="flex gap-2">
-                  {['Any', 'Furnished', 'Unfurnished'].map(option => (
-                    <label key={option} className="flex-1">
-                      <input
-                        type="radio"
-                        name="furniture"
-                        className="sr-only peer"
-                        checked={filters.furniture === option}
-                        onChange={() => setFilters(prev => ({ ...prev, furniture: option }))}
-                      />
-                      <div className="w-full text-center py-2 rounded-lg text-[10px] font-bold border transition-all cursor-pointer peer-checked:bg-[#2C3E30] peer-checked:text-white peer-checked:border-[#2C3E30] peer-checked:shadow-sm border-slate-200 bg-white text-slate-500 hover:bg-slate-50">
+                  {['Any', 'Furnished', 'Semi-Furnished', 'Unfurnished'].map(option => {
+                    const isActive = filters.furniture === option;
+                    return (
+                      <button
+                        key={option}
+                        type="button"
+                        onClick={() => setFilters(prev => ({ ...prev, furniture: option }))}
+                        className={`flex-1 text-center py-2.5 rounded-xl text-[10px] font-bold border transition-all cursor-pointer ${isActive
+                          ? 'bg-[#2C3E30] text-white border-[#2C3E30] shadow-sm'
+                          : 'border-slate-200 bg-white text-slate-500 hover:bg-slate-50'}`}
+                      >
                         {option}
-                      </div>
-                    </label>
-                  ))}
+                      </button>
+                    );
+                  })}
                 </div>
               </section>
             </div>
 
             {/* Footer - Fixed & Unified */}
-            <div className="px-6 py-4 border-t border-slate-100 bg-slate-50 flex items-center justify-between mt-auto">
+            <div className="px-6 py-4 border-t border-slate-100 bg-white flex items-center justify-between shrink-0">
               <button
                 onClick={onReset}
                 className="px-4 py-2 text-[11px] font-bold text-slate-400 hover:text-[#2C3E30] transition-all"
@@ -326,7 +333,7 @@ const FilterPanel = ({ isVisible, filters, setFilters, onReset, onClose, propert
               </button>
               <button
                 onClick={onClose}
-                className="px-8 py-2.5 rounded-xl bg-[#2C3E30] text-xs font-bold text-white shadow-md hover:shadow-lg transition-all"
+                className="px-8 py-3 rounded-2xl bg-[#2C3E30] text-xs font-bold text-white shadow-md hover:shadow-lg transition-all"
               >
                 Show results
               </button>
@@ -334,7 +341,8 @@ const FilterPanel = ({ isVisible, filters, setFilters, onReset, onClose, propert
           </motion.div>
         </div>
       )}
-    </AnimatePresence>
+    </AnimatePresence>,
+    document.body
   );
 };
 

@@ -1,10 +1,11 @@
 import React, { useState, useRef, useEffect } from "react";
 import { Globe, ChevronDown, Check } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
+import { useLanguage } from "../../context/LanguageContext";
 
 const LanguageDropdown = ({ className }) => {
+    const { language: selectedLang, setLanguage, languages } = useLanguage();
     const [isOpen, setIsOpen] = useState(false);
-    const [selectedLang, setSelectedLang] = useState("EN");
     const dropdownRef = useRef(null);
 
     // Close when clicking outside
@@ -18,15 +19,10 @@ const LanguageDropdown = ({ className }) => {
         return () => document.removeEventListener("mousedown", handleClickOutside);
     }, []);
 
-    const languages = [
-        { code: "EN", label: "English" },
-        { code: "DE", label: "Deutsch" },
-    ];
-
     const toggleDropdown = () => setIsOpen(!isOpen);
 
     const handleSelect = (code) => {
-        setSelectedLang(code);
+        setLanguage(code);
         setIsOpen(false);
     };
 

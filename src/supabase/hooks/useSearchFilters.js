@@ -10,7 +10,6 @@ const DEFAULT_FILTERS = {
     tags: [],
     propertyTypes: [],
     availableFrom: null,
-    availableTo: null,
     furniture: "Any"
 };
 
@@ -45,6 +44,7 @@ export function useSearchFilters() {
     const [showSuggestions, setShowSuggestions] = useState(false);
     const [showMap, setShowMap] = useState(() => getSession("showMap", false));
     const [mapSearchBounds, setMapSearchBounds] = useState(null);
+    const [sortBy, setSortBy] = useState(() => getSession("sortBy", "relevance"));
 
     const [filters, setFilters] = useState(() => {
         const savedFilters = getSession("filters", DEFAULT_FILTERS);
@@ -74,6 +74,10 @@ export function useSearchFilters() {
         sessionStorage.setItem("search_filters", JSON.stringify(filters));
     }, [filters]);
 
+    useEffect(() => {
+        sessionStorage.setItem("search_sortBy", JSON.stringify(sortBy));
+    }, [sortBy]);
+
     const suggestionsRef = useRef(null);
 
     // Sync with navigation state (from hero search / city grid)
@@ -85,7 +89,6 @@ export function useSearchFilters() {
                 ...prev,
                 city: selectedCity || prev.city || "All",
                 availableFrom: date || prev.availableFrom || null,
-                availableTo: endDate || prev.availableTo || null,
                 priceMin: priceMin ?? prev.priceMin ?? DEFAULT_FILTERS.priceMin,
                 priceMax: priceMax ?? prev.priceMax ?? DEFAULT_FILTERS.priceMax
             }));
@@ -163,6 +166,8 @@ export function useSearchFilters() {
         setShowMap,
         mapSearchBounds,
         setMapSearchBounds,
+        sortBy,
+        setSortBy,
         suggestionsRef,
         resetFilters
     };

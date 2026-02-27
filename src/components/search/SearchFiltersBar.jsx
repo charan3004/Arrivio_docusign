@@ -80,7 +80,7 @@ const SearchFiltersBar = ({ onOpenFilters, onReset, filters, setFilters, listing
         let count = 0;
         if (filters.city !== "All") count++;
         if (filters.priceMin > 0 || filters.priceMax < 2000) count++;
-        if (filters.availableFrom && filters.availableTo) count++;
+        if (filters.availableFrom) count++;
         if (filters.propertyTypes && filters.propertyTypes.length > 0) count++;
         if (filters.tags && filters.tags.length > 0) count++;
         if (filters.floor !== "Any") count++;
@@ -98,16 +98,18 @@ const SearchFiltersBar = ({ onOpenFilters, onReset, filters, setFilters, listing
                     {/* SEARCH INPUT (Mini version if needed, or just keep filters) */}
 
 
+
+
                     {/* Dates Filter with Popover */}
                     <div className="relative" ref={dateFilterRef}>
                         <FilterPill
                             label={
-                                (filters.availableFrom && filters.availableTo)
-                                    ? `${new Date(filters.availableFrom).toLocaleDateString(undefined, { month: 'short', day: 'numeric' })} – ${new Date(filters.availableTo).toLocaleDateString(undefined, { month: 'short', day: 'numeric' })}`
-                                    : "Move-in – Move-out"
+                                filters.availableFrom
+                                    ? `Move-in: ${new Date(filters.availableFrom).toLocaleDateString(undefined, { month: 'short', day: 'numeric' })}`
+                                    : "Move-in date"
                             }
                             hasDropdown
-                            active={activeFilter === 'Dates' || (filters.availableFrom && filters.availableTo)}
+                            active={activeFilter === 'Dates' || filters.availableFrom}
                             onClick={(e) => {
                                 if (activeFilter === 'Dates') {
                                     setActiveFilter(null);

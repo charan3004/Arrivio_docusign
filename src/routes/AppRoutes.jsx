@@ -46,12 +46,11 @@ const NotFound = React.lazy(() => import("../pages/NotFound"));
 const AdminLogin = React.lazy(() => import("../pages/admin/AdminLogin"));
 const AdminDashboard = React.lazy(() => import("../pages/admin/AdminDashboard"));
 const AdminProperties = React.lazy(() => import("../pages/admin/AdminProperties"));
-const AddProperty = React.lazy(() => import("../pages/admin/AddProperty"));
+const Tenants = React.lazy(() => import("../pages/admin/Tenants"));
+const Verifications = React.lazy(() => import("../pages/admin/Verifications"));
 const Users = React.lazy(() => import("../pages/admin/Users"));
 const Analytics = React.lazy(() => import("../pages/admin/Analytics"));
 const Payments = React.lazy(() => import("../pages/admin/Payments"));
-const Tenants = React.lazy(() => import("../pages/admin/Tenants"));
-const Verifications = React.lazy(() => import("../pages/admin/Verifications"));
 const Settings = React.lazy(() => import("../pages/admin/Settings"));
 
 import PageLoader from "../components/common/PageLoader";
@@ -66,7 +65,6 @@ const AppRoutes = () => {
                 <Route path="/property/:id" element={<PropertyDetails />} />
                 <Route path="/cities" element={<CityGridPage />} />
 
-                {/* AUTH */}
                 {/* AUTH */}
                 <Route path="/login" element={<SignIn />} />
                 <Route path="/signup" element={<SignIn />} />
@@ -93,11 +91,7 @@ const AppRoutes = () => {
                     <Route path="payments" element={<MyPayments />} />
                 </Route>
 
-                {/* Redirect legacy wishlist route to new structure if accessed directly, 
-                    or keep it if we want it accessible outside profile too. 
-                    User requested sidebar layout, so let's redirect for consistency. */}
                 <Route path="/wishlist" element={<Navigate to="/profile/wishlist" replace />} />
-
                 <Route path="/application/details" element={<ProtectedRoute><UserDetails /></ProtectedRoute>} />
 
                 {/* BOOKING PROCESS */}
@@ -117,7 +111,6 @@ const AppRoutes = () => {
                         </AdminProtectedRoute>
                     }
                 />
-
                 <Route
                     path="/admin/properties"
                     element={
@@ -126,16 +119,6 @@ const AppRoutes = () => {
                         </AdminProtectedRoute>
                     }
                 />
-
-                <Route
-                    path="/admin/properties/new"
-                    element={
-                        <AdminProtectedRoute>
-                            <AddProperty />
-                        </AdminProtectedRoute>
-                    }
-                />
-
                 <Route
                     path="/admin/tenants"
                     element={
@@ -144,7 +127,6 @@ const AppRoutes = () => {
                         </AdminProtectedRoute>
                     }
                 />
-
                 <Route
                     path="/admin/verifications"
                     element={
@@ -153,7 +135,6 @@ const AppRoutes = () => {
                         </AdminProtectedRoute>
                     }
                 />
-
                 <Route
                     path="/admin/users"
                     element={
@@ -162,16 +143,6 @@ const AppRoutes = () => {
                         </AdminProtectedRoute>
                     }
                 />
-
-                <Route
-                    path="/admin/payments"
-                    element={
-                        <AdminProtectedRoute>
-                            <Payments />
-                        </AdminProtectedRoute>
-                    }
-                />
-
                 <Route
                     path="/admin/analytics"
                     element={
@@ -180,7 +151,14 @@ const AppRoutes = () => {
                         </AdminProtectedRoute>
                     }
                 />
-
+                <Route
+                    path="/admin/payments"
+                    element={
+                        <AdminProtectedRoute>
+                            <Payments />
+                        </AdminProtectedRoute>
+                    }
+                />
                 <Route
                     path="/admin/settings"
                     element={

@@ -23,8 +23,8 @@ export default function Settings() {
                                 <button
                                     onClick={() => setActiveTab("general")}
                                     className={`flex items-center gap-3 w-full px-4 py-3 text-sm font-medium rounded-lg transition-colors ${activeTab === "general"
-                                            ? "bg-white text-adminGreen shadow-sm"
-                                            : "text-gray-600 hover:bg-white/50 hover:text-gray-900"
+                                        ? "bg-white text-adminGreen shadow-sm"
+                                        : "text-gray-600 hover:bg-white/50 hover:text-gray-900"
                                         }`}
                                 >
                                     <User size={18} />
@@ -33,8 +33,8 @@ export default function Settings() {
                                 <button
                                     onClick={() => setActiveTab("security")}
                                     className={`flex items-center gap-3 w-full px-4 py-3 text-sm font-medium rounded-lg transition-colors ${activeTab === "security"
-                                            ? "bg-white text-adminGreen shadow-sm"
-                                            : "text-gray-600 hover:bg-white/50 hover:text-gray-900"
+                                        ? "bg-white text-adminGreen shadow-sm"
+                                        : "text-gray-600 hover:bg-white/50 hover:text-gray-900"
                                         }`}
                                 >
                                     <Lock size={18} />
@@ -43,8 +43,8 @@ export default function Settings() {
                                 <button
                                     onClick={() => setActiveTab("notifications")}
                                     className={`flex items-center gap-3 w-full px-4 py-3 text-sm font-medium rounded-lg transition-colors ${activeTab === "notifications"
-                                            ? "bg-white text-adminGreen shadow-sm"
-                                            : "text-gray-600 hover:bg-white/50 hover:text-gray-900"
+                                        ? "bg-white text-adminGreen shadow-sm"
+                                        : "text-gray-600 hover:bg-white/50 hover:text-gray-900"
                                         }`}
                                 >
                                     <Bell size={18} />

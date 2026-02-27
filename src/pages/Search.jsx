@@ -44,6 +44,8 @@ const Search = () => {
     setShowMap,
     mapSearchBounds,
     setMapSearchBounds,
+    sortBy,
+    setSortBy,
     resetFilters
   } = useSearchFilters();
 
@@ -52,7 +54,8 @@ const Search = () => {
     filters,
     searchTerm,
     activeTab,
-    mapSearchBounds
+    mapSearchBounds,
+    sortBy
   });
 
   // Local UI state
@@ -134,6 +137,8 @@ const Search = () => {
                 city={filters.city}
                 count={filteredProperties.length}
                 searchTerm={searchTerm}
+                sortBy={sortBy}
+                setSortBy={setSortBy}
               />
 
               {/* 4. CARDS GRID OR EMPTY STATE */}

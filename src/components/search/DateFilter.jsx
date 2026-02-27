@@ -38,15 +38,8 @@ const CustomHeader = ({
 };
 
 const DateFilter = ({ filters, setFilters, onClose, position, listingCount, lockScroll = true, isAbsolute = false, className = "" }) => {
-    const [viewMode, setViewMode] = useState('date'); // 'month' or 'date'
-
     // Date Mode State
-    const [startDate, setStartDate] = useState(filters.availableFrom ? new Date(filters.availableFrom) : null);
-    const [endDate, setEndDate] = useState(filters.availableTo ? new Date(filters.availableTo) : null);
-
-    // Month Mode State
-    const [selectedMonth, setSelectedMonth] = useState(null); // Date object for 1st of selected month
-    const [duration, setDuration] = useState(1); // Months
+    const [moveInDate, setMoveInDate] = useState(filters.availableFrom ? new Date(filters.availableFrom) : null);
 
     const isInternalChange = React.useRef(false);
 
@@ -93,70 +86,29 @@ const DateFilter = ({ filters, setFilters, onClose, position, listingCount, lock
 
     // Sync changes to filters for Date Mode
     useEffect(() => {
-        if (viewMode === 'date' && !isInternalChange.current) {
+        if (!isInternalChange.current) {
             isInternalChange.current = true;
             setFilters(prev => ({
                 ...prev,
-                availableFrom: startDate,
-                availableTo: endDate
+                availableFrom: moveInDate,
+                availableTo: null // Ensure endDate is cleared
             }));
             setTimeout(() => {
                 isInternalChange.current = false;
             }, 50);
         }
-    }, [startDate, endDate, viewMode, setFilters]);
-
-    // Effect to sync Month Mode changes immediately to filters
-    useEffect(() => {
-        if (viewMode === 'month' && selectedMonth && !isInternalChange.current) {
-            const today = new Date();
-            today.setHours(0, 0, 0, 0);
-
-            const isCurrentMonth =
-                selectedMonth.getMonth() === today.getMonth() &&
-                selectedMonth.getFullYear() === today.getFullYear();
-
-            let start, end;
-
-            if (isCurrentMonth) {
-                // Starts from TODAY
-                start = new Date(today);
-                end = new Date(today);
-                end.setMonth(end.getMonth() + duration);
-            } else {
-                // Starts from FIRST DAY of selected month
-                start = new Date(selectedMonth.getFullYear(), selectedMonth.getMonth(), 1);
-                // Ends on LAST DAY of SELECTED month + (duration - 1)
-                end = new Date(selectedMonth.getFullYear(), selectedMonth.getMonth() + duration, 0);
-            }
-
-            isInternalChange.current = true;
-            setStartDate(start);
-            setEndDate(end);
-
-            setFilters(prev => ({
-                ...prev,
-                availableFrom: start,
-                availableTo: end
-            }));
-
-            setTimeout(() => {
-                isInternalChange.current = false;
-            }, 50);
-        }
-    }, [selectedMonth, duration, viewMode, setFilters]);
+    }, [moveInDate, setFilters]);
 
     useEffect(() => {
         // Sync internal state with props only when NOT an internal change
         if (isInternalChange.current) return;
 
         if (filters.availableFrom) {
-            setStartDate(new Date(filters.availableFrom));
+            setMoveInDate(new Date(filters.availableFrom));
+        } else {
+            setMoveInDate(null);
         }
-        if (filters.availableTo) {
-            setEndDate(new Date(filters.availableTo));
-        }
-    }, [filters.availableFrom, filters.availableTo]);
+    }, [filters.availableFrom]);
 
     const handleApply = () => {
         // Real-time updates already happened, just close
@@ -165,10 +117,7 @@ const DateFilter = ({ filters, setFilters, onClose, position, listingCount, lock
 
     const handleClear = () => {
         isInternalChange.current = true;
-        setStartDate(null);
-        setEndDate(null);
-        setSelectedMonth(null);
-        setDuration(1);
+        setMoveInDate(null);
         setFilters(prev => ({
             ...prev,
             availableFrom: null,
@@ -179,26 +128,10 @@ const DateFilter = ({ filters, setFilters, onClose, position, listingCount, lock
         }, 50);
     };
 
-    // Helper for generating next 12 months
-    const getNextMonths = () => {
-        const months = [];
-        const today = new Date();
-        // Start from current month
-        let current = new Date(today.getFullYear(), today.getMonth(), 1);
-
-        for (let i = 0; i < 12; i++) {
-            months.push(new Date(current));
-            current.setMonth(current.getMonth() + 1);
-        }
-        return months;
-    };
-
-    const nextMonths = getNextMonths();
-
     const content = (
         <div
             ref={containerRef}
-            className={`${isAbsolute ? 'absolute shadow-xl' : 'fixed shadow-2xl'} bg-white rounded-2xl border border-[#EAE8E4] p-3 z-[9999] animate-in fade-in zoom-in-95 duration-200 ${className.includes('w-') ? '' : 'w-[480px]'} h-[380px] flex flex-col date-filter-portal pointer-events-auto ${className}`}
+            className={`${isAbsolute ? 'absolute shadow-xl' : 'fixed shadow-2xl'} bg-white rounded-2xl border border-[#EAE8E4] p-3 z-[9999] animate-in fade-in zoom-in-95 duration-200 ${className.includes('w-') ? '' : 'w-[360px]'} h-[380px] flex flex-col date-filter-portal pointer-events-auto ${className}`}
             style={isAbsolute ? {} : { top: position?.top || 0, left: position?.left || 0 }}
             onMouseDown={(e) => e.stopPropagation()}
         >
@@ -212,146 +145,29 @@ const DateFilter = ({ filters, setFilters, onClose, position, listingCount, lock
                 <X size={20} />
             </button>
 
-            {/* Toggle Header */}
-            <div className="flex justify-center mb-4 scale-[0.95]">
-                <div className="bg-gray-100 p-1 rounded-full flex gap-1 relative z-10">
-                    <button
-                        type="button"
-                        onClick={(e) => { e.preventDefault(); e.stopPropagation(); setViewMode('month'); }}
-                        className={`px-6 py-1.5 rounded-full text-sm font-bold transition-all ${viewMode === 'month' ? 'bg-[#2C3E30] text-white shadow-sm' : 'text-gray-500 hover:text-gray-900'}`}
-                    >
-                        By month
-                    </button>
-                    <button
-                        type="button"
-                        onClick={(e) => { e.preventDefault(); e.stopPropagation(); setViewMode('date'); }}
-                        className={`px-6 py-1.5 rounded-full text-sm font-bold transition-all ${viewMode === 'date' ? 'bg-[#2C3E30] text-white shadow-sm' : 'text-gray-500 hover:text-gray-900'}`}
-                    >
-                        By date
-                    </button>
+            {/* DATE MODE */}
+            <div className="flex-1 overflow-y-auto no-scrollbar scroll-smooth">
+                <div className="flex flex-col items-center mt-6">
+                    <div className="custom-datepicker-wrapper transform scale-[0.85] origin-top mb-0">
+                        <DatePicker
+                            selected={moveInDate}
+                            onChange={(date) => {
+                                setMoveInDate(date);
+                            }}
+                            inline
+                            monthsShown={1}
+                            minDate={new Date(new Date().setHours(0, 0, 0, 0))}
+                            renderCustomHeader={CustomHeader}
+                            calendarClassName="border-none font-sans"
+                            dayClassName={(date) => {
+                                const isPast = date < new Date(new Date().setHours(0, 0, 0, 0));
+                                if (isPast) return "past-day";
+                                return "day-cell";
+                            }}
+                        />
+                    </div>
                 </div>
             </div>
-
-            {viewMode === 'date' ? (
-                /* DATE MODE */
-                <div className="flex-1 overflow-y-auto no-scrollbar scroll-smooth">
-                    <div className="flex flex-col items-center">
-                        <div className="custom-datepicker-wrapper transform scale-[0.72] origin-top mb-0">
-                            <DatePicker
-                                selected={startDate}
-                                onChange={(dates) => {
-                                    const [start, end] = dates;
-                                    setStartDate(start);
-                                    setEndDate(end);
-                                }}
-                                startDate={startDate}
-                                endDate={endDate}
-                                selectsRange
-                                inline
-                                monthsShown={2}
-                                minDate={new Date(new Date().setHours(0, 0, 0, 0))}
-                                renderCustomHeader={CustomHeader}
-                                calendarClassName="border-none font-sans"
-                                dayClassName={(date) => {
-                                    const isPast = date < new Date(new Date().setHours(0, 0, 0, 0));
-                                    if (isPast) return "past-day";
-                                    return "day-cell";
-                                }}
-                            />
-                        </div>
-                    </div>
-                </div>
-            ) : (
-                /* MONTH MODE */
-                <div className="w-full flex-1 overflow-y-auto no-scrollbar scroll-smooth pr-1">
-                    <div className="flex flex-col">
-                        <h3 className="text-[#2C3E30] font-serif font-bold text-xl mb-4">When's the move-in?</h3>
-
-                        {/* Month Carousel/Grid with Chevrons */}
-                        <div className="relative group">
-                            <button
-                                type="button"
-                                onClick={(e) => {
-                                    e.preventDefault();
-                                    document.getElementById('month-scroll-container').scrollBy({ left: -200, behavior: 'smooth' });
-                                }}
-                                className="absolute left-0 top-1/2 -translate-y-1/2 z-10 bg-white/90 border border-gray-200 p-2 rounded-full shadow-md text-gray-700 hover:text-[#2C3E30] opacity-0 group-hover:opacity-100 transition-opacity disabled:opacity-0"
-                            >
-                                <ChevronLeft size={20} />
-                            </button>
-
-                            <div
-                                id="month-scroll-container"
-                                className="flex gap-3 overflow-x-auto pb-4 -mx-2 px-2 snap-x scroll-smooth"
-                                style={{
-                                    msOverflowStyle: 'none',
-                                    scrollbarWidth: 'none'
-                                }}
-                            >
-                                {nextMonths.map((m, idx) => {
-                                    const isSelected = selectedMonth &&
-                                        m.getMonth() === selectedMonth.getMonth() &&
-                                        m.getFullYear() === selectedMonth.getFullYear();
-
-                                    return (
-                                        <button
-                                            key={idx}
-                                            type="button"
-                                            onClick={() => setSelectedMonth(m)}
-                                            className={`
-                                            flex-shrink-0 w-20 h-20 rounded-xl border flex flex-col items-center justify-center gap-0.5 transition-all snap-start
-                                            ${isSelected
-                                                    ? 'border-[#2C3E30] bg-[#2C3E30] text-white shadow-md'
-                                                    : 'border-gray-100 bg-[#F9FAF9] hover:border-[#2C3E30] hover:bg-white'
-                                                }
-                                        `}
-                                        >
-                                            <span className={`text-sm font-bold ${isSelected ? 'text-white' : 'text-gray-900'}`}>
-                                                {m.toLocaleString('default', { month: 'short' })}
-                                            </span>
-                                            <span className={`text-[10px] ${isSelected ? 'text-white/80' : 'text-gray-400'}`}>
-                                                {m.getFullYear()}
-                                            </span>
-                                        </button>
-                                    );
-                                })}
-                            </div>
-
-                            <button
-                                type="button"
-                                onClick={(e) => {
-                                    e.preventDefault();
-                                    document.getElementById('month-scroll-container').scrollBy({ left: 200, behavior: 'smooth' });
-                                }}
-                                className="absolute right-0 top-1/2 -translate-y-1/2 z-10 bg-white/90 border border-gray-200 p-2 rounded-full shadow-md text-gray-700 hover:text-[#2C3E30] opacity-0 group-hover:opacity-100 transition-opacity"
-                            >
-                                <ChevronRight size={20} />
-                            </button>
-                        </div>
-
-                        <h3 className="text-[#2C3E30] font-serif font-bold text-xl mt-6 mb-4">How long will you stay?</h3>
-                        <div className="flex items-center gap-4">
-                            <span className="text-gray-700 font-medium w-16">Month</span>
-                            <div className="flex items-center gap-3">
-                                <button
-                                    onClick={() => setDuration(Math.max(1, duration - 1))}
-                                    className={`w-10 h-10 rounded-full flex items-center justify-center border transition-colors ${duration <= 1 ? 'border-gray-100 text-gray-300 cursor-not-allowed' : 'border-gray-300 text-gray-600 hover:border-[#2C3E30] hover:text-[#2C3E30]'}`}
-                                    disabled={duration <= 1}
-                                >
-                                    <Minus size={18} />
-                                </button>
-                                <span className="w-8 text-center font-bold text-lg text-[#2C3E30]">{duration}</span>
-                                <button
-                                    onClick={() => setDuration(duration + 1)}
-                                    className="w-10 h-10 rounded-full flex items-center justify-center border border-gray-300 text-gray-600 hover:border-[#2C3E30] hover:text-[#2C3E30] transition-colors"
-                                >
-                                    <Plus size={18} />
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            )}
 
             <div className="flex items-center justify-between pt-4 mt-auto border-t border-gray-100">
                 <div className="flex items-center gap-2">
@@ -418,32 +234,16 @@ const DateFilter = ({ filters, setFilters, onClose, position, listingCount, lock
                     cursor: not-allowed !important;
                     pointer-events: none !important;
                 }
-                /* 1. Base Range Style (Light Green) */
-                .react-datepicker__day--in-range {
-                    background-color: rgba(44, 62, 48, 0.08) !important;
-                    color: #2C3E30 !important;
-                    border-radius: 0 !important;
-                }
-                /* 2. Endpoints (Dark Green) - Must come AFTER in-range to override */
+                
                 .react-datepicker__day--selected,
-                .react-datepicker__day--range-start,
-                .react-datepicker__day--range-end,
                 .selected-day {
                     background-color: #2C3E30 !important;
                     color: white !important;
-                    border-radius: 4px !important;
+                    border-radius: 50% !important;
                     opacity: 1 !important;
                     z-index: 20 !important;
                 }
-                .react-datepicker__day--range-start {
-                    border-radius: 4px 0 0 4px !important;
-                }
-                .react-datepicker__day--range-end {
-                    border-radius: 0 4px 4px 0 !important;
-                }
-                .react-datepicker__day--selected:not(.react-datepicker__day--in-range) {
-                    border-radius: 4px !important;
-                }
+                
                 .react-datepicker__day--keyboard-selected {
                      background-color: transparent !important;
                      color: inherit !important;
@@ -451,13 +251,6 @@ const DateFilter = ({ filters, setFilters, onClose, position, listingCount, lock
                 .react-datepicker__day--outside-month {
                     visibility: hidden !important;
                     pointer-events: none !important;
-                }
-                /* Dual Month Header Logic - Hide internal arrows */
-                .react-datepicker__month-container:first-of-type .next-btn {
-                    visibility: hidden !important;
-                }
-                .react-datepicker__month-container:last-of-type .prev-btn {
-                    visibility: hidden !important;
                 }
                  /* Hide scrollbar for webkit */
                 .no-scrollbar::-webkit-scrollbar {

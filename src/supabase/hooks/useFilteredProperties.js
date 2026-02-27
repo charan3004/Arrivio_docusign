@@ -4,7 +4,7 @@ import { useMemo } from "react";
  * Filters a list of properties based on the current search/filter state.
  * Returns memoized filteredProperties and suggestions arrays.
  */
-export function useFilteredProperties(properties, { filters, searchTerm, activeTab, mapSearchBounds }) {
+export function useFilteredProperties(properties, { filters, searchTerm, activeTab, mapSearchBounds, sortBy }) {
     const safeProperties = properties || [];
 
     const filteredProperties = useMemo(() => {
@@ -30,7 +30,7 @@ export function useFilteredProperties(properties, { filters, searchTerm, activeT
                 searchLower === "" ||
                 p.title?.toLowerCase().includes(searchLower) ||
                 p.city?.toLowerCase().includes(searchLower) ||
-                p.tags?.some(tag => tag.toLowerCase().includes(searchLower));
+                p.tags?.some(tag => typeof tag === 'string' && tag.toLowerCase().includes(searchLower));
 
             // Price
             const price = p.price || 0;
@@ -52,7 +52,7 @@ export function useFilteredProperties(properties, { filters, searchTerm, activeT
                 filters.tags.length === 0 ||
                 filters.tags.every(tag => {
                     const lowerTag = tag.toLowerCase();
-                    const isInTags = p.tags?.some(t => t.toLowerCase() === lowerTag);
+                    const isInTags = p.tags?.some(t => typeof t === 'string' && t.toLowerCase() === lowerTag);
                     const isInAmenities = p.amenities
                         ? Object.values(p.amenities).some(categoryList =>
                             Array.isArray(categoryList) && categoryList.some(a => a.toLowerCase() === lowerTag)
@@ -64,8 +64,8 @@ export function useFilteredProperties(properties, { filters, searchTerm, activeT
             // Furniture
             const matchesFurniture =
                 filters.furniture === "Any" ||
-                (filters.furniture === "Furnished" && (p.details?.furnished === true || p.tags?.some(t => t.toLowerCase().includes("furnish")))) ||
-                (filters.furniture === "Unfurnished" && (p.details?.furnished === false || !p.tags?.some(t => t.toLowerCase().includes("furnish"))));
+                p.furnishing === filters.furniture;
+
 
             // Availability dates
             let matchesAvailability = true;
@@ -130,8 +130,28 @@ export function useFilteredProperties(properties, { filters, searchTerm, activeT
                 matchesTab &&
                 matchesBounds
             );
+        }).sort((a, b) => {
+            if (sortBy === "price_asc") {
+                return (a.price || 0) - (b.price || 0);
+            }
+            if (sortBy === "price_desc") {
+                return (b.price || 0) - (a.price || 0);
+            }
+            if (sortBy === "newest") {
+                return new Date(b.created_at) - new Date(a.created_at);
+            }
+            if (sortBy === "availability") {
+                const getEarliestDate = (p) => {
+                    const availableSlots = p.availability?.filter(s => s.status === 'available');
+                    if (!availableSlots || availableSlots.length === 0) return new Date(8640000000000000); // Max date
+                    return new Date(Math.min(...availableSlots.map(s => new Date(s.start_date))));
+                };
+                return getEarliestDate(a) - getEarliestDate(b);
+            }
+            // "relevance" or default: Sort by created_at desc
+            return new Date(b.created_at) - new Date(a.created_at);
         });
-    }, [safeProperties, filters, searchTerm, activeTab, mapSearchBounds]);
+    }, [safeProperties, filters, searchTerm, activeTab, mapSearchBounds, sortBy]);
 
     const suggestions = useMemo(() => {
         if (searchTerm.trim().length === 0) return [];

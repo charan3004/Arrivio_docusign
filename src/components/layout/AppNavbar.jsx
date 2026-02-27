@@ -1,9 +1,10 @@
 import React, { useState, useEffect, useRef } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import { Menu, Globe, MapPin, Home, X, Heart, User, LogOut, Calendar, HelpCircle } from "lucide-react";
+import { Menu, Globe, MapPin, Home, X, Heart, User, LogOut, Calendar, HelpCircle, Settings, Search, MessageSquare, ChevronDown } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useAuth } from "../../context/AuthContext";
 import { useWishlist } from "../../context/WishlistContext";
+import { useLanguage } from "../../context/LanguageContext";
 import LanguageDropdown from "../common/LanguageDropdown";
 import UserMenu from "./UserMenu";
 import logo2 from '../../assets/logo2.png';
@@ -11,8 +12,10 @@ import logo2 from '../../assets/logo2.png';
 const AppNavbar = ({ property }) => {
   const { user, signOut, openAuthModal } = useAuth();
   const { wishlist } = useWishlist();
+  const { language, setLanguage, languages, currentLanguage } = useLanguage();
   const navigate = useNavigate();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [isLangMenuOpen, setIsLangMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
   const location = useLocation();
 
@@ -212,106 +215,211 @@ const AppNavbar = ({ property }) => {
         </div>
       </nav >
 
-      {/* MOBILE MENU */}
+      {/* MOBILE SIDE MENU DRAWER */}
       <AnimatePresence>
         {isMobileMenuOpen && (
-          <motion.div
-            initial={{ opacity: 0, y: -10 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -10 }}
-            className="fixed top-24 right-6 w-[280px] z-[110] bg-white rounded-3xl shadow-2xl border border-[#2C3E30]/5 overflow-hidden md:hidden"
-          >
-            {user ? (
-              <div className="flex flex-col">
-                {/* USER HEADER */}
-                <div className="p-6 border-b border-[#2C3E30]/5">
-                  <h3 className="text-lg font-serif text-[#2C3E30] leading-tight">
-                    {user.user_metadata?.full_name || user.email?.split('@')[0]}
-                  </h3>
-                  <p className="text-xs text-[#2C3E30]/40 font-medium truncate mt-1">
-                    {user.email}
-                  </p>
+          <>
+            {/* Backdrop */}
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={() => setIsMobileMenuOpen(false)}
+              className="fixed inset-0 bg-black/40 backdrop-blur-sm z-[110] md:hidden"
+            />
+
+            {/* Side Drawer */}
+            <motion.div
+              initial={{ x: '100%' }}
+              animate={{ x: 0 }}
+              exit={{ x: '100%' }}
+              transition={{ type: 'spring', damping: 25, stiffness: 200 }}
+              className="fixed top-0 right-0 h-full w-[310px] bg-[#EAE8E4] z-[120] shadow-2xl flex flex-col md:hidden overflow-hidden"
+            >
+              {/* Close Button Top */}
+              <div className="p-6 flex justify-start">
+                <button
+                  onClick={() => setIsMobileMenuOpen(false)}
+                  className="p-2.5 bg-white/50 backdrop-blur-md rounded-full transition-all active:scale-95 shadow-sm border border-white/40"
+                >
+                  <X size={20} className="text-[#2C3E30]" />
+                </button>
+              </div>
+
+              {/* Scrollable Content */}
+              <div className="flex-1 overflow-y-auto px-7 pb-10 space-y-7 no-scrollbar">
+
+                {/* PROFILE HEADER SECTION */}
+                <div className="flex items-center justify-between mt-2 mb-4">
+                  <div className="space-y-1.5">
+                    <h2 className="text-[32px] font-serif font-medium text-[#2C3E30] leading-[1.1] tracking-tight">
+                      Hello, <br />
+                      <span className="italic">{user ? (user.user_metadata?.full_name?.split(' ')[0] || 'User') : 'Guest'}</span>
+                    </h2>
+                    <div className="inline-flex items-center gap-1.5 px-2.5 py-1 bg-[#579CC7]/10 rounded-full">
+                      <div className="w-1 h-1 rounded-full bg-[#579CC7]" />
+                      <span className="text-[10px] uppercase tracking-wider font-bold text-[#579CC7]">
+                        {user ? 'Verified Tenant' : 'New Visitor'}
+                      </span>
+                    </div>
+                  </div>
+                  {/* Avatar Container */}
+                  <div className="w-20 h-20 rounded-full p-1 bg-white shadow-lg relative group">
+                    <div className="w-full h-full rounded-full bg-[#2C3E30] flex items-center justify-center overflow-hidden relative border-2 border-[#EAE8E4]">
+                      {user?.user_metadata?.avatar_url ? (
+                        <img src={user.user_metadata.avatar_url} alt="Profile" className="w-full h-full object-cover" />
+                      ) : (
+                        <span className="text-2xl font-serif text-white uppercase">
+                          {(user?.user_metadata?.full_name || user?.email || "?")[0]}
+                        </span>
+                      )}
+                    </div>
+                  </div>
                 </div>
 
-                {/* MAIN NAV */}
-                <div className="p-2">
-                  <Link
-                    to="/profile/edit"
-                    onClick={() => setIsMobileMenuOpen(false)}
-                    className="flex items-center gap-4 px-4 py-3 rounded-2xl hover:bg-black/5 transition-colors group"
-                  >
-                    <User size={18} className="text-[#2C3E30]/60 group-hover:text-[#2C3E30] transition-colors" />
-                    <span className="text-sm font-medium text-[#2C3E30]/80 group-hover:text-[#2C3E30]">Account</span>
-                  </Link>
-                  <Link
-                    to="/profile/wishlist"
-                    onClick={() => setIsMobileMenuOpen(false)}
-                    className="flex items-center justify-between px-4 py-3 rounded-2xl hover:bg-black/5 transition-colors group"
+                {/* ACCOUNT SETTINGS LINK */}
+                <Link
+                  to="/profile/edit"
+                  onClick={() => setIsMobileMenuOpen(false)}
+                  className="flex items-center gap-3 py-3 px-5 bg-white/40 backdrop-blur-sm rounded-2xl text-[#2C3E30] font-semibold border border-white/60 shadow-sm active:scale-95 transition-all w-full"
+                >
+                  <Settings size={18} className="text-[#2C3E30]/70" />
+                  <span className="text-xs font-bold tracking-tight">Account settings</span>
+                </Link>
+
+                {/* LANGUAGE SELECTOR */}
+                <div className="space-y-3">
+                  <span className="text-[11px] font-bold text-[#2C3E30]/30 uppercase tracking-[0.2em] ml-1">Language</span>
+                  <div
+                    onClick={() => setIsLangMenuOpen(!isLangMenuOpen)}
+                    className="flex items-center justify-between bg-white/80 backdrop-blur-md p-4 rounded-2xl border border-white/60 shadow-sm transition-all active:bg-white active:scale-[0.98] cursor-pointer"
                   >
                     <div className="flex items-center gap-4">
-                      <Heart size={18} className="text-[#2C3E30]/60 group-hover:text-[#2C3E30] transition-colors" />
-                      <span className="text-sm font-medium text-[#2C3E30]/80 group-hover:text-[#2C3E30]">Shortlist</span>
+                      {/* Premium Flag Icon */}
+                      <div className="w-7 h-7 rounded-full shadow-inner ring-1 ring-black/5 flex items-center justify-center overflow-hidden">
+                        <img src={currentLanguage.flag} alt={currentLanguage.code} className="h-full w-full object-cover" />
+                      </div>
+                      <span className="text-sm font-bold text-[#2C3E30]">{currentLanguage.label}</span>
                     </div>
-                    {wishlist.length > 0 && (
-                      <span className="flex items-center justify-center h-5 w-5 rounded-full bg-red-500 text-[10px] font-bold text-white">
-                        {wishlist.length}
-                      </span>
+                    <ChevronDown size={14} className={`text-[#2C3E30]/40 transition-transform duration-300 ${isLangMenuOpen ? 'rotate-180' : ''}`} />
+                  </div>
+
+                  {/* Dynamic Language List */}
+                  <AnimatePresence>
+                    {isLangMenuOpen && (
+                      <motion.div
+                        initial={{ opacity: 0, height: 0 }}
+                        animate={{ opacity: 1, height: 'auto' }}
+                        exit={{ opacity: 0, height: 0 }}
+                        className="bg-white/40 backdrop-blur-sm rounded-2xl border border-white/60 overflow-hidden"
+                      >
+                        {languages.map((lang) => (
+                          <button
+                            key={lang.code}
+                            onClick={() => {
+                              setLanguage(lang.code);
+                              setIsLangMenuOpen(false);
+                            }}
+                            className={`w-full flex items-center justify-between px-5 py-4 transition-colors ${language === lang.code ? 'bg-[#2C3E30]/5' : 'hover:bg-white/50'
+                              }`}
+                          >
+                            <div className="flex items-center gap-4">
+                              <div className="w-6 h-6 rounded-full overflow-hidden shadow-sm">
+                                <img src={lang.flag} alt={lang.code} className="h-full w-full object-cover" />
+                              </div>
+                              <span className={`text-xs font-bold ${language === lang.code ? 'text-[#2C3E30]' : 'text-[#2C3E30]/60'}`}>
+                                {lang.label}
+                              </span>
+                            </div>
+                            {language === lang.code && (
+                              <div className="w-1.5 h-1.5 rounded-full bg-[#2C3E30]" />
+                            )}
+                          </button>
+                        ))}
+                      </motion.div>
                     )}
-                  </Link>
-                  <Link
-                    to="/profile/bookings"
-                    onClick={() => setIsMobileMenuOpen(false)}
-                    className="flex items-center gap-4 px-4 py-3 rounded-2xl hover:bg-black/5 transition-colors group"
-                  >
-                    <Calendar size={18} className="text-[#2C3E30]/60 group-hover:text-[#2C3E30] transition-colors" />
-                    <span className="text-sm font-medium text-[#2C3E30]/80 group-hover:text-[#2C3E30]">My Bookings</span>
-                  </Link>
+                  </AnimatePresence>
                 </div>
 
-                {/* HELP SECTION */}
-                <div className="p-2 border-t border-[#2C3E30]/5">
-                  <Link
-                    to="/contact"
-                    onClick={() => setIsMobileMenuOpen(false)}
-                    className="flex items-center gap-4 px-4 py-3 rounded-2xl hover:bg-black/5 transition-colors group"
-                  >
-                    <HelpCircle size={18} className="text-[#2C3E30]/60 group-hover:text-[#2C3E30] transition-colors" />
-                    <span className="text-sm font-medium text-[#2C3E30]/80 group-hover:text-[#2C3E30]">Help</span>
-                  </Link>
+                {/* MANAGEMENT SECTION */}
+                <div className="space-y-3">
+                  <span className="text-[11px] font-bold text-[#2C3E30]/30 uppercase tracking-[0.2em] ml-1">Properties</span>
+                  <div className="bg-white/60 backdrop-blur-md rounded-3xl border border-white/60 shadow-sm overflow-hidden ring-1 ring-black/[0.02]">
+                    <Link
+                      to="/profile/wishlist"
+                      onClick={() => setIsMobileMenuOpen(false)}
+                      className="flex items-center justify-between px-5 py-4.5 hover:bg-white transition-colors border-b border-white/60 active:bg-white group"
+                    >
+                      <div className="flex items-center gap-4">
+                        <div className="w-9 h-9 rounded-xl bg-red-50 flex items-center justify-center">
+                          <Heart size={18} className="text-red-500" />
+                        </div>
+                        <span className="text-sm font-bold text-[#2C3E30]">My Favorites</span>
+                      </div>
+                    </Link>
+                    <Link
+                      to="/requests"
+                      onClick={() => setIsMobileMenuOpen(false)}
+                      className="flex items-center gap-4 px-5 py-4.5 hover:bg-white transition-colors active:bg-white"
+                    >
+                      <div className="w-9 h-9 rounded-xl bg-emerald-50 flex items-center justify-center">
+                        <Home size={18} className="text-emerald-600" />
+                      </div>
+                      <span className="text-sm font-bold text-[#2C3E30]">Application Status</span>
+                    </Link>
+                  </div>
                 </div>
 
-                {/* LOGOUT */}
-                <div className="p-2 border-t border-[#2C3E30]/5">
+                {/* SUPPORT SECTION */}
+                <div className="space-y-3">
+                  <div className="bg-white/60 backdrop-blur-md rounded-3xl border border-white/60 shadow-sm overflow-hidden ring-1 ring-black/[0.02]">
+                    <Link
+                      to="/how-it-works"
+                      onClick={() => setIsMobileMenuOpen(false)}
+                      className="flex items-center gap-4 px-5 py-4 hover:bg-white transition-colors border-b border-white/60 active:bg-white"
+                    >
+                      <div className="w-8 h-8 rounded-lg bg-blue-50 flex items-center justify-center">
+                        <HelpCircle size={16} className="text-blue-500" />
+                      </div>
+                      <span className="text-xs font-bold text-[#2C3E30]">Knowledge Base</span>
+                    </Link>
+                    <Link
+                      to="/contact"
+                      onClick={() => setIsMobileMenuOpen(false)}
+                      className="flex items-center gap-4 px-5 py-4 hover:bg-white transition-colors active:bg-white"
+                    >
+                      <div className="w-8 h-8 rounded-lg bg-indigo-50 flex items-center justify-center">
+                        <MessageSquare size={16} className="text-indigo-500" />
+                      </div>
+                      <span className="text-xs font-bold text-[#2C3E30]">Support center</span>
+                    </Link>
+                  </div>
+                </div>
+
+                {!user && (
+                  <button
+                    onClick={() => {
+                      setIsMobileMenuOpen(false);
+                      openAuthModal();
+                    }}
+                    className="w-full py-5 rounded-2xl bg-[#2C3E30] text-[#EAE8E4] font-bold text-[11px] uppercase tracking-[0.2em] shadow-xl shadow-[#2C3E30]/20 active:scale-95 transition-all"
+                  >
+                    Join Arrivio
+                  </button>
+                )}
+
+                {user && (
                   <button
                     onClick={handleLogout}
-                    className="w-full flex items-center gap-4 px-4 py-3 rounded-2xl hover:bg-red-50 transition-colors group"
+                    className="w-full py-4 text-red-500 text-xs font-bold uppercase tracking-widest hover:text-red-600 transition-colors"
                   >
-                    <LogOut size={18} className="text-red-500/80 group-hover:text-red-600 transition-colors" />
-                    <span className="text-sm font-bold text-red-500 group-hover:text-red-600">Log Out</span>
+                    Log out of account
                   </button>
-                </div>
+                )}
+
               </div>
-            ) : (
-              <div className="p-4 flex flex-col gap-2">
-                <button
-                  onClick={() => {
-                    setIsMobileMenuOpen(false);
-                    openAuthModal();
-                  }}
-                  className="w-full py-3 rounded-2xl bg-[#2C3E30] text-[#EAE8E4] font-bold text-xs uppercase tracking-widest"
-                >
-                  Sign In
-                </button>
-                <Link
-                  to="/search"
-                  onClick={() => setIsMobileMenuOpen(false)}
-                  className="w-full py-3 rounded-2xl border border-[#2C3E30]/10 text-[#2C3E30] font-bold text-xs uppercase tracking-widest text-center"
-                >
-                  Explore Stays
-                </Link>
-              </div>
-            )}
-          </motion.div>
+            </motion.div>
+          </>
         )}
       </AnimatePresence>
     </>

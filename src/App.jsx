@@ -3,6 +3,7 @@ import { BrowserRouter as Router, useLocation } from "react-router-dom";
 
 import { AuthProvider } from "./context/AuthContext";
 import { WishlistProvider } from "./context/WishlistContext";
+import { LanguageProvider } from "./context/LanguageContext";
 
 import Navbar from "./components/layout/Navbar";
 import AppNavbar from "./components/layout/AppNavbar";
@@ -76,13 +77,15 @@ function App() {
   useSession();
   return (
     <AuthProvider>
-      <Router>
-        <WishlistProvider>
-          <AuthModal />
-          <ScrollToTop />
-          <Layout />
-        </WishlistProvider>
-      </Router>
+      <LanguageProvider>
+        <Router>
+          <WishlistProvider>
+            <AuthModal />
+            <ScrollToTop />
+            <Layout />
+          </WishlistProvider>
+        </Router>
+      </LanguageProvider>
     </AuthProvider>
   );
 }

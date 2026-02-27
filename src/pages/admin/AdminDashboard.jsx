@@ -224,10 +224,10 @@ export default function AdminDashboard() {
                         </div>
                         <div className="text-right shrink-0">
                           <span className={`text-[10px] font-bold uppercase px-2 py-0.5 rounded-full ${item.status?.toLowerCase() === "success" || item.status?.toLowerCase() === "paid"
-                              ? "bg-green-100 text-green-600"
-                              : item.status?.toLowerCase() === "refunded"
-                                ? "bg-red-50 text-red-500"
-                                : "bg-yellow-50 text-yellow-600"
+                            ? "bg-green-100 text-green-600"
+                            : item.status?.toLowerCase() === "refunded"
+                              ? "bg-red-50 text-red-500"
+                              : "bg-yellow-50 text-yellow-600"
                             }`}>
                             {item.status || "Pending"}
                           </span>
