@@ -151,6 +151,40 @@ router.post('/send', async (req, res) => {
     }
 });
 
+router.post('/applications', async (req, res) => {
+    const application = req.body?.application ?? req.body ?? {};
+    const { user_id, property_id } = application;
+
+    if (!user_id || !property_id) {
+        return res.status(400).json({
+            error: 'user_id and property_id are required',
+        });
+    }
+
+    try {
+        const { data, error } = await supabase
+            .from('lease_applications')
+            .insert([application])
+            .select()
+            .single();
+
+        if (error) {
+            return res.status(500).json({
+                error: 'Failed to create lease application',
+                details: error.message,
+                code: error.code,
+            });
+        }
+
+        return res.status(200).json({ success: true, application: data });
+    } catch (error) {
+        return res.status(500).json({
+            error: 'Unexpected server error while creating lease application',
+            details: error.message,
+        });
+    }
+});
+
 router.post('/webhook', async (req, res) => {
     try {
         console.log('Webhook payload received:');

@@ -8,6 +8,7 @@ import AddressDetails from "../components/UserDetails/AddressDetails";
 import OccupationDetails from "../components/UserDetails/OccupationDetails";
 import RequiredDocuments from "../components/UserDetails/RequiredDocuments";
 import CameraModal from "../components/UserDetails/CameraModal";
+import { supabase } from "../supabase/client";
 
 const UserDetails = () => {
     const { state } = useLocation();
@@ -114,11 +115,162 @@ const UserDetails = () => {
         setShowCamera(false);
     };
 
-    const handleSubmit = (e) => {
+    const parseAddress = (address = "") => {
+        const parts = address.split(",").map((part) => part.trim()).filter(Boolean);
+        return {
+            addressLine: parts[0] || "",
+            city: parts[1] || "",
+            postalCode: parts[2] || "",
+            country: parts[3] || ""
+        };
+    };
+
+    const dataUrlToBlob = async (dataUrl) => {
+        const response = await fetch(dataUrl);
+        return response.blob();
+    };
+
+    const uploadDocument = async (userId, label, fileOrDataUrl) => {
+        if (!fileOrDataUrl) return null;
+
+        let fileToUpload = fileOrDataUrl;
+        if (typeof fileOrDataUrl === "string") {
+            const blob = await dataUrlToBlob(fileOrDataUrl);
+            const extension = blob.type?.split("/")?.[1] || "jpg";
+            fileToUpload = new File([blob], `${label}.${extension}`, { type: blob.type || "image/jpeg" });
+        }
+
+        const sanitizedName = (fileToUpload.name || label).replace(/[^a-zA-Z0-9._-]/g, "_");
+        const storagePath = `${userId}/${Date.now()}_${label}_${sanitizedName}`;
+
+        const { error: uploadError } = await supabase.storage
+            .from("user-documents")
+            .upload(storagePath, fileToUpload, { upsert: false });
+
+        if (uploadError) throw uploadError;
+
+        const { data } = supabase.storage.from("user-documents").getPublicUrl(storagePath);
+        return data?.publicUrl || null;
+    };
+
+    const handleSubmit = async (e) => {
         e.preventDefault();
-        setIsSubmitted(true);
-        localStorage.removeItem(DRAFT_KEY);
-        setModal('submitted');
+
+        try {
+            const { data: userData, error: userError } = await supabase.auth.getUser();
+            if (userError) throw userError;
+
+            const user = userData?.user;
+            if (!user?.id) throw new Error("User not authenticated");
+
+            const occupationDocument = formData.occupation === "study" ? documents.admissionLetter : documents.workDocument;
+
+            const [passportUrl, visaUrl, idProofUrl, selfieUrl, occupationDocumentUrl] = await Promise.all([
+                uploadDocument(user.id, "passport", documents.passport),
+                uploadDocument(user.id, "visa", documents.visa),
+                uploadDocument(user.id, "government_id", documents.govId),
+                uploadDocument(user.id, "selfie", documents.selfie),
+                uploadDocument(user.id, "occupation_document", occupationDocument),
+            ]);
+
+            const { addressLine, city, postalCode, country } = parseAddress(formData.currentAddress);
+            let propertyId = bookingData.propertyId || bookingData.property_id || bookingData.id || null;
+            const applicantEmail = formData.email || user.email || "";
+
+            if (!propertyId && bookingData.title) {
+                const { data: matchedProperty, error: propertyLookupError } = await supabase
+                    .from("properties")
+                    .select("id")
+                    .eq("title", bookingData.title)
+                    .limit(1)
+                    .maybeSingle();
+
+                if (propertyLookupError) throw propertyLookupError;
+                propertyId = matchedProperty?.id || null;
+            }
+
+            if (!propertyId) {
+                throw new Error("Missing property_id in application context");
+            }
+
+            const applicationPayload = {
+                user_id: user.id,
+                property_id: propertyId,
+                first_name: formData.firstName || "",
+                last_name: formData.lastName || "",
+                email: applicantEmail,
+                phone: `${countryCode} ${formData.phone || ""}`.trim(),
+                date_of_birth: formData.dob || null,
+                address_line: addressLine || formData.currentAddress || "",
+                occupation_type: formData.occupation || "",
+                university_name: formData.university || "",
+                company_name: formData.employer || "",
+                job_title: formData.jobTitle || "",
+                passport_url: passportUrl || "",
+                visa_url: visaUrl || "",
+                id_proof_url: idProofUrl || "",
+                selfie_url: selfieUrl || "",
+                occupation_document_url: occupationDocumentUrl || "",
+                status: "submitted",
+            };
+
+            const { error: insertError } = await supabase.from("lease_applications").insert([applicationPayload]);
+
+            if (insertError) {
+                if (insertError.code === "42501") {
+                    const apiBaseUrl = import.meta.env.VITE_API_BASE_URL || "http://localhost:5000";
+                    const fallbackResponse = await fetch(`${apiBaseUrl}/api/lease/applications`, {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify({ application: applicationPayload }),
+                    });
+
+                    if (!fallbackResponse.ok) {
+                        let message = "Backend fallback insert failed";
+                        try {
+                            const fallbackBody = await fallbackResponse.json();
+                            message = fallbackBody?.details || fallbackBody?.error || message;
+                        } catch {
+                            // no-op
+                        }
+                        throw new Error(message);
+                    }
+                } else {
+                    throw insertError;
+                }
+            }
+
+            const leaseSendResponse = await fetch("http://localhost:5000/api/lease/send", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    email: applicantEmail,
+                    name: `${formData.firstName} ${formData.lastName}`,
+                    bookingIntentId: bookingData.bookingIntentId || bookingData.booking_intent_id || bookingData.propertyId || bookingData.id,
+                    userId: user.id
+                })
+            });
+
+            if (!leaseSendResponse.ok) {
+                let message = "DocuSign trigger failed";
+                try {
+                    const errorBody = await leaseSendResponse.json();
+                    message = errorBody?.details || errorBody?.error || errorBody?.message || message;
+                } catch {
+                    // no-op
+                }
+                throw new Error(message);
+            }
+
+            setIsSubmitted(true);
+            localStorage.removeItem(DRAFT_KEY);
+            setModal('submitted');
+        } catch (error) {
+            console.error("Failed to submit lease application:", error);
+            alert(`Submit failed: ${error.message || "Unknown error"}`);
+        }
     };
 
     if (!bookingData.title) {
@@ -358,11 +510,11 @@ const UserDetails = () => {
 
                             {/* TEXT */}
                             <h3 className="font-serif text-xl font-bold text-[#2C3E30] mb-2">
-                                {modal === 'submitted' ? 'Application Submitted!' : 'Draft Saved!'}
+                                {modal === 'submitted' ? 'Application Submitted, Contract Sent!' : 'Draft Saved!'}
                             </h3>
                             <p className="text-sm text-[#2C3E30]/60 leading-relaxed mb-6">
                                 {modal === 'submitted'
-                                    ? 'Your application has been submitted successfully. We\'ll review it and get back to you soon! ✨'
+                                    ? 'Your application was submitted successfully. Please review and sign the contract sent to your email.'
                                     : 'Your progress has been saved. You can come back anytime to pick up where you left off 💾'
                                 }
                             </p>
