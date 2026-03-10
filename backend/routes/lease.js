@@ -4,7 +4,7 @@ import {
     getAuthorizationUrl,
     exchangeCodeForToken,
     sendLeaseEnvelope,
-    getLatestOAuthSession,
+    getValidOAuthSession,
 } from '../services/docusign.js';
 import { supabase } from '../config/supabase.js';
 
@@ -74,6 +74,40 @@ async function uploadSignedPdfToStorage({ envelopeId, pdfBuffer }) {
     }
 
     return publicUrl;
+}
+
+function extractEnvelopeEvent(payload) {
+    const status = (
+        payload?.data?.envelopeSummary?.status
+        || payload?.data?.status
+        || payload?.envelopeSummary?.status
+        || payload?.status
+        || ''
+    ).toString().toLowerCase();
+
+    const event = (
+        payload?.event
+        || payload?.eventType
+        || payload?.data?.event
+        || payload?.data?.eventType
+        || payload?.data?.envelopeSummary?.event
+        || payload?.envelopeSummary?.event
+        || (status === 'completed' ? 'envelope-completed' : '')
+    ).toString().toLowerCase();
+
+    const envelopeId = (
+        payload?.data?.envelopeId
+        || payload?.data?.envelope_id
+        || payload?.data?.envelopeSummary?.envelopeId
+        || payload?.data?.envelopeSummary?.envelope_id
+        || payload?.envelopeId
+        || payload?.envelope_id
+        || payload?.envelopeSummary?.envelopeId
+        || payload?.envelopeSummary?.envelope_id
+        || ''
+    ).toString().trim();
+
+    return { event, envelopeId, status };
 }
 
 router.get('/auth', async (req, res) => {
@@ -190,8 +224,7 @@ router.post('/webhook', async (req, res) => {
         console.log('Webhook payload received:');
         console.log(JSON.stringify(req.body, null, 2));
 
-        const event = req.body?.event;
-        const envelopeId = req.body?.data?.envelopeId;
+        const { event, envelopeId, status } = extractEnvelopeEvent(req.body);
 
         if (!event || !envelopeId) {
             console.log('Missing event or envelopeId');
@@ -201,13 +234,8 @@ router.post('/webhook', async (req, res) => {
         console.log('Event:', event);
         console.log('Envelope ID:', envelopeId);
 
-        if (event === 'envelope-completed') {
-            const session = getLatestOAuthSession();
-            if (!session?.accessToken || !session?.accountId || !session?.baseUri) {
-                return res.status(500).json({
-                    error: 'DocuSign session is unavailable for PDF download',
-                });
-            }
+        if (event === 'envelope-completed' || status === 'completed') {
+            const session = await getValidOAuthSession();
 
             const pdfBuffer = await downloadSignedPdf({
                 accessToken: session.accessToken,
@@ -221,18 +249,24 @@ router.post('/webhook', async (req, res) => {
                 pdfBuffer,
             });
 
-            const { error } = await supabase
+            const { data: updatedLeases, error } = await supabase
                 .from('leases')
                 .update({
                     status: 'completed',
                     lease_signed: true,
                     signed_pdf_url: signedPdfUrl,
                 })
-                .eq('envelope_id', envelopeId);
+                .eq('envelope_id', envelopeId)
+                .select('envelope_id');
 
             if (error) {
                 console.error('DB update error:', error);
                 return res.status(500).json({ error: 'DB update failed' });
+            }
+
+            if (!updatedLeases?.length) {
+                console.error('No lease row found for envelope_id:', envelopeId);
+                return res.status(404).json({ error: 'Lease record not found for envelope' });
             }
 
             console.log('Lease marked as completed in DB with signed PDF URL');
