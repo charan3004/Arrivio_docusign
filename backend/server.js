@@ -7,7 +7,13 @@ import leaseRoute from "./routes/lease.js";
 
 const app = express();
 
-app.use(cors());
+app.use(cors({
+  origin: [
+    "http://localhost:5173",
+    "https://your-project-name.vercel.app"
+  ],
+  credentials: true
+}));
 
 /* =========================================
    RAW BODY FOR PAYMENTS WEBHOOK (CRITICAL)
